@@ -1,0 +1,385 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+
+.chatInputPanel{
+   position: relative;
+   height: 100px;
+   width: 100%;
+   flex-shrink: 0;
+   display: flex;
+   flex-direction: column;
+   justify-content:flex-end;
+   margin-bottom: fn.spacing(2);
+   gap: fn.spacing(1);
+
+
+   &__field{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: fn.spacing(2) fn.spacing(4);
+    gap: fn.spacing(2);
+    border-radius: fn.border-radius(circle);
+    background-color: fn.color(neutral, white);
+
+    &--text{
+        width: 100%;
+    }
+
+
+    &:hover{
+        box-shadow: 0px 0px 12px rgba(fn.color(primary, 400), 0.25);
+    };
+   }
+
+   @include mixins.respond(md){
+    max-width: 768px;
+    margin-bottom: fn.spacing(4);
+   }
+}
+
+
+.chatInputPanel__carousel{
+    height: auto;
+    width: auto;
+    // display: flex;
+    display: none;
+    flex-direction: row;
+    align-items: flex-end; // 貼齊底部
+    position: relative;
+    justify-content: center;    
+}
+
+
+.carousel__nav--right, .carousel__nav--left {
+  // 考慮mobile版不顯示nav
+width: 24px;
+@include mixins.flex-center;
+color: fn.color(neutral, 300);
+opacity: 0.5; 
+font-size: 3rem;
+height: 100%;
+display: flex;
+flex-shrink: 0;
+z-index: 2;
+cursor: pointer;
+user-select: none;
+background: unset;
+border: unset;
+
+&:hover:not(:disabled) {
+    color: fn.color(primary, 300);
+    opacity: 0.6;
+}
+
+&:disabled {
+    color: fn.color(neutral, 200);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+  @include mixins.respond(sm){
+    width: 40px;
+  }
+}
+
+
+
+.chatInputPanel__carousel--dots{
+  @include mixins.flex-center;
+  height: 6px;
+  gap: fn.spacing(2);
+  margin: fn.spacing(1) 0;
+  flex-shrink: 0;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  z-index: 3;
+}
+
+.chatInputPanel__carousel--dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: fn.color(neutral,200);
+  opacity: 0.8;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  
+  &.active {
+      background: fn.color(primary,300);
+      opacity: 0.6;
+  }
+  
+  // 标签建议组的导航点样式
+  &--tag {
+      width: 8px;
+      height: 8px;
+      background: fn.color(primary,100);
+      border: 1px solid fn.color(primary,300);
+      
+      &.active {
+          background: fn.color(primary,300);
+          border-color: fn.color(primary,400);
+          opacity: 1;
+      }
+  }
+}
+    
+
+.carousel__container {
+  width: 100%;
+  min-height: 40vh;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease;
+  border-radius: fn.border-radius(xl);
+  box-shadow: 0px 0px 12px rgba(fn.color(primary, 400), 0.1);
+  user-select: none;
+  touch-action: pan-y pinch-zoom;
+  
+  cursor: grab;
+    
+  &:active {
+    cursor: grabbing;
+  }
+
+  // 只在移动设备上显示拖曳手势
+  @include mixins.respond(md) {
+    cursor: default;
+
+    &:active {
+      cursor: default;
+    }
+  }
+}
+
+.carousel__suggestionGroup {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 100%;
+  height: 40vh;
+  justify-content: space-between;
+  background-color: fn.color(neutral, white);
+  padding: fn.spacing(3);
+  border-radius: fn.border-radius(xl);
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+
+  @include mixins.respond(md) {
+      max-height: 50vh;
+  }
+
+  &--fixed {
+      pointer-events: auto;
+      z-index: 10;
+      background-color: fn.color(neutral, 50);
+      border: 1px solid fn.color(neutral, 200);
+  }
+}
+
+// 添加父问题文本的样式
+.add-text {
+  background-color: none;
+  border-radius: 0px;
+  pointer-events: none;
+  color: fn.color(neutral, 700);
+  width: 100%;
+  margin: -12px -12px -4px -12px;
+
+  :hover{
+    background-color: none;
+  }
+
+
+  @include mixins.respond(sm){
+    margin: 0px -4px;
+  }
+
+  p{
+    margin: 0px -12px -4px -12px;
+    font-size: fn.fluid-type(12, 16);        // 14px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+    color: fn.color(text,grey);
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(sm);
+      }
+  }
+
+}
+
+.carousel__suggestionItem{
+    flex-shrink: 0;
+    @include mixins.flex-center;
+    text-align: center;
+    width: auto;
+    padding: fn.spacing(3);
+    border-radius: fn.border-radius(lg);
+    font-size: fn.fluid-type(14, 18);
+    pointer-events: auto;
+
+    @include mixins.respond(sm){
+        font-size: fn.font-size(md);
+    }
+
+    &:hover{
+        background-color: fn.color(primary, 50);
+    }
+
+    &:active{
+        background-color: fn.color(primary, 100);
+    }
+
+    &--clicked{
+        background-color: #dfdfdf;
+        color: #414141;
+        opacity: 50%;
+
+      &:hover{
+        background-color: #dfdfdf;
+        color: #414141;
+        opacity: 50%;
+      }
+    }
+
+    &:disabled{
+        background-color: #dfdfdf;
+        color: #414141;
+        opacity: 50%;
+    }
+}
+
+
+
+.carousel__spinner{
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: 3px dashed fn.color(neutral,200);
+    border-top-color: fn.color(neutral,black);
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+    margin: 0 auto;
+  
+   @keyframes spin {
+    to {
+        transform: rotate(360deg);
+        }
+   }
+}
+
+// 添加滚动到底部按钮的样式
+.scroll-to-bottom-btn {
+
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: fn.color(neutral, white);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: fn.color(primary, 300);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+
+  &:hover {
+    background-color: rgba(fn.color(primary, 100), 0.8);
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* 標籤容器樣式 */
+
+.carousel__tagContainer {
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: fn.spacing(3);
+    padding: fn.spacing(4);
+    width: 100%;
+  }
+.carousel__tagContainer::before {
+  // 與add-text相同
+  text-align: start;
+  font-size: fn.fluid-type(12, 16);        // 14px +-2px
+  font-weight: $font_weight_medium;
+  line-height: $line_height_body;
+  color: fn.color(text,grey);
+
+  content: "如果前面已經沒有想了解的問題，也許你可以看看這些主題⋯⋯";
+  width: 100%;
+
+  @include mixins.respond(sm){
+    font-size: fn.font-size(sm);
+    }
+
+}
+
+  /* 標籤樣式 */
+  .carousel__tag {
+    display: inline-block;
+    @include mixins.flex-center;
+    text-align: center;
+    background-color: fn.color(primary,100);
+    padding: fn.spacing(2) fn.spacing(4);
+    border-radius: fn.border-radius(lg);
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .carousel__tag:hover {
+    background-color: fn.color(primary, 200);
+    color: fn.color(neutral, white);
+    transform: translateY(-2px);
+  }
+  
+  .carousel__tag p {
+    font-size: fn.fluid-type(14, 18);        // 16px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(md);
+    }
+  }
+  
+  .carousel__tag--clicked {
+    background-color: fn.color(primary, 300);
+    pointer-events: none;
+  }
+
+
+// 我想用來呼叫project-modal的按鈕樣式，目前還在努力做（？）
+  .chatBubbleMessage__buttonContainer {
+    margin-top: 16px;
+    text-align: center;
+  }
+  

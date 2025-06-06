@@ -1,0 +1,31 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+// ========== Breakpoints Functions ========== //
+
+// 說明：此 mixin 採用 Mobile First 策略。
+//       預設樣式適用於小螢幕（手機），
+//       較大螢幕（如平板、桌機）則透過 @include breakpoint(...) 來覆蓋樣式。
+@mixin respond($key) {
+    @media (min-width: map.get($breakpoints, $key)) {
+      @content;
+    }
+  }
+
+// ========== layout Functions ========== //
+
+// flexbox 垂直置中
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  // Absolute 定位居中
+  @mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

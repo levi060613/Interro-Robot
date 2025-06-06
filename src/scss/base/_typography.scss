@@ -1,0 +1,127 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as mixins;
+@use "../abstracts/functions" as fn;
+
+
+// ========== Typography Functions ========== //
+
+h1,.h1 {
+    font-size: fn.fluid-type(16, 20);        // 18px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_title;
+  
+    @include mixins.respond(sm){
+      font-size: fn.font-size(lg);
+  }
+}
+
+h2,.h2 {
+    font-size: fn.fluid-type(30, 34);        // 32px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_title;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(3xl);
+  }
+}
+  
+h3,.h3 {
+    font-size: fn.fluid-type(22, 26);        // 24px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_title;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(2xl);
+  }
+}
+  
+h4,.h4 {
+    font-size: fn.fluid-type(18, 22);        // 20px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_title;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(xl);
+  }
+}
+  
+h5,.h5 {
+    font-size: fn.fluid-type(12, 16);        // 14px +-2px
+    font-weight: $font_weight_bold;
+    line-height: $line_height_title;
+    
+    @include mixins.respond(sm){
+      font-size: fn.font-size(sm);
+  }
+}
+  
+h6,.h6 {
+    font-size: fn.fluid-type(10, 14);        // 12px +-2px
+    font-weight: $font_weight_bold;
+    line-height: $line_height_title;
+
+    @include mixins.respond(sm){
+        font-size: fn.font-size(xs);
+    }
+}
+
+h7,.h7 {
+  font-size: fn.fluid-type(8, 12);        // 10px +-2px
+  font-weight: $font_weight_bold;
+  line-height: $line_height_title;
+
+  @include mixins.respond(sm){
+      font-size: 10px;
+  }
+}
+
+p.xl {
+    font-size: fn.fluid-type(18, 22);        // 20px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(xl);
+  }
+  }
+  
+  p.lg {
+    font-size: fn.fluid-type(16, 20);        // 18px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(lg);
+  }
+  }
+  
+  p.md {
+    font-size: fn.fluid-type(14, 18);        // 16px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(md);
+  }
+  }
+  
+  p.label {
+    font-size: fn.fluid-type(12, 16);        // 14px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(sm);
+  }
+  }
+  
+  p.caption {
+    font-size: fn.fluid-type(10, 14);        // 12px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(xs);
+  }
+  }

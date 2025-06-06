@@ -1,0 +1,66 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+.chatBubble{
+    display: flex;
+
+    &--bot{
+        padding: fn.spacing(2) fn.spacing(1);       //  8px 4px
+        gap: fn.spacing(3);
+        justify-content: flex-start;         //  讓泡泡靠左
+        text-align: left;
+
+        @include mixins.respond(md){
+            padding: fn.spacing(2) fn.spacing(6);  //  8px 24px
+        }
+    }
+
+    &--user{
+        padding:fn.spacing(2) fn.spacing(1);       //  8px 4px
+        gap: fn.spacing(3);
+        justify-content: flex-end;           //  讓泡泡靠右
+        text-align: left;
+
+        @include mixins.respond(md){
+            padding: fn.spacing(2) fn.spacing(6);  //  8px 24px
+        }
+    }
+}
+
+
+.chatBubbleMessage {
+    word-break: break-word;
+    display: inline-block;
+    border-radius: fn.border-radius(lg);
+    font-size: fn.fluid-type(14, 18);        // 16px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: height 0.3s ease;
+
+    // @include mixins.respond(sm){
+    //     font-size: fn.font-size(md);
+    // }
+}
+
+/* 使用者的泡泡背景 */
+.chatBubble--user .chatBubbleMessage {
+background-color: #eec7ff;
+// background-color: fn.color(primary,200);
+padding: fn.spacing(3);
+}
+
+/* 機器人泡泡不顯示背景色 */
+.chatBubble--bot .chatBubbleMessage {
+    min-height: 300px;
+    background-color: transparent;
+    padding: fn.spacing(3) fn.spacing(0);
+    color: fn.color(neutral, black);
+
+    &--extraMessage{
+        min-height: 0px;
+    }
+}

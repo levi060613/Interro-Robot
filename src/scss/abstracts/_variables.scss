@@ -1,0 +1,111 @@
+@use "sass:map";
+
+// 使用設計系統語意化函式，統一呼叫顏色 map
+// fn.color('primary') → 背後對應 $colors map，易於主題擴充
+// ========== Colors Functions ========== //
+$colors: (
+  // 主色調為紫色
+  primary: (
+    50:#f6f3ff,
+    100:#dfd4ff,
+    200:#ac87fe,
+    300:#7721e0,
+    400:#53189a
+  ),
+  // 基礎灰色調
+  neutral: (
+    white: #ffffff,
+    100: #ebebeb,
+    200: #b4b4b4,
+    300: #666,
+    400: #333,
+    black: #1e1e1e
+  ),
+  // 文字顏色
+  text: (
+    black: #1e1e1e,
+    grey: #666,
+    grey-dark: #333,
+    white: #ffffff
+  )
+);
+
+
+// ========== Spacings Functions ========== //
+$spacings: (
+    0: 0,
+    1: 0.25rem,       // 4px
+    2: 0.5rem,        // 8px
+    3: 0.75rem,       // 12px
+    4: 1rem,          // 16px
+    5: 1.25rem,       // 20px
+    6: 1.5rem,        // 24px
+    7: 2rem,          // 32px
+    8: 2.5rem,        // 40px
+    9: 3rem,          // 48px
+    10: 4rem,         // 64px
+    11: 4.5rem,       // 72px
+    12: 6rem          // 96px
+);
+
+
+// ========== Border-Radius Functions ========== //
+$border-radius: (
+  xs: 4px,
+  sm: 8px,
+  md: 12px,
+  lg: 16px,
+  xl: 24px,
+  2xl: 48px,
+  circle: 999px
+);
+
+
+// ========== Breakpoints Functions ========== //
+$breakpoints: (
+  "xs": 320px,   //xs 可視為手機直向
+  'sm': 576px,    //sm 可視為手機直向
+  'md': 768px,    //md 可視為手機橫向／小平板
+  'lg': 1024px,   //lg 為筆電
+  'xl': 1440px    //xl 為 1440px 桌機基準
+);
+
+
+// ========== Font-style Functions ========== //
+
+// 👇 Sans-serif 字體組（介面、段落、按鈕）
+$font_family_sans: 'Noto Sans TC', 'Inter', Arial, sans-serif;
+
+// 👇 Serif 字體組（正式內容、文章）
+$font_family_serif: 'Merriweather', 'Georgia', serif;
+
+// 👇 預設文字用字體（UI、段落）
+$font_base: $font_family_sans;
+
+// 👇 標題用字體（可與 base 相同，或指定 serif）
+// 如果你想做高級感文章版面，也可以改成 serif
+$font_heading: $font_family_sans;
+
+// 字重
+$font_weight_regular: 300;
+$font_weight_medium: 400;
+$font_weight_bold: 700;
+
+// 字距（根據設計系統）
+$line_height_title: 1.2; // 標題行高
+$line_height_body: 1.5;  // 內文行高
+$line_height_loose: 1.75;  // 寬鬆行高
+
+
+// ========== Font-size Functions ========== //
+// 字級（根據設計系統）
+// 不浮動
+$font-sizes: (
+    xs: 0.75rem,   // 12px
+    sm: 0.875rem,  // 14px
+    md: 1rem,      // 16px
+    lg: 1.125rem,  // 18px
+    xl: 1.25rem,   // 20px
+    2xl: 1.5rem,   // 24px
+    3xl: 2rem,     // 32px
+);

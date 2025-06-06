@@ -1,0 +1,45 @@
+@use "sass:map";
+@use "sass:math";
+@use "sass:meta";
+
+//base-2個
+// 這個混帳東西放後面蓋過我好多東西，快氣死所以放前面
+@use "base/reset";
+@use "base/typography";
+
+//abstracts-3個
+@use "abstracts/variables" as *;
+@use "abstracts/functions" as fn;
+@use "abstracts/mixins" as mixins;
+
+//components_base-5個
+@use "components_base/button";
+@use "components_base/card";
+@use "components_base/chatInputPanel";
+@use "components_base/chatBubble";
+@use "components_base/richTextStyles";
+@use "components_base/imgCarousel";
+@use "components_base/projectDetail";
+
+//layout-4個
+@use "layout/base-layout";
+@use "layout/footer";
+@use "layout/header";
+@use "layout/sidebar";
+
+//pages-1個
+@use "pages/projectList";
+
+//utilities-6個
+@use "utilities/display-utils";
+@use "utilities/flex-utils";
+@use "utilities/gap-utils";
+@use "utilities/grid-utils";
+@use "utilities/spacing-utils";
+@use "utilities/text-utils";
+
+// 檢視用灰線
+// * {
+//     box-sizing: border-box;
+//     outline: 1px solid silver; /* 使用 outline 而非 border */
+// }

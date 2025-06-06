@@ -1,0 +1,34 @@
+<!-- 問題選項顯示 -->
+<div class="chatInputPanel__carousel" id="carousel">
+    <!-- 左鍵 -->
+    <button class="carousel__nav--left" aria-label="Previous suggestions">‹</button>
+
+    <!-- 輪播顯示區域 -->
+    <div class="carousel__container" id="'carouselContainer">
+        <div class="carousel__suggestionGroup" data-step="1" id="suggestionGroup">
+            <div class="carousel__spinner"></div>
+            <div class="carousel__suggestionItem" id="suggestionItem">
+            </div>
+        </div>
+    </div>
+    
+    <!-- 右鍵 -->
+    <button class="carousel__nav--right" aria-label="Next suggestions">›</button>
+</div>
+
+<!-- carousel底部導航 -->
+<div class="chatInputPanel__carousel--dots"></div>
+
+<!-- input輸入欄位 -->
+<div class="chatInputPanel__field">
+    <input type="text" class="chatInputPanel__field--text" placeholder="搜尋關鍵字或輸入「#」瀏覽標籤" />
+        <div class="iconBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 19V5" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 12L12 5L19 12" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>   
+        </div>
+</div>
+
+<!-- 提示文字 -->
+<p class="caption text-neutral-300 text-center">建議透過引導選項互動，以確保對話順暢。</p>

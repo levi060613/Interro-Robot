@@ -1,0 +1,132 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+
+.startButton{
+    @include mixins.flex-center;
+    width: auto;
+    font-size: fn.fluid-type(14, 18);
+    padding: fn.spacing(3) fn.spacing(5);
+    border-radius: fn.border-radius(circle);
+    color: fn.color(neutral, white);
+    background-image: linear-gradient(
+        135deg,
+        #{fn.color(primary, 200)},
+        #{fn.color(primary, 300)}
+    );
+
+    @include mixins.respond(sm){
+        font-size: fn.font-size(md);
+    }
+
+    &:hover{
+        background-image:none;
+        background-color: fn.color(primary, 200);
+    }
+    &:active{
+        background-image:none;
+        background-color: fn.color(primary, 400);
+    }
+}
+
+
+
+.primaryButton--border{
+    font-size: fn.fluid-type(14, 18);        // 16px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.flex-center;
+    flex-direction: row;
+    gap: fn.spacing(2);
+    padding: fn.spacing(2);
+    border-radius: fn.border-radius(xs);
+    border: 1px solid fn.color(primary,200);
+    color: fn.color(primary,300);
+
+    @include mixins.respond(sm){
+        font-size: fn.font-size(sm);
+    }
+
+    &:hover{
+        background-color: fn.color(primary, 50);
+    }
+}
+
+
+.primaryButton--fill{
+    font-size: fn.fluid-type(14, 18);        // 16px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+    background-image: linear-gradient(
+        135deg,
+        #{fn.color(primary, 200)},
+        #{fn.color(primary, 300)}
+    );
+    @include mixins.flex-center;
+    flex-direction: row;
+    gap: fn.spacing(2);
+    padding: fn.spacing(2);
+    border-radius: fn.border-radius(xs);
+    color: fn.color(neutral, white);
+
+    @include mixins.respond(sm){
+        font-size: fn.font-size(sm);
+    }
+    
+    &:hover{
+        background-image:none;
+        background-color: fn.color(primary, 200);
+    }
+}
+
+
+.link-block{
+    display: flex;
+    flex-direction: row;
+    padding: fn.spacing(1);
+    gap:  fn.spacing(1);
+    color: fn.color(text, grey-dark);
+    border-bottom: 1px solid fn.color(neutral, white);
+    .caption {
+        line-height: 1.5;
+    }
+
+    svg{
+        fill: fn.color(primary, 300);
+    }
+    &:hover{
+        color: fn.color(primary, 300);
+        border-bottom: 1px solid fn.color(primary, 300);
+        svg{
+            fill: fn.color(primary, 300);
+        }
+    }
+}
+
+.iconBtn{
+    width: 48px;
+    height: 48px;
+    @include mixins.flex-center;
+    flex-shrink: 0;
+    cursor: pointer;
+    padding: fn.spacing(3);
+    border-radius: fn.border-radius(circle);
+    background-color:fn.color(neutral, white);
+    box-shadow: 0px 0px 12px rgba(fn.color(neutral, black), 0.25);
+    --icon{
+        width: 24px;
+        height: 24px;
+        stroke: fn.color(neutral, black);
+    }
+    &:hover{
+        background-color:fn.color(primary, 50);
+        box-shadow: 0px 0px 16px rgba(fn.color(primary, 400), 0.25);
+    }
+    &:active{
+        background-color:fn.color(primary, 100);
+        box-shadow: 0px 0px 16px rgba(fn.color(primary, 400), 0.25);
+    }
+}

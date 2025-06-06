@@ -1,0 +1,35 @@
+@use "../abstracts/variables" as *;
+
+/* 文字對齊 */
+.text-left {
+    text-align: left;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-right {
+    text-align: right;
+  }
+  
+  /* 文字斷行與截斷 */
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* 文字粗細 */
+  .font-bold {
+    font-weight: bold;
+  }
+  .font-normal {
+    font-weight: normal;
+  }
+
+@each $group, $colors-map in $colors {
+  @each $key, $color in $colors-map {
+    .text-#{$group}-#{"" + $key} {
+      color: $color;
+    }
+  }
+}

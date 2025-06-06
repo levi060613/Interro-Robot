@@ -1,0 +1,186 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+/* ------------------------------- */
+/* 基本樣式設計（統一風格） */
+/* ------------------------------- */
+
+.rich-text {
+  // 額外的容器樣式可以在這裡設定
+  font-family: 'Arial', sans-serif;
+}
+
+/* ------------------------------- */
+/* 程式碼區塊樣式 (code block) */
+/* ------------------------------- */
+
+.rich-text__code-block {
+  background-color: fn.color(neutral, white);
+  padding: fn.spacing(4);
+  border-radius: 8px;
+  font-family: 'Arial', sans-serif, monospace;
+  font-size: 1rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 1rem 0;
+}
+
+/* ------------------------------- */
+/* 引言段落樣式 (quote) */
+/* ------------------------------- */
+
+.rich-text__quote {
+  background-color: fn.color(neutral, white);
+  border-left: 4px solid fn.color(primary,200);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0;
+  color: fn.color(primary,400);
+}
+
+/* ------------------------------- */
+/* 小標題樣式 (heading) */
+/* ------------------------------- */
+// 有個小標題不知道為什麼一直少底線，所以補一下這個暫時漏洞
+
+.rich-text__heading,.rich-textheading {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: fn.color(primary, 400);
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* ------------------------------- */
+/* 重點標題樣式 (highlight-title) */
+/* ------------------------------- */
+
+.rich-text__highlight-title {
+  background-color: #ffeb3b;
+  color: #333;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+/* ------------------------------- */
+/* 清單樣式 (list) */
+/* ------------------------------- */
+
+.rich-text__list {
+  margin: 0.5rem 0;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+.rich-text__list-item,.rich-textlist-item {
+  list-style-type: disc;
+  margin: 0.5rem 0;
+  margin-left: 1rem;
+  font-size: 0.875rem;
+  color: fn.color(neutral, 700);
+  line-height: 1.6;
+ 
+  &:first-child {
+    margin-top: 1rem;
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @include mixins.respond(sm){
+    font-size: 1rem;
+  }
+}
+
+/* ------------------------------- */
+/* 加粗文字樣式 (bold) */
+/* ------------------------------- */
+
+.rich-text__bold,.rich-textbold {
+  font-weight: bold;
+  color: fn.color(primary,300); /* 可以自訂顏色 */
+}
+
+/* ------------------------------- */
+/* 底線文字樣式 (underline) */
+/* ------------------------------- */
+
+.rich-text__underline, .rich-textunderline {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: fn.color(primary,300);
+}
+
+/* 如果需要在多個 <br> 中增加更多樣式或控制間隔，也可以考慮直接調整 <br> 的樣式 */
+.rich-text br {
+  margin-bottom: 0.5rem; /* 這會影響每個 <br> 的垂直間距 */
+}
+
+.rich-text__footnote {
+  font-size: 0.8em;
+  color: fn.color(primary, 300);
+}
+
+/* ------------------------------- */
+/* 作品連結樣式 (work link) */
+/* ------------------------------- */
+
+.rich-text__work-link {
+  color: fn.color(primary, 300);
+  text-decoration: none;
+  border-bottom: 1px dashed fn.color(primary, 300);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: fn.color(primary, 400);
+    border-bottom: 1px solid fn.color(primary, 400);
+  }
+}
+
+/* ------------------------------- */
+/* 行內程式碼樣式 (inline code) */
+/* ------------------------------- */
+
+.rich-text__inline-code {
+  background-color: fn.color(neutral, 100);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  color: fn.color(primary, 500);
+}
+
+/* ------------------------------- */
+/* 斜體文字樣式 (italic) */
+/* ------------------------------- */
+
+.rich-text__italic {
+  font-style: italic;
+  color: fn.color(neutral, 600);
+}
+
+/* ------------------------------- */
+/* 刪除線文字樣式 (strike) */
+/* ------------------------------- */
+
+.rich-text__strike {
+  text-decoration: line-through;
+  color: fn.color(neutral, 400);
+}
+
+/* ------------------------------- */
+/* 高亮文字樣式 (highlight) */
+/* ------------------------------- */
+
+.rich-text__highlight {
+  background-color: fn.color(primary, 100);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+  color: fn.color(primary, 700);
+}

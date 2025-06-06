@@ -1,0 +1,563 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+/* 模態框樣式：顯示專案詳細內容 */
+.project-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); // 半透明背景遮罩
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(4px); // 添加模糊效果
+  -webkit-backdrop-filter: blur(4px); // Safari 支援
+
+  // 顯示時的狀態
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include mixins.respond(md){
+    width: 100vw; // 保持全寬
+    left: 0; // 重置左邊距
+  }
+}
+
+/* 模態框內部內容區塊 */
+.modal-content {
+  background-color: fn.color(neutral, white);
+  border-radius: fn.border-radius(xl);
+  padding: fn.spacing(3);
+  padding-top: fn.spacing(6);
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  width: 100%; // 在手機版時有邊距
+  height: 100%;
+  margin: 0 auto;
+
+  @include mixins.respond(sm){
+    max-height: 90vh; // 限制高度，避免超出視窗
+    width: 768px; // 在 sm 斷點後設定寬度
+  }
+
+  .project-modal.active & {
+    transform: translateY(0);
+  }
+}
+
+/* 關閉按鈕樣式 */
+.modal-close {
+  width: 48px;
+  height: 48px;
+  position: sticky;
+  z-index: 10000;
+  top: 0;
+  left: 95%;
+  background: none;
+  border: none;
+  border-radius: fn.border-radius(circle);
+  background-color: fn.color(neutral, 100);
+  font-size: fn.font-size(xl);
+  cursor: pointer;
+  color: fn.color(neutral, 300);
+  transition: color 0.3s ease;
+
+  &:hover {
+    background-color: fn.color(primary, 100);
+    color: fn.color(primary, 300);
+  }
+}
+
+/* 專案詳細內容區塊，對應到 JS 的 `components` 渲染內容 */
+.project-detail {
+  @include mixins.respond(sm){
+    padding: 0 fn.spacing(4);
+  }
+  /* 標題區塊 */
+  .project-header {
+    margin-top: fn.spacing(4);
+    margin-bottom: fn.spacing(6);
+    display: flex;
+    flex-direction: column;
+    gap: fn.spacing(2);
+
+    h2 {
+      font-size: fn.font-size(xl);
+      color: fn.color(text, black);
+      margin-bottom: fn.spacing(2);
+
+      @include mixins.respond(sm){
+        font-size: fn.font-size(2xl);
+      }
+    }
+
+    .project-subtitle {
+      font-size: fn.font-size(sm);
+      color: fn.color(text, grey-dark);
+      margin-bottom: fn.spacing(2);
+      color: fn.color(primary, 300);
+
+      @include mixins.respond(sm){
+        font-size: fn.font-size(md);
+      }
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: fn.spacing(2);
+      padding: 0 fn.spacing(1);
+
+      .tag {
+        background-color: fn.color(primary, 100);
+        padding: fn.spacing(1) fn.spacing(2);
+        border-radius: fn.border-radius(lg);
+        white-space: nowrap;
+
+        font-size: fn.fluid-type(12, 16);        // 14px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+
+        @include mixins.respond(sm){
+          font-size: fn.font-size(sm);
+        }
+      }
+    }
+  }
+
+  /* 圖片集區塊：Grid 排版 */
+  .image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: fn.spacing(4);
+    margin-bottom: fn.spacing(6);
+
+    .gallery-item {
+      position: relative;
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: fn.border-radius(lg);
+      }
+
+      .image-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: fn.spacing(2);
+        font-size: fn.font-size(sm);
+      }
+    }
+  }
+
+  /* 純文字內容區塊 */
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    gap: fn.spacing(10);
+    margin-bottom: fn.spacing(6);
+    font-size: fn.font-size(md);
+    line-height: 1.6;
+    color: fn.color(text, grey-dark);
+
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      gap: fn.spacing(4);
+
+      @include mixins.respond(md) {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: fn.spacing(6);
+      }
+    }
+
+    .text-content-wrapper {
+      flex: 1;
+      
+      h3 {
+        margin-bottom: fn.spacing(4);
+        color: fn.color(text, black);
+      }
+
+      h4{
+        margin-bottom: fn.spacing(4);
+        color: fn.color(text, black);
+        font-weight: $font_weight_bold;
+      }
+
+      p {
+        white-space: break-spaces;
+        padding: fn.spacing(2) 0;
+        font-size: fn.fluid-type(14, 18);        // 16px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+    
+        @include mixins.respond(sm){
+          font-size: fn.font-size(md);
+        }
+
+        strong{
+          font-weight: $font_weight_bold;
+        }
+
+        h{
+          text-decoration: underline;
+          text-underline-offset: 4px;
+          color: fn.color(primary,300);
+        }
+      }
+
+      // 添加列表样式
+      ul {
+        list-style: none;
+        padding-left: fn.spacing(4);
+        margin: fn.spacing(2) 0;
+
+        li {
+          position: relative;
+          padding-left: fn.spacing(3);
+          margin-bottom: fn.spacing(2);
+          font-size: fn.fluid-type(14, 18);
+          line-height: $line_height_body;
+          color: fn.color(text, grey-dark);
+
+          &::before {
+            content: "•";
+            position: absolute;
+            left: -8px;
+            color: fn.color(neutral, black);
+            font-size: fn.font-size(lg);
+            font-weight: $font_weight_bold;
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          strong{
+            font-weight: $font_weight_bold;
+            color: fn.color(primary,300);
+          }
+  
+          h{
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            color: fn.color(primary,300);
+          }
+
+
+
+        }
+      }
+
+      // 添加引用块样式
+      blockquote {
+        background-color: fn.color(neutral, white);
+        border-left: 4px solid fn.color(primary,200);
+        margin: fn.spacing(4) 0;
+        padding: fn.spacing(4);
+        background-color: fn.color(primary, 50);
+        border-left: 4px solid fn.color(primary, 200);
+        color: fn.color(primary,400);
+        font-size: fn.fluid-type(14, 18);
+        line-height: $line_height_body;
+
+        p {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+
+    .text-image-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: fn.spacing(2);
+      
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: fn.border-radius(lg);
+      }
+
+      .text-image-caption {
+        font-size: fn.font-size(sm);
+        color: fn.color(text, grey);
+        text-align: center;
+      }
+    }
+  }
+
+  /* 嵌入影片區塊 */
+  .video-section {
+    margin-bottom: fn.spacing(6);
+
+    video {
+      width: 100%;
+      border-radius: fn.border-radius(lg);
+    }
+  }
+
+  /* 表格區塊：支援水平卷軸與 Bordered Table 樣式 */
+  .table-section{
+      margin-bottom: fn.spacing(6);
+      overflow-x: auto;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        display: block;
+
+        thead {
+            display: none; // 隱藏表頭
+          }
+        tbody {
+        display: block;
+        }
+        
+        tr {
+        display: block;
+        margin-bottom: fn.spacing(4);
+        border: 1px solid fn.color(neutral, 200);
+        border-radius: fn.border-radius(lg);
+        padding: fn.spacing(3);
+        }
+        
+        td {
+        display: block;
+        padding: fn.spacing(2) 0;
+        border: none;
+        text-align: left;
+        font-size: fn.fluid-type(14, 18);        // 16px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+    
+        @include mixins.respond(sm){
+          font-size: fn.font-size(md);
+      }
+        
+        // 在每個單元格前添加標題
+        &::before {
+            font-size: fn.fluid-type(12, 14);        // 12px +-2px
+            font-weight: $font_weight_bold;
+            line-height: $line_height_title;
+        
+            content: attr(data-label);
+            color: fn.color(primary, 300);
+            display: block;
+            margin-bottom: fn.spacing(1);
+        
+            @include mixins.respond(sm){
+            font-size: fn.font-size(sm);
+            }
+          }
+        }
+
+        @include mixins.respond(sm){
+            thead {
+              display: none; // 隱藏表頭
+            }
+            
+            tbody {
+              display: block;
+            }
+            
+            tr {
+              display: flex;
+              margin-bottom: fn.spacing(4);
+              border: 1px solid fn.color(neutral, 200);
+              border-radius: fn.border-radius(lg);
+              padding: fn.spacing(3);
+              gap: fn.spacing(4);
+            }
+            
+            td {
+              flex: 1;
+              padding: fn.spacing(2);
+              border: none;
+              text-align: left;
+              
+              // 在每個單元格前添加標題
+              &::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: fn.color(primary, 300);
+                display: block;
+                margin-bottom: fn.spacing(1);
+              }
+            }
+          }
+    }
+  }
+  /* 輪播區塊 */
+  .carousel {
+    margin-bottom: fn.spacing(6);
+    position: relative;
+
+    .carousel-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: fn.border-radius(lg);
+    }
+
+    .carousel-slide {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+
+      &.active {
+        position: relative;
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      &.prev {
+        transform: translateX(-100%);
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .carousel-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: fn.spacing(2);
+        font-size: fn.font-size(sm);
+      }
+    }
+
+    // 導航按鈕
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 fn.spacing(2);
+      pointer-events: none;
+
+      button {
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s;
+        pointer-events: auto;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.8);
+        }
+
+        &.prev {
+          margin-right: auto;
+        }
+
+        &.next {
+          margin-left: auto;
+        }
+      }
+    }
+
+    // 底部指示器
+    .carousel-indicators {
+      position: absolute;
+      bottom: fn.spacing(2);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: fn.spacing(1);
+      z-index: 1;
+
+      .indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &.active {
+          background: white;
+        }
+      }
+    }
+  }
+
+  &.coming-soon {
+    text-align: center;
+    padding: fn.spacing(6) 0;
+
+    .project-header {
+      margin-bottom: fn.spacing(8);
+
+      .project-subtitle {
+        color: fn.color(primary, 200);
+      }
+
+      .project-tags {
+        justify-content: center;
+        
+        .tag {
+          background-color: fn.color(primary, 50);
+          color: fn.color(primary, 200);
+        }
+      }
+    }
+
+    .text-content {
+      max-width: 600px;
+      margin: 0 auto;
+      
+      h3 {
+        color: fn.color(primary, 300);
+        margin-bottom: fn.spacing(4);
+      }
+      
+      p {
+        color: fn.color(text, grey-dark);
+        margin-bottom: fn.spacing(2);
+        
+        &:last-child {
+          color: fn.color(primary, 200);
+          font-size: fn.font-size(sm);
+        }
+      }
+    }
+  }
+}

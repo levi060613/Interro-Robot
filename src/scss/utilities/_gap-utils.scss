@@ -1,0 +1,15 @@
+@use "../abstracts/variables" as *;
+
+@each $key, $value in $spacings {
+  .g-#{$key} {
+    gap: $value;
+  }
+
+  .gx-#{$key} {
+    column-gap: $value;
+  }
+
+  .gy-#{$key} {
+    row-gap: $value;
+  }
+}

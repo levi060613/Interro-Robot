@@ -1,0 +1,152 @@
+/* --------------------------------------------------
+ * Reset CSS - Safe for Design System
+ * 不覆蓋自定義字型、字重設定
+ * -------------------------------------------------- */
+
+/* Box-sizing：讓 padding/border 不會影響元素大小 */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 基礎結構 */
+  html, body {
+    height: 100%;
+  }
+  
+  /* 設定字體基準尺寸（配合 rem） */
+  html {
+    // font-size: 16px; // 可根據設計系統調整
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 不設定 font-family，避免覆蓋你的自定義字體 */
+  
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 影像與多媒體統一處理 */
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+  
+  /* 移除列表樣式 */
+  ul, ol {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* 移除連結底線與預設顏色 */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* 表單元素統一繼承字型 */
+  input, button, textarea, select {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
+    border: none;
+  }
+    
+  /* 移除按鈕預設樣式 */
+  button {
+    cursor: pointer;
+  }
+  
+  /* 表格重置 */
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  /* 標題重置 */
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: 0;
+  }
+  
+  
+  /* 段落重置 */
+  p {
+    margin: 0;
+  }
+  
+  /* 強調、斜體、刪除等樣式重置 */
+  strong, b {
+    font-weight: inherit;
+  }
+  em, i {
+    font-style: normal;
+  }
+  del, s, u, ins {
+    text-decoration: none;
+  }
+  mark {
+    background: none;
+  }
+  
+  /* 引用與程式碼排版 */
+  blockquote, q {
+    margin: 0;
+  }
+  pre, code, kbd, samp {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  
+  /* 移除小型字體限制 */
+  small {
+    font-size: inherit;
+  }
+  
+  /* 上標、下標修正 */
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  
+  /* 表單與細節類元素 */
+  fieldset, legend, progress {
+    all: unset;
+  }
+  details {
+    display: block;
+  }
+  summary {
+    display: list-item;
+  }
+  
+  /* 水平線樣式 */
+  hr {
+    border: none;
+    border-top: 1px solid;
+    margin: 0;
+  }
+  
+  /* 文字選取樣式（可客製） */
+  ::selection {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  

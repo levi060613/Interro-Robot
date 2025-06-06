@@ -1,0 +1,169 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as mixins;
+@use "../abstracts/functions" as fn;
+
+// 作品頁面樣式
+.projectListContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: fn.spacing(4) fn.spacing(4) 0 fn.spacing(4);
+  overflow-y: scroll;
+
+  .enText{
+    margin: fn.spacing(1) 0;
+    color: fn.color(primary, 300);
+    font-size: fn.fluid-type(12, 16);        // 14px +-2px
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+
+    @include mixins.respond(sm){
+      font-size: fn.font-size(sm);
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  padding: fn.spacing(6) 0;
+  position: relative;
+  overflow: visible;
+
+  // 时间轴中线
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8px;
+    width: 2px;
+    height: 100%;
+    background: #CCD1D9;
+    z-index: 1;
+  }
+}
+
+.timeline-block {
+  width: 100%;
+  position: relative;
+  margin-bottom: fn.spacing(8);
+  padding-left: fn.spacing(7);
+
+  // 时间点标记
+  .marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #F5F7FA;
+    background: #4FC1E9;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    z-index: 2;
+  }
+
+  // 内容区域
+  .timeline-content {
+    display: flex;
+    flex-direction: column;
+    padding: fn.spacing(4) fn.spacing(5);
+    background-color: fn.color(neutral,white);
+    border-radius: fn.border-radius(xl);
+
+    h6{
+      color:fn.color(neutral, 200);
+      margin-bottom: fn.spacing(1);
+    }
+    h4{
+      padding-bottom: fn.spacing(4);
+    }
+    p.md{
+      color:fn.color(primary, 300);
+      padding-bottom: fn.spacing(1);
+    }
+
+    p.label{
+      color: fn.color(neutral, 300);
+      padding-bottom: fn.spacing(4);
+    }
+
+    .project-tags{
+      display: flex;
+      flex-wrap: nowrap;
+      column-gap: fn.spacing(2);
+      row-gap: fn.spacing(3);
+      padding: fn.spacing(1) 0;
+      margin-bottom: fn.spacing(4);
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+      }
+
+      .tag{
+        background-color: fn.color(primary, 100);
+        padding: fn.spacing(1) fn.spacing(2);
+        border-radius: fn.border-radius(lg);
+        white-space: nowrap;
+
+        font-size: fn.fluid-type(12, 16);        // 14px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+      }
+    }
+
+    &:hover{
+      box-shadow: 0px 0px 24px rgba(172, 135, 254, 0.4);
+      transition: box-shadow 0.3s ease-in-out;
+    }
+  }
+}
+
+
+// 桌面版样式
+@include mixins.respond(sm) {
+  .container {
+    width: 100%;
+    max-width: 1024px;
+
+    &::before {
+      left: 50%;
+      margin-left: -1px;
+    }
+  }
+
+  .timeline-block {
+    width: calc(50% + 8px);
+    padding-left: 0;
+    margin-bottom: -7rem;
+
+    &:nth-child(odd) {
+      float: left;
+      direction: rtl;
+
+      .timeline-content {
+        direction: ltr;
+        margin-right: 24px;
+      }
+    }
+
+    &:nth-child(even) {
+      float: right;
+      margin-left: 24px;
+    }
+
+    .marker {
+      position: relative;
+      left: auto;
+    }
+
+    .timeline-content {
+      margin-left: 24px;
+    }
+  }
+}

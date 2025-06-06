@@ -1,0 +1,29 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as mixins;
+@use "../abstracts/functions" as fn;
+
+header{
+    padding-top: fn.spacing(6);
+    padding-bottom: fn.spacing(4);
+    width: 100%;
+    display: flex;
+    flex-shrink: 0;
+    @include mixins.flex-center;
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+    display: inline-block;
+  
+    &:hover {
+      transform: scale(1.05);
+    }
+  
+    h1 {
+      margin: 0;
+      cursor: pointer;
+    }
+  }

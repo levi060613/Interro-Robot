@@ -1,0 +1,56 @@
+@use "sass:map";
+@use "sass:math";
+@use "sass:meta";
+@use "../abstracts/variables" as *;
+
+// ========== Helper Functions ========== //
+/*
+ * 顏色取用函式：fn.color($group, $key)
+ * color變數有兩層巢狀結構，所以要用兩次map-get來取得顏色，其餘目前一層即可。
+ */
+@function color($group, $key) {
+  @return map.get(map.get($colors, $group), $key);
+}
+
+/**
+ * 字型取用函式：fn.font-size($key)
+ */
+@function font-size($key) {
+  @return map.get($font-sizes, $key);
+}
+
+/**
+ * 圓角取用函式：fn.border-radius($key)
+ */
+ @function border-radius($key) {
+  @return map.get($border-radius, $key);
+}
+
+/**
+ * 間距取用函式：fn.spacing($key)
+ */
+@function spacing($key) {
+  @return map.get($spacings, $key);
+}
+
+
+// ========== 單位轉換工具 ========== //
+@function rem($px) {
+    // @return #{$px / 16}rem;
+    @return #{math.div($px, 16)}rem;
+  }
+  
+// ========== 響應式字型函式 ========== //
+@function fluid-type($min-px, $max-px, $min-vw: 375, $max-vw: 1440) {
+// $slope: ($max-px - $min-px) / ($max-vw - $min-vw) * 100;
+  $slope: math.div($max-px - $min-px, $max-vw - $min-vw) * 100;
+// $base: $min-px - ($slope * $min-vw / 100);
+$base: $min-px - math.div($slope * $min-vw, 100);
+
+
+@return clamp(
+    #{rem($min-px)},
+    #{$base}px + #{$slope}vw,
+    #{rem($max-px)}
+);
+}

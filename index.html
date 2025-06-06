@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+      <meta charset="UTF-8">
+      <title>Levi's Interro</title>
+
+      <!-- SEO -->
+      <meta name="description" content="Interro — 一個模擬面試的互動式網站，點選選項探索我的經歷與技能。">
+      <meta name="author" content="Levi">
+
+      <!-- 防止蘋果裝置強制放大文字 -->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!-- 預設圖標設置 -->
+      <link rel="icon" href="assets/images/icons/interro-logo.svg" type="image/x-icon" />
+
+      <!-- 字型引入設置 -->
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+
+      <!-- Apple Touch Icon -->
+      <link rel="apple-touch-icon" href="assets/images/icons/interro-logo.svg" />
+
+      <!-- Open Graph 設定（社交媒體分享） -->
+      <meta property="og:title" content="Levi's Interro">
+      <meta property="og:description" content="一個模擬面試的互動履歷網站，讓您一步步了解我的故事。">
+      <meta property="og:image" content="assets/images/imgs/Interro-mockup_1200*630.png">
+      <meta property="og:type" content="website">
+      <!-- <meta property="og:url" content="待更新連結">             之後上架完成再來更新  -->
+
+      <!-- 網站的樣式 -->
+      <link rel="stylesheet" href="style/style.css">
+  </head>
+  <body>
+    <div class="toggle-btn" id="toggle-btn">
+       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H21" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 6H21" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 18H21" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <aside id="sidebar-container"><div class="sidebar" id="sidebar"></div></aside>
+    <div class="mainContainer">
+      <header>
+        <a href="/" class="logo-link">
+            <h1>Interro</h1>
+        </a>
+      </header>
+      <div class="mainContent" id="mainContent">
+        <!-- 動態插入SPA內容 -->
+      </div>  
+    </div>
+    <div id="app"></div>
+    <script type="module" src="src/main.js"></script>
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+  </body>
+</html>

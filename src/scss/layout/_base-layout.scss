@@ -1,0 +1,193 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as mixins;
+@use "../abstracts/functions" as fn;
+
+body {
+  font-family: 'Noto Sans TC', 'Inter', Arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  background-image: url('/src/assets/images/bgc-1920_1080_@1x.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+// 主要版型
+
+.mainContainer{
+    @include mixins.flex-center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    transition: margin-left 0.3s ease;
+
+    // 預設是 Mobile（無媒體查詢）
+    margin-left: 0;
+    &.collapsed {
+        margin-left: 0;
+    }
+
+    // md 以上覆蓋為桌面樣式
+    @include mixins.respond(md) {
+        margin-left: 280px;
+        &.collapsed {
+            margin-left: 0;
+        }
+    }
+}
+
+.mainContent{
+    width: 100%;
+    height: 100%;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+
+// 首頁樣式：homePageContent >> imgBlock + infoBlock
+
+.homePageContent{
+    @include mixins.flex-center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: fn.spacing(2);
+    padding-bottom: fn.spacing(2);
+}
+
+.imgBlock{
+    @include mixins.flex-center;
+    flex-direction: column;
+    gap: fn.spacing(3);
+    padding: fn.spacing(4) fn.spacing(0) fn.spacing(1)fn.spacing(0);
+    flex:1;
+    width: 100%;
+    height: 100%;
+
+    @include mixins.respond(md){
+        max-width: 768px;
+    }
+}
+
+.infoBlock{
+    width: 100%;
+    display:flex;
+    flex-direction: column;
+    padding: fn.spacing(4);
+    gap: fn.spacing(4);
+    text-align: center;
+
+    .info__title{
+        color: fn.color(text, black);
+        font-size: fn.fluid-type(26, 30);        // 32px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_title;
+    
+        word-break: break-word;
+        overflow-wrap: break-word;
+
+        @include mixins.respond(sm){
+          font-size: fn.font-size(3xl);
+      }
+    }
+
+    .info__subtitle{
+        color: fn.color(text, black);
+        font-size: fn.fluid-type(16, 20);        // 18px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+
+        @include mixins.respond(sm){
+            font-size: fn.font-size(lg);
+        }
+
+        b{
+            color: fn.color(primary, 300);
+            font-weight: $font_weight_bold;
+
+            text-decoration: underline;
+            text-decoration-color: fn.color(neutral, white);
+            text-underline-offset: -8px;
+            text-decoration-thickness: 12px;
+        }
+    }
+
+    .info__introText{
+        color: fn.color(text, black);
+        font-size: fn.fluid-type(14, 18);        // 16px +-2px
+        font-weight: $font_weight_medium;
+        line-height: $line_height_body;
+
+        b{
+            color: fn.color(primary, 300);
+            font-weight: $font_weight_bold;
+        }
+
+        h{
+            color: fn.color(primary, 300);
+            border-bottom: 1px solid fn.color(primary,200);
+        }
+    }
+
+
+
+    .spacer-line{
+        border: 1px solid rgba(172, 135, 254, 0.4);
+        width: 30%;
+        margin: fn.spacing(2);
+        align-self: center;
+
+    }
+
+    @include mixins.respond(sm){
+        max-width: 768px;
+
+
+        .spacer-line{
+            margin: fn.spacing(4);
+        }
+    }
+
+}
+
+
+// 聊天頁面樣式
+
+.chatRoomContent{
+    @include mixins.flex-center;
+    width: 100%;
+    height: 100%;
+    padding: fn.spacing(0) fn.spacing(4) fn.spacing(2) fn.spacing(4);
+    flex-direction: column;
+    flex: 1;
+    background-image: radial-gradient(circle,  rgba(255, 255, 255, 1),transparent );
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.chatWindow{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    // height: 100%;
+    height: auto;
+    overflow-y: auto;
+    flex-direction: column;
+
+    padding-right: 16px;   // 預留滾動條空間
+    margin-right: -32px;   // 把空間推回去，不讓內容被擠
+  
+    @include mixins.respond(md){
+        max-width: 768px;
+    }
+}
+

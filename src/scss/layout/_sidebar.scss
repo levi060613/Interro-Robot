@@ -1,0 +1,164 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+
+
+.sidebar{
+    max-width: 280px;
+    width: auto;
+    height: auto;
+    margin: fn.spacing(4) fn.spacing(0);
+    border-radius: fn.border-radius(xl);
+    background-color: fn.color(neutral, white);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: fixed; // 讓它浮在左側，不佔版面
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    overflow: hidden;
+
+    // 預設是 Mobile（無媒體查詢）
+    transform: translateX(-100%);
+    &.collapsed {
+        left: fn.spacing(4);
+        transform: translateX(0);
+    }
+
+    // md 以上覆蓋為桌面樣式
+    @include mixins.respond(md) {
+        left: fn.spacing(4);
+        transform: translateX(0);
+        &.collapsed {
+            left: fn.spacing(0);
+            transform: translateX(-100%);
+        }
+    }
+
+
+    &--top{
+        height: 80px;
+        width: 100%;
+    }
+
+    &--content{
+        height: 100%;
+        width: 100%;
+        display: flex;
+        padding: fn.spacing(2) fn.spacing(6);
+        gap: fn.spacing(7);
+        flex-direction: column;
+        flex:1;
+        overflow-y: auto;
+
+        .content--list {
+            display: flex;
+            flex-direction: column;
+      
+            li {
+              display: block;
+              border-radius: fn.border-radius(xs);
+            }
+      
+            a {
+              line-height: 150%;
+              padding: fn.spacing(3);
+              display: block;
+              border-radius: fn.border-radius(xs);
+              width: 100%;
+              font-size: fn.fluid-type(14, 18);
+
+              @include mixins.respond(sm){
+                  font-size: fn.font-size(sm);
+              }
+      
+              &:hover {
+                background-color: fn.color(primary, 50);
+              }
+              
+              &:active,
+              &.active {
+                background-color: fn.color(primary, 100)
+              }
+            }
+        }
+    }
+
+
+    &--contactInfo{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: fn.spacing(6);
+        gap: fn.spacing(6);
+        border-top: 1px solid fn.color(neutral, 100);
+
+        .box-a {
+            order: 2; // A 顯示在後
+
+            a{
+                width: 100%;
+
+            button{
+                width: 100%;
+            }
+            }
+          }
+          
+          .box-b {
+            order: 1; // B 顯示在前
+          }
+    }
+}
+
+// === Overlay for mobile ===
+.sidebar-overlay {
+    display: none;
+    background-color: rgba(185, 185, 185, 0.4); // 半透明白
+    backdrop-filter: blur(20px);  
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+
+    &.is-visible {
+        display: block;
+    }
+    @include mixins.respond(md) {
+        display: none;
+        &.is-visible {
+            display: none;
+        }
+    }
+}
+
+
+.toggle-btn{
+    position: fixed;
+    @include mixins.flex-center;
+    cursor: pointer;
+    padding: fn.spacing(3);
+    z-index: 1000;
+    top: fn.spacing(7);
+    left: fn.spacing(7);
+    border-radius: fn.border-radius(circle);
+    background-color:fn.color(neutral, white);
+    box-shadow: 0px 0px 12px rgba(fn.color(neutral, black), 0.25);
+    --icon{
+        width: 24px;
+        height: 24px;
+        stroke: fn.color(neutral, black);
+    }
+    &:hover{
+        background-color:fn.color(primary, 50);
+        box-shadow: 0px 0px 16px rgba(fn.color(primary, 400), 0.25);
+    }
+    &:active{
+        background-color:fn.color(primary, 100);
+        box-shadow: 0px 0px 16px rgba(fn.color(primary, 400), 0.25);
+    }
+}
