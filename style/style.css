@@ -425,6 +425,7 @@ p.caption {
   position: relative;
   height: 100px;
   width: 100%;
+  padding: 0px 1rem;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -438,20 +439,29 @@ p.caption {
   flex-direction: row;
   padding: 0.5rem 1rem;
   gap: 0.5rem;
-  border-radius: 999px;
-  background-color: #ffffff;
 }
 .chatInputPanel__field--text {
   width: 100%;
-}
-.chatInputPanel__field:hover {
-  box-shadow: 0px 0px 12px rgba(83, 24, 154, 0.25);
 }
 @media (min-width: 768px) {
   .chatInputPanel {
     max-width: 768px;
     margin-bottom: 1rem;
   }
+}
+
+.chatInputPanel__field--button {
+  background-color: #ffffff;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  color: #1e1e1e;
+  background-color: #ffffff;
+}
+.chatInputPanel__field--button:hover {
+  box-shadow: 0px 0px 12px rgba(83, 24, 154, 0.25);
 }
 
 .chatInputPanel__carousel {
@@ -1597,7 +1607,7 @@ body {
   font-family: "Noto Sans TC", "Inter", Arial, sans-serif;
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   background-image: url("/src/assets/images/bgc-1920_1080_@1x.jpg");
   background-size: cover;

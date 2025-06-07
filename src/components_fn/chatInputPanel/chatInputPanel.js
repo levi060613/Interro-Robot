@@ -27,7 +27,7 @@ import { fetchProjectList } from '../../utils/fetchData.js';
 // ========== 主要初始化函数 ==========
 export default async function initChatInputPanel(initialOptions) {
   // 获取必要的DOM元素
-  const inputEl = document.querySelector('.chatInputPanel__field--text'); // 输入框
+  const suggestionButton = document.getElementById('suggestionButton'); // 替换 input 为按钮
   const carouselEl = document.querySelector('.chatInputPanel__carousel'); // 轮播容器
   const dotsEl = document.querySelector('.chatInputPanel__carousel--dots'); // 轮播指示点
   const chatWindow = document.getElementById('chatWindow'); // 聊天窗口
@@ -36,6 +36,7 @@ export default async function initChatInputPanel(initialOptions) {
   let currentStep = 1; // 当前显示的步骤
   let groupsData = []; // 存储每个步骤的建议数据
   let extraMessageShown = new Set(); // 记录已显示的额外消息
+  let isCarouselVisible = false; // 新增：追踪轮播显示状态
 
   // ========== 状态恢复逻辑 ==========
   // 从sessionStorage中恢复之前的状态
@@ -106,32 +107,63 @@ export default async function initChatInputPanel(initialOptions) {
   carouselEl.style.display = 'none';
   dotsEl.style.display = 'none';
 
-  // ========== 输入框焦点事件处理 ==========
-  // 处理input聚焦与失焦事件，控制轮播显示/隐藏
-  inputEl.addEventListener('focus', () => {
-    carouselEl.style.display = 'flex'; // focus时显示
-    dotsEl.style.display = 'flex';
-    scrollToStep(currentStep); // 聚焦时滚动到当前步骤
+  // ========== 按钮点击事件处理 ==========
+  suggestionButton.addEventListener('click', () => {
+    isCarouselVisible = !isCarouselVisible;
+    carouselEl.style.display = isCarouselVisible ? 'flex' : 'none';
+    dotsEl.style.display = isCarouselVisible ? 'flex' : 'none';
+    
+    if (isCarouselVisible) {
+      scrollToStep(currentStep);
+    }
   });
 
-  // 使用setTimeout延迟blur处理，避免点击suggestionItem时立即隐藏
-  inputEl.addEventListener('blur', () => {
-    setTimeout(() => {
-      // 检查activeElement是否在input或carousel内部，如果不是才隐藏
-      if (!carouselEl.contains(document.activeElement) && document.activeElement !== inputEl) {
-        carouselEl.style.display = 'none'; // blur且不在carousel内部时隐藏
-        dotsEl.style.display = 'none';
-      }
-    }, 100); // 延迟100ms
+  // 点击轮播外部时关闭轮播
+  document.addEventListener('click', (e) => {
+    if (isCarouselVisible && 
+        !carouselEl.contains(e.target) && 
+        e.target !== suggestionButton) {
+      isCarouselVisible = false;
+      carouselEl.style.display = 'none';
+      dotsEl.style.display = 'none';
+    }
   });
 
-  // 让点击carousel内部元素时input不会失去焦点（增强用户体验）
+  // 让点击carousel内部元素时不会关闭轮播
   carouselEl.addEventListener('mousedown', (e) => {
-    e.preventDefault(); // 阻止默认行为，防止input失去焦点
+    e.preventDefault();
+    e.stopPropagation();
   });
 
   // ========== 建议选项点击处理 ==========
   carouselEl.addEventListener('click', async (e) => {
+    // 检查是否点击了 tag
+    const tag = e.target.closest('.carousel__tag');
+    if (tag) {
+      const questionsId = JSON.parse(tag.dataset.questionsId || '[]');
+      const tagName = tag.querySelector('p').textContent;
+      
+      // 获取该标签相关的问题
+      let questions;
+      try {
+        questions = await fetchQuestionsByIds(questionsId);
+      } catch (error) {
+        const container = tag.closest('.carousel__suggestionGroup');
+        if (container) {
+          container.innerHTML = '<p class="text-neutral-black">显示问题时发生错误，请稍后再试。</p>';
+        }
+        return;
+      }
+      
+      // 显示相关问题
+      const container = tag.closest('.carousel__suggestionGroup');
+      if (container) {
+        showTagQuestions(container, questions, tagName);
+      }
+      return;
+    }
+
+    // 检查是否点击了 suggestionItem
     const item = e.target.closest('.carousel__suggestionItem');
     if (!item) return;
 
@@ -153,8 +185,10 @@ export default async function initChatInputPanel(initialOptions) {
     // 保存状态到sessionStorage
     saveChatInputState();
 
-    // 让input失去焦点
-    inputEl.blur();
+    // 重置輪播狀態並隱藏輪播
+    isCarouselVisible = false;
+    carouselEl.style.display = 'none';
+    dotsEl.style.display = 'none';
 
     const text = item.textContent.trim();
     const reply = item.dataset.reply;
@@ -178,10 +212,6 @@ export default async function initChatInputPanel(initialOptions) {
       console.log('检测到特定问题ID:', item.dataset.id);
       handleProjectButtonClick(item);
     }
-
-    // 隐藏轮播和指示点
-    carouselEl.style.display = 'none';
-    dotsEl.style.display = 'none';
 
     // ========== 处理下一层问题 ==========
     if (questionsId.length > 0) {
@@ -256,7 +286,7 @@ export default async function initChatInputPanel(initialOptions) {
   });
 
   // ========== 输入监听和搜索处理 ==========
-  attachInputListeners(inputEl, {
+  attachInputListeners(suggestionButton, {
     onSearch: async (keyword) => {
       if (keyword === '#' || keyword === '＃') {
         // 创建一个临时的搜索结果组
