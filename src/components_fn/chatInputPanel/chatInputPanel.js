@@ -140,6 +140,9 @@ export default async function initChatInputPanel(initialOptions) {
     // 检查是否点击了 tag
     const tag = e.target.closest('.carousel__tag');
     if (tag) {
+      e.preventDefault();
+      e.stopPropagation();
+      
       const questionsId = JSON.parse(tag.dataset.questionsId || '[]');
       const tagName = tag.querySelector('p').textContent;
       
