@@ -6,6 +6,16 @@ import { routes } from "./router/index.js";          // 匯入 routes 函式
 
 window.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;
+  // 如果不是首頁，重整時自動導回首頁，並加上 console.log
+  const isHome = pathname === "/" || pathname === "/index.html";
+  if (!isHome) {
+    console.log("[重整偵測] 非首頁路徑，將導回首頁。當前路徑:", pathname);
+    history.replaceState({}, "", "/");
+    location.reload(); // 重新載入首頁
+    return; // 阻止後續執行
+  } else {
+    console.log("[重整偵測] 首頁路徑，正常載入。當前路徑:", pathname);
+  }
   router(pathname);
 });
 
