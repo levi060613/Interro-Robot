@@ -138,10 +138,10 @@ function handleResponsiveHomeTitle() {
   const isMobile = window.innerWidth <= 576;
   if (isMobile) {
     title.innerHTML = `嗨！我是Levi，<br>一名 UIUX 設計師。`;
-    subtitle.innerHTML = `"我在意的不只是好看的UI，<br>還要 <b> 好懂、好用、好傳達 </b>。"`;
+    subtitle.innerHTML = `「想快速知道我是不是你需要的設計師嗎？<br><b>那直接與我來場面試吧！</b> 」`;
   } else {
     title.innerHTML = `嗨！我是Levi，一名 UIUX 設計師。`;
-    subtitle.innerHTML = `"我在意的不只是好看的UI，還要 <b> 好懂、好用、好傳達 </b>。"`;
+    subtitle.innerHTML = `「想快速知道我是不是你需要的設計師嗎？<b>那直接與我來場面試吧！</b> 」`;
   }
 }
   
