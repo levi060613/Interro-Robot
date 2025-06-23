@@ -2,7 +2,7 @@ import "./components_fn/sidebar/sidebar.js"
 import "./components_fn/chatInputPanel/chatInputPanel.js"
 import router from "./router/index.js";          // 匯入 router 函式（負責根據 pathname 載入對應頁面）
 import { routes } from "./router/index.js";          // 匯入 routes 函式
-// import tempData from '.../src/utils/tempData.js';   // 匯入問題資料
+import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;
@@ -15,8 +15,11 @@ window.addEventListener("DOMContentLoaded", () => {
     return; // 阻止後續執行
   } else {
     console.log("[重整偵測] 首頁路徑，正常載入。當前路徑:", pathname);
+    router(pathname);
+    bindImgCarousel();
+    handleResponsiveHomeTitle();
+    window.addEventListener('resize', handleResponsiveHomeTitle);
   }
-  router(pathname);
 });
 
 /**
@@ -126,4 +129,19 @@ async function loadSidebar() {
 }
   
 loadSidebar();
+  
+function handleResponsiveHomeTitle() {
+  const title = document.getElementById("responsiveTitle");
+  const subtitle = document.getElementById("responsiveSubtitle");
+  if (!title || !subtitle) return;
+
+  const isMobile = window.innerWidth <= 576;
+  if (isMobile) {
+    title.innerHTML = `嗨！我是Levi，<br>一名 UIUX 設計師。`;
+    subtitle.innerHTML = `"我在意的不只是好看的UI，<br>還要 <b> 好懂、好用、好傳達 </b>。"`;
+  } else {
+    title.innerHTML = `嗨！我是Levi，一名 UIUX 設計師。`;
+    subtitle.innerHTML = `"我在意的不只是好看的UI，還要 <b> 好懂、好用、好傳達 </b>。"`;
+  }
+}
   
