@@ -931,9 +931,12 @@ p.caption {
 /* 底線文字樣式 (underline) */
 /* ------------------------------- */
 .rich-text__underline, .rich-textunderline {
+  color: #53189a;
+  font-weight: 400;
   text-decoration: underline;
-  text-underline-offset: 4px;
-  color: #7721e0;
+  text-decoration-color: #fff1a0;
+  text-underline-offset: -8px;
+  text-decoration-thickness: 12px;
 }
 
 /* 如果需要在多個 <br> 中增加更多樣式或控制間隔，也可以考慮直接調整 <br> 的樣式 */
@@ -1023,6 +1026,8 @@ p.caption {
   border-radius: 16px;
   text-align: justify;
   transition: all 0.3s ease-out;
+  background-size: cover;
+  background-position: center center;
 }
 .card h4 {
   font-size: 0.875rem;
@@ -1725,10 +1730,13 @@ body {
 .infoBlock .info__introText b {
   color: #7721e0;
   font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: #ffffff;
+  text-underline-offset: -8px;
+  text-decoration-thickness: 12px;
 }
 .infoBlock .info__introText h {
   color: #7721e0;
-  border-bottom: 1px solid #ac87fe;
 }
 .infoBlock .spacer-line {
   border: 1px solid rgba(172, 135, 254, 0.4);

@@ -36,6 +36,8 @@
   text-align: justify;
   transition: all 0.3s ease-out;
 
+  background-size: cover;
+  background-position: center center;
 
   h4 {
     font-size: fn.font-size(sm);
