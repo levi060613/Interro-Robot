@@ -5,6 +5,27 @@ import { components } from './components.js';
 
 // 定義不同專案頁面所需的模板
 export const templates = {
+  // 通用專案模板
+  "default-project": {
+    components: [
+      "header",
+      "carousel",
+      "table",
+      "text-content"
+    ],
+    render: function(data) {
+      const container = document.createElement('div');
+      container.className = 'project-detail default-project';
+      this.components.forEach(componentType => {
+        const component = components[componentType];
+        if (component && component.render) {
+          container.appendChild(component.render(data));
+        }
+      });
+      return container;
+    }
+  },
+
   // 「interro-project」專案的頁面模板設定
   "interro-project": {
     // 指定此模板將會依序使用哪些組件（來自 components 模組）
@@ -64,7 +85,7 @@ export const templates = {
   "coming-soon": {
     components: [
       "header",         // 頁面標題與摘要
-      "carousel",       // 圖片輪播
+      "carousel"        // 圖片輪播
     ],
 
     render: function(data) {

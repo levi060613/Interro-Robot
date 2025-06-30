@@ -134,3 +134,13 @@ import {
     }
   }
   
+  export async function fetchProjectDetailFromFirebase(documentId) {
+    const docRef = doc(db, "projectDetail", documentId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      throw new Error("找不到該專案內容");
+    }
+  }
+  

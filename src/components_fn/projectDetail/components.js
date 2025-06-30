@@ -6,29 +6,39 @@ export const components = {
       const header = document.createElement('div');
       header.className = 'project-header';
 
+      // 檢查 basicInfo 是否存在
+      if (!data.basicInfo) {
+        console.warn('[DEBUG][header] basicInfo is missing:', data);
+        return header;
+      }
+
       // 專案標題
-      const title = document.createElement('h2');
-      title.textContent = data.basicInfo.title;
+      if (data.basicInfo.title) {
+        const title = document.createElement('h2');
+        title.textContent = data.basicInfo.title;
+        header.appendChild(title);
+      }
 
       // 專案副標題（如時間、角色、專案簡述）
-      const subtitle = document.createElement('p');
-      subtitle.textContent = data.basicInfo.subtitle;
-      subtitle.className = 'project-subtitle';
+      if (data.basicInfo.subtitle) {
+        const subtitle = document.createElement('p');
+        subtitle.textContent = data.basicInfo.subtitle;
+        subtitle.className = 'project-subtitle';
+        header.appendChild(subtitle);
+      }
 
       // 標籤區塊（如 UX、設計系統、Figma 等）
-      const tags = document.createElement('div');
-      tags.className = 'project-tags';
-      data.basicInfo.tags.forEach(tag => {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'tag';
-        tagElement.textContent = tag;
-        tags.appendChild(tagElement);
-      });
-
-      // 組合 DOM 結構
-      header.appendChild(title);
-      header.appendChild(subtitle);
-      header.appendChild(tags);
+      if (data.basicInfo.tags && Array.isArray(data.basicInfo.tags)) {
+        const tags = document.createElement('div');
+        tags.className = 'project-tags';
+        data.basicInfo.tags.forEach(tag => {
+          const tagElement = document.createElement('span');
+          tagElement.className = 'tag';
+          tagElement.textContent = tag;
+          tags.appendChild(tagElement);
+        });
+        header.appendChild(tags);
+      }
 
       return header;
     }
@@ -137,74 +147,51 @@ export const components = {
     render: (data) => {
       const tableSection = document.createElement('div');
       tableSection.className = 'table-section';
-      
-      if (data.content.sections) {
-        data.content.sections.forEach(section => {
-          if (section.type === 'table') {
-            const table = document.createElement('table');
-            
-            // 表頭
-            if (section.headers) {
-              const thead = document.createElement('thead');
-              const headerRow = document.createElement('tr');
-              
-              section.headers.forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                headerRow.appendChild(th);
-              });
-              
-              thead.appendChild(headerRow);
-              table.appendChild(thead);
-            }
-            
-            // 表格內容
-            if (section.rows) {
-              const tbody = document.createElement('tbody');
-              
-              // 檢查是否為單層陣列
-              if (Array.isArray(section.rows) && !Array.isArray(section.rows[0])) {
-                // 如果是單層陣列，將其包裝成二維陣列
-                const row = section.rows;
-                const tr = document.createElement('tr');
-                
-                row.forEach((cell, index) => {
-                  const td = document.createElement('td');
-                  td.textContent = cell;
-                  if (section.headers && section.headers[index]) {
-                    td.setAttribute('data-label', section.headers[index]);
-                  }
-                  tr.appendChild(td);
-                });
-                
-                tbody.appendChild(tr);
-              } else {
-                // 原有的二維陣列處理邏輯
-                section.rows.forEach(row => {
-                  const tr = document.createElement('tr');
-                  const cells = Array.isArray(row) ? row : Object.values(row);
-                  
-                  cells.forEach((cell, index) => {
-                    const td = document.createElement('td');
-                    td.textContent = cell;
-                    if (section.headers && section.headers[index]) {
-                      td.setAttribute('data-label', section.headers[index]);
-                    }
-                    tr.appendChild(td);
-                  });
-                  
-                  tbody.appendChild(tr);
-                });
+
+      // debug log
+      console.log('[DEBUG][table] data:', data);
+      console.log('[DEBUG][table] data.content:', data.content);
+      console.log('[DEBUG][table] data.content.table:', data.content?.table);
+
+      // 直接渲染 content.table
+      if (data.content && data.content.table) {
+        const { headers, rows } = data.content.table;
+        const table = document.createElement('table');
+
+        // 表頭
+        if (headers) {
+          const thead = document.createElement('thead');
+          const headerRow = document.createElement('tr');
+          headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+        }
+
+        // 表格內容
+        if (rows) {
+          const tbody = document.createElement('tbody');
+          rows.forEach(row => {
+            const tr = document.createElement('tr');
+            Object.values(row).forEach((cell, index) => {
+              const td = document.createElement('td');
+              td.textContent = cell;
+              if (headers && headers[index]) {
+                td.setAttribute('data-label', headers[index]);
               }
-              
-              table.appendChild(tbody);
-            }
-            
-            tableSection.appendChild(table);
-          }
-        });
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+        }
+
+        tableSection.appendChild(table);
       }
-      
+
       return tableSection;
     }
   },

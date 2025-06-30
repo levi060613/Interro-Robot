@@ -4,6 +4,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+
 // Your web app's Firebase configuration
 export const firebaseConfig = {
   apiKey: "AIzaSyD6ci0SCTQjdpshLa4rXOUBra4nwlMRafE",
