@@ -7,8 +7,8 @@ import {
  } from '../utils/chatState.js';
  // 匯入建議資料（初始選項與延伸問題題庫）
  import { fetchOptions, fetchQuestions, fetchQuestionsByIds } from '../utils/fetchData.js';
- // 匯入對話輸入區的初始化邏輯
- import initChatInputPanel from '../components_fn/chatInputPanel/chatInputPanel.js';
+ // 匯入對話選項面板的初始化邏輯
+ import initChatOptionPanel from '../components_fn/chatOptionPanel/chatOptionPanel.js';
  
  
  // 匯入文字格式化及打字機效果函式
@@ -28,8 +28,7 @@ import {
 
   // 建立輸入面板容器（裝載輸入欄與建議選項）
   const chatInputPanel = document.createElement('div');
-  chatInputPanel.id = 'chatInputPanel';
-  chatInputPanel.className = 'chatInputPanel';
+  chatInputPanel.className = 'chatOptionPanel';
 
   // 將聊天室與輸入面板依序放進新的頁面內容容器中
   pageContentContainer.appendChild(chatWindow);
@@ -38,7 +37,7 @@ import {
   // ========= 非同步載入輸入面板 HTML 並初始化互動邏輯 =========
   try {
     // 從外部載入 chatInputPanel 的 HTML 模板（通常包含輸入欄與 suggestions 容器）
-    const response = await fetch('src/components_fn/chatInputPanel/chatInputPanel.html');
+    const response = await fetch('src/components_fn/chatOptionPanel/chatOptionPanel.html');
     const html = await response.text();
     chatInputPanel.innerHTML = html;
     // 等待下一畫面更新循環再執行初始化，確保 DOM 元素已完全插入
@@ -105,7 +104,7 @@ import {
       const options = await fetchOptions();          // Step 1 選項
       await fetchQuestions();                        // 預先抓 questions 資料，供後續查詢
 
-      initChatInputPanel(options);                   // 初始化面板與互動
+      initChatOptionPanel(options);                  // 初始化面板與互動
     });
   } catch (err) {
     // 若 HTML 載入失敗，顯示錯誤訊息於 console

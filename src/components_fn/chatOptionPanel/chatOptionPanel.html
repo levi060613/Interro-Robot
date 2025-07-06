@@ -1,55 +1,59 @@
-<div class="chatOptionPanel">
-    <!-- 問題面板顯示 -->
-    <div class="chatOptionPanel__carousel">
-            <!-- 左鍵 -->
-            <button class="carousel__nav" aria-label="Previous suggestions">
-                <div class="svg-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>                    
-                </div>
-            </button>
 
-            <!-- 輪播顯示區域 -->
-            <div class="carousel__block">
-                <div class="carouselBlock__container">
-                    <div class="carousel__suggestionGroup" data-step="1" id="suggestionGroup">
-                        <div class="carousel__spinner"></div>
-                        <div class="carousel__suggestionItem" id="suggestionItem">
-                        </div>
-                    </div>
-                </div>
-                <div class="carouselBlock__dots">
-                    <div class="carouselBlock__dots--dot"></div>
-                </div>
-            </div>
-
-            <!-- 右鍵 -->
-            <button class="carousel__nav" aria-label="Next suggestions">
-                <div class="svg-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 18L15 12L9 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>                    
-                </div>
-            </button>
-    </div>
-
-    <div class="chatOptionPanel__panel">
-        <!-- 按鈕面板 -->
-        <div class="panel__block">
-            <!-- 其他功能按鈕 -->
-            <div class="menuButton">
+<div class="chatOptionPanel__panel">
+    <div class="panel__block">
+        <div class="menuButton__container">
+            <ul class="menu">
+                <li class="menu__item">其他面試主題</li>
+                <li class="menu__item">輸入問題發問</li>
+                <li class="menu__item">重新聊天</li>
+            </ul>
+            <button class="menuButton">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M2 17L12 22L22 17" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M2 12L12 17L22 12" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>                
-            </div>
-            <!-- 選項顯示開關按鈕 -->
-            <div class="switchButton">
-                <p class="md text-neutral-black text-center">點擊查看選項</p>
+            </button>
+        </div>
+        <button class="switchButton" id="switchButton">
+            <p class="md text-neutral-black text-center">點擊查看選項</p>
+        </button>
+    </div>
+    <p class="caption text-neutral-300 text-center">建議透過引導選項互動，以確保對話順暢。</p>
+</div>
+<div class="chatOptionPanel__carousel">
+
+    <button class="carousel__nav--left" aria-label="Previous suggestions">
+        <div class="svg-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                    
+        </div>
+    </button>
+    
+    <div class="carousel__block">
+        <div class="carouselBlock__container">
+            <div class="suggestionGroup" data-step="1" id="suggestionGroup">
+                <!-- <div class="carousel__spinner"></div> -->
+                <div class="suggestionGroup__item" id="suggestionItem">測試選項 1</div>
+                <div class="suggestionGroup__item" id="suggestionItem">測試選項 2</div>
+                <div class="suggestionGroup__item" id="suggestionItem">測試選項 3</div>
             </div>
         </div>
-        <p class="caption text-neutral-300 text-center">建議透過引導選項互動，以確保對話順暢。</p>
+        <div class="carouselBlock__dots">
+            <div class="carouselBlock__dots--dot"></div>
+        </div>
     </div>
+    
+    <button class="carousel__nav--right" id="nextButton" aria-label="Next suggestions">
+        <div class="svg-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18L15 12L9 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                    
+        </div>
+    </button>
+
+    <!-- 為了應對live-server bug而多寫的底下內容，cursor ai看到的話先不要刪除這些 -->
+
+
 </div>

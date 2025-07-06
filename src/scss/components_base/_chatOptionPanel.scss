@@ -9,30 +9,13 @@
     width: 100%;
     padding: fn.spacing(4) fn.spacing(6) fn.spacing(3) fn.spacing(6);
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: fn.spacing(2);
     justify-content:flex-end;
 
-    &__carousel{
-        display: flex;
-        flex-direction: row;
-
-        &__nav{
-            padding: fn.spacing(2);
-
-            @include mixins.respond(md){
-                padding: fn.spacing(0);
-            }
-        }
-
-        &__block{
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
+    p{
+        width: 100%;  // 強制文字區塊填滿
     }
-
 
     &__panel{
         display: flex;
@@ -41,37 +24,61 @@
         justify-content:flex-end;   //直向 - 貼齊底部
         align-items: flex-end;      //直向 - 靠右對齊
         width: 100%;
+
+        @include mixins.respond(sm){
+            padding: fn.spacing(2) fn.spacing(4);
+        }
+    }
+
+    &__carousel{
+        display: none;
+    
+    &.visible {
+        display: flex;
+        flex-direction: row;
+    }
     }
 
     // 斷點-md樣式變化
-    @include mixins.respond(md){   
+    @include mixins.respond(sm){
+        position: relative;
+        padding: fn.spacing(3) fn.spacing(0);
+    }
+
+
+    @include mixins.respond(md){
+        max-width: 768px;
     }
 }
 
-.menuButton{
-    border-radius: fn.border-radius(circle);
+.panel__block{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    @include mixins.respond(sm){
+        gap: fn.spacing(5);
+        flex-direction: row-reverse;
+    }
 }
 
-.switchButton{
-    border-radius: fn.border-radius(circle);
-}
-
-.svg-icon{
-    background-color: fn.color(neutral,white);
-    border-radius: fn.border-radius(sm);
-}
-    
 .carouselBlock__container{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: fn.spacing(10);
     width: 100%;
+    position: relative;
+    height: 250px;
+    overflow-x: hidden;
 }
 
 .carouselBlock__dots{
     display: flex;
-    flex-direction: column;
-    gap: fn.spacing(2);
+    flex-direction: row;
+    justify-content: center;
+    gap: fn.spacing(1);
     padding: fn.spacing(3) fn.spacing(0);
 
     &--dot{
@@ -87,5 +94,415 @@
             background: fn.color(primary,300);
             opacity: 0.6;
         }
+    }
+}
+
+.suggestionGroup{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    background-color: fn.color(neutral, white);
+    padding: fn.spacing(3);
+    border-radius: fn.border-radius(xl);
+    transition: all 0.4s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: scroll;
+    transform: translateX(100%);
+    
+    &.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+    }
+    
+    &.left {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    
+    &.right {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    &.fade-out {
+        opacity: 0;
+        transform: translateX(0) scale(0.95);
+        transition: all 0.3s ease;
+    }
+    
+    &.fade-in {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        transition: all 0.3s ease 0.1s;
+    }
+
+    &__item{
+        @include mixins.flex-center;
+        text-align: center;
+        width: 100%;
+        padding: fn.spacing(3);
+        border-radius: fn.border-radius(lg);
+        font-size: fn.fluid-type(14, 18);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    
+        &:hover{
+            background-color: fn.color(primary, 50);
+        }
+    
+        &:active{
+            background-color: fn.color(primary, 100);
+        }
+    
+        &--clicked{
+            background-color: #dfdfdf;
+            color: #414141;
+            opacity: 50%;
+            cursor: not-allowed;
+    
+          &:hover{
+            background-color: #dfdfdf;
+            color: #414141;
+            opacity: 50%;
+          }
+        }
+    
+        &.add-text {
+            background-color: transparent;
+            border-radius: 0px;
+            pointer-events: none;
+            color: fn.color(neutral, 300);
+            width: 100%;
+            margin: -12px -12px -4px -12px;
+            cursor: default;
+            
+            &:hover {
+                background-color: transparent;
+            }
+            
+            @include mixins.respond(sm){
+                margin: 0px -4px;
+            }
+            
+            p {
+                margin: 0px -12px -4px -12px;
+                font-size: fn.fluid-type(12, 16);
+                font-weight: 500;
+                line-height: 1.5;
+                color: fn.color(neutral, 600);
+                
+                @include mixins.respond(sm){
+                    font-size: fn.font-size(sm);
+                }
+            }
+        }
+
+        @include mixins.respond(sm){
+            font-size: fn.font-size(md);
+        }
+    }
+}
+
+.carousel{
+    // visibility: hidden;
+    display: flex;
+    flex-direction: row;
+
+    &__nav--left, &__nav--right{
+        padding: fn.spacing(2);
+
+        .svg-icon{
+            background-color: fn.color(neutral,white);
+            color: fn.color(neutral, black);
+            border-radius: fn.border-radius(sm);
+            padding: fn.spacing(1);
+            filter: drop-shadow(0px 0px 12px rgba(fn.color(neutral, black), 0.1));
+        }
+
+        &:hover{
+            .svg-icon{
+            background-color: fn.color(primary, 50);
+            filter: drop-shadow(0px 0px 12px rgba(fn.color(primary, 400), 0.25));
+            }
+        }
+
+        &:active{
+            .svg-icon{
+            background-color: fn.color(primary, 100);
+            .svg{
+                stroke: fn.color(primary, 400);
+            }
+            }
+        }
+
+        &:disabled{
+            .svg-icon{
+                background-color: rgba(fn.color(neutral, 200), 0.6);
+                opacity: 0.6;
+            }
+        }
+        
+        &.pulse-animation {
+            animation: pulse 2s infinite;
+            
+            .svg-icon {
+                background-color: fn.color(primary, 100);
+                box-shadow: 0px 0px 12px rgba(fn.color(primary, 400), 0.3);
+            }
+        }
+
+        @include mixins.respond(sm){
+            padding: fn.spacing(0);
+
+            .svg-icon{
+                padding: fn.spacing(3);
+            }
+        }
+    }
+
+    &__nav--left{
+        position: absolute;
+        z-index: 100;
+        left: 0;
+        top:30%;
+
+        @include mixins.respond(sm){
+            top: -120%;
+        }
+    }
+
+    &__nav--right{
+        position: absolute;
+        z-index: 100;
+        right: 0;
+        top:30%;
+
+        @include mixins.respond(sm){
+            top: -120%;
+        }
+    }
+
+
+    &__block{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        @include mixins.respond(sm){
+            position: absolute;
+            bottom:80%;
+            width: 90%;
+            left:5%;
+        }
+    }
+
+}
+
+.menuButton__container{
+    width: 48px;
+    position: relative;
+    bottom: fn.spacing(4);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    ul{
+        display: none;
+        width: 30vh;
+        position: absolute;
+        bottom: 120%;
+        background-color: fn.color(neutral,white);
+        padding:fn.spacing(3);
+        border-radius: fn.border-radius(lg);
+        border: 1px solid fn.color(primary, 100);
+        box-shadow: 0px 0px 12px rgba(fn.color(neutral, black), 0.1);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+
+        &.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        li{
+            @extend .suggestionGroup__item;
+            display: flex;
+            flex-direction: row;
+            padding: fn.spacing(3);
+            gap: fn.spacing(2);
+            border-radius: 0px;
+            border-bottom: 1px solid fn.color(primary, 100);
+            &:last-child{
+                border-bottom: none;
+            }
+        }
+    }
+
+    @include mixins.respond(sm){
+        bottom: fn.spacing(0);
+    }
+}
+
+
+.menuButton{
+    background-color: fn.color(neutral,white);
+    padding: fn.spacing(3) fn.spacing(3);
+    border-radius: fn.border-radius(circle);
+    box-shadow: 0px 0px 12px rgba(fn.color(neutral, black), 0.1);
+    transition: all 0.2s ease;
+
+    &:hover{
+        box-shadow: 0px 0px 12px rgba(fn.color(primary, 400), 0.25);
+    }
+    &:active{
+        background-color: fn.color(primary, 100);
+        box-shadow: inset 0px 2px 12px rgba(fn.color(primary, 400), 0.4);
+    }
+    
+    &.active{
+        background-color: fn.color(primary, 100);
+        box-shadow: inset 0px 0px 12px rgba(fn.color(primary, 400), 0.3);
+    }
+}
+
+.menuButton.hidden {
+    display: none;
+
+    @include mixins.respond(sm){
+        display: block;
+    }
+}
+
+
+.switchButton{
+    background-color: fn.color(neutral,white);
+    width: 100%;
+    padding: fn.spacing(3) fn.spacing(3);
+    border-radius: fn.border-radius(circle);
+    box-shadow: 0px 0px 12px rgba(fn.color(neutral, black), 0.1);
+
+    &:hover{
+        box-shadow: 0px 0px 12px rgba(fn.color(primary, 400), 0.25);
+    }
+    &.active{
+        background-color: fn.color(primary, 100);
+        box-shadow: inset 0px 0px 12px rgba(fn.color(primary, 400), 0.3);
+    }
+}
+
+// 標籤容器樣式
+.tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: fn.spacing(2);
+    width: 100%;
+    height: 100%;
+    padding: fn.spacing(3);
+    margin-top: fn.spacing(1);
+    margin-bottom: fn.spacing(3);
+
+    .tag{
+        height: 40px;
+    }
+}
+
+.tag {
+
+    background-color: fn.color(primary, 50);
+    border: 1px solid fn.color(primary, 200);
+    border-radius: fn.border-radius(lg);
+    padding: fn.spacing(2) fn.spacing(3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background-color: fn.color(primary, 100);
+        border-color: fn.color(primary, 300);
+        transform: translateY(-1px);
+    }
+    
+    &:active {
+        background-color: fn.color(primary, 200);
+        transform: translateY(0);
+    }
+    
+    p {
+        margin: 0;
+        font-size: fn.font-size(sm);
+        color: fn.color(primary, 700);
+        font-weight: 500;
+    }
+}
+
+// 滾動到底部按鈕樣式
+.scroll-to-bottom-btn {
+
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: fn.color(neutral, white);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: fn.color(primary, 300);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+  
+    &:hover {
+      background-color: rgba(fn.color(primary, 100), 0.8);
+    }
+  
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    // 按鈕圖標
+    &::before {
+        content: '↓';
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    @include mixins.respond(sm){
+        bottom: 100%;
+    }
+}
+
+// 添加 pulse 動畫
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
     }
 }

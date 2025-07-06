@@ -188,7 +188,11 @@ body {
 
     padding-right: 16px;   // 預留滾動條空間
     margin-right: -32px;   // 把空間推回去，不讓內容被擠
-  
+    margin-bottom: 100px;  // 預留空間給選項面板
+
+    @include mixins.respond(sm){
+        margin-bottom: 0px;
+    }
     @include mixins.respond(md){
         max-width: 768px;
     }
