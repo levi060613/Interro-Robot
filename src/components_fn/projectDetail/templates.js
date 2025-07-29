@@ -101,5 +101,47 @@ export const templates = {
 
       return container;
     }
+  },
+
+  // 「behance-project」專案的頁面模板設定
+  "behance-project": {
+    components: [
+      "behance-section"   // Behance 風格的垂直圖片展示區塊
+    ],
+
+    render: function(data) {
+      const container = document.createElement('div');
+      container.className = 'project-detail behance-project';
+
+      this.components.forEach(componentType => {
+        const component = components[componentType];
+        if (component && component.render) {
+          container.appendChild(component.render(data));
+        }
+      });
+
+      return container;
+    }
+  },
+
+  // 「loading」載入狀態的頁面模板設定
+  "loading": {
+    components: [
+      "loading-content" // 只顯示載入動畫內容
+    ],
+
+    render: function(data) {
+      const container = document.createElement('div');
+      container.className = 'project-detail loading';
+
+      this.components.forEach(componentType => {
+        const component = components[componentType];
+        if (component && component.render) {
+          container.appendChild(component.render(data));
+        }
+      });
+
+      return container;
+    }
   }
 };

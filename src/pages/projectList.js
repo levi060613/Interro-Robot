@@ -60,21 +60,31 @@ export default async function renderProjectListPage() {
         try {
           const modal = createProjectModal();
 
-          // 1. 先顯示 loading
+          // 立即顯示載入狀態的 modal
           modal.show({
-            template: 'coming-soon',
+            template: 'loading',
             basicInfo: {
               title: project.title,
               subtitle: '載入中...',
               tags: project.tags
             },
-            content: { sections: [{ type: 'text', content: '<h4>載入詳細內容中...</h4>' }] }
+            content: { 
+              sections: [{ 
+                type: 'loading', 
+                content: `
+                  <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">正在載入專案詳細內容...</p>
+                  </div>
+                ` 
+              }] 
+            }
           });
 
-          // 2. 從 Firebase 取得 content
+          // 從 Firebase 取得 content
           const remoteDetail = await fetchProjectDetailFromFirebase(project.document_id);
 
-          // 3. 組合資料
+          // 更新 modal 內容為真實資料
           modal.show({
             template: remoteDetail.template || 'interro-project',
             basicInfo: {
@@ -85,7 +95,8 @@ export default async function renderProjectListPage() {
             content: remoteDetail.content
           });
         } catch (error) {
-          // 失敗時 fallback
+          // 失敗時顯示錯誤狀態
+          const modal = createProjectModal();
           modal.show({
             template: 'coming-soon',
             basicInfo: {

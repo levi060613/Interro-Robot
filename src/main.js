@@ -3,6 +3,9 @@ import "./components_fn/chatInputPanel/chatInputPanel.js"
 import router from "./router/index.js";          // 匯入 router 函式（負責根據 pathname 載入對應頁面）
 import { routes } from "./router/index.js";          // 匯入 routes 函式
 import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js";
+import "./components_fn/projectDetail/lightbox.js";
+import "./components_fn/positionSelector/positionSelector.js";
+import { initPositionAnalytics } from "./utils/positionAnalytics.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;
@@ -19,6 +22,9 @@ window.addEventListener("DOMContentLoaded", () => {
     bindImgCarousel();
     handleResponsiveHomeTitle();
     window.addEventListener('resize', handleResponsiveHomeTitle);
+    
+    // 初始化职位 Analytics
+    initPositionAnalytics();
   }
 });
 

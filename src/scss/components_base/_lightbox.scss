@@ -1,0 +1,216 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+@use "../components_base/projectDetail" as *;
+
+// Lightbox 樣式
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// 背景遮罩
+.lightbox-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+// 內容容器
+.lightbox-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; // 改為 flex-start，讓內容從頂部開始
+  width: 100%;
+  height: 100%;
+  padding: fn.spacing(4);
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  // 當圖片處於 100vw 模式時，移除 padding 並使用 baseline 對齊
+  &.full-width {
+    padding: 0;
+    align-items: baseline; // 參考 Behance 的解決方案
+  }
+}
+
+// 圖片樣式
+.lightbox-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: fn.border-radius(lg);
+  cursor: zoom-in;
+  transition: all 0.3s ease;
+  transform-origin: center center;
+  position: relative;
+  margin: auto;
+  
+  // 自定義游標樣式
+  &::after {
+    content: var(--cursor-icon, "🔍➕");
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10001;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+  
+  // 觸控裝置上的游標樣式
+  @media (hover: none) and (pointer: coarse) {
+    cursor: zoom-in;
+    
+    &[style*="zoom-out"] {
+      cursor: zoom-out;
+    }
+  }
+}
+
+// 圖片說明
+.lightbox-caption {
+  position: absolute;
+  bottom: fn.spacing(4);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: fn.spacing(2) fn.spacing(4);
+  border-radius: fn.border-radius(lg);
+  font-size: fn.font-size(sm);
+  text-align: center;
+  max-width: 80vw;
+  word-wrap: break-word;
+  display: none;
+  
+  &.visible {
+    display: block;
+  }
+}
+
+// 關閉按鈕
+.lightbox-close {
+  @extend .modal-close;
+  font-size: fn.font-size(xl);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  margin-top: fn.spacing(7);
+  margin-right: fn.spacing(7);
+  top: 0;
+  right: 0;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+
+}
+
+// 為所有可點擊的圖片添加游標樣式
+.behance-image,
+.carousel-slide img,
+.gallery-item img,
+.text-image-wrapper img {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+  
+  // &:hover {
+  //   transform: scale(1.02);
+  // }
+  
+  // 觸控裝置上的游標樣式
+  @media (hover: none) and (pointer: coarse) {
+    cursor: zoom-in;
+  }
+}
+
+// 響應式設計
+@include mixins.respond(sm) {
+  .lightbox-content {
+    padding: fn.spacing(2);
+  }
+  
+  .lightbox-caption {
+    bottom: fn.spacing(2);
+    padding: fn.spacing(1) fn.spacing(2);
+    font-size: fn.font-size(xs);
+  }
+}
+
+// 動畫效果
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lightbox.active .lightbox-content {
+  animation: lightboxFadeIn 0.3s ease;
+}
+
+// 觸控縮放提示
+.lightbox-content::after {
+  content: "雙指縮放切換";
+  position: absolute;
+  top: fn.spacing(2);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: fn.spacing(1) fn.spacing(2);
+  border-radius: fn.border-radius(md);
+  font-size: fn.font-size(xs);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  
+  @media (hover: none) and (pointer: coarse) {
+    opacity: 1;
+    
+    .lightbox.active & {
+      opacity: 0;
+    }
+  }
+} 

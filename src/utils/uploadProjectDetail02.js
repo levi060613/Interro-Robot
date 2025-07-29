@@ -1,15 +1,13 @@
-// src/utils/uploadProjectDetail.js
-
 import { db } from './firebase.js';
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// project_01 的 behance-project 格式資料結構
-const projectDetailData = {
+// project_02 的正確資料結構
+const projectDetailData02 = {
   content: {
     firstImage: {
       images: [
         {
-          src: "src/assets/images/projectModal-01_00.png"
+          src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1752220647/project-01__img-00_e2rloc.png"
         }
       ]
     },
@@ -20,7 +18,13 @@ const projectDetailData = {
         name: "專案背景介紹",
         images: [
           {
-            src: "src/assets/images/projectModal-01_01.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1752220650/project-01__img-01_fxp4gd.png"
+          },
+          {
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1752220644/project-01__img-02_xqrbly.png"
+          },
+          {
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1752220648/project-01__img-03_xwb73y.png"
           }
         ],
         questions: [
@@ -47,10 +51,16 @@ const projectDetailData = {
         name: "研究解方與設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_02.png"
+            src: "src/assets/images/color-blue.jpg"
           },
           {
-            src: "src/assets/images/projectModal-01_03.png"
+            src: "src/assets/images/color-blue.jpg"
+          },
+          {
+            src: "src/assets/images/color-blue.jpg"
+          },
+          {
+            src: "src/assets/images/color-blue.jpg"
           }
         ],
         questions: [
@@ -77,7 +87,13 @@ const projectDetailData = {
         name: "設計系統",
         images: [
           {
-            src: "src/assets/images/projectModal-01_04.png"
+            src: "src/assets/images/color-brown.jpg"
+          },
+          {
+            src: "src/assets/images/color-brown.jpg"
+          },
+          {
+            src: "src/assets/images/color-brown.jpg"
           }
         ],
         questions: [
@@ -104,7 +120,22 @@ const projectDetailData = {
         name: "Onboarding 流程設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_05.png"
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
           }
         ],
         questions: [
@@ -131,7 +162,19 @@ const projectDetailData = {
         name: "版本迭代設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_06.png"
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
+          },
+          {
+            src: "src/assets/images/color-pink.jpg"
           }
         ],
         questions: [
@@ -160,12 +203,12 @@ const projectDetailData = {
 // 寫入 Firestore
 async function upload() {
   try {
-    await setDoc(doc(db, "projectDetail", "project_01"), projectDetailData);
-    console.log("project_01 資料已成功寫入 Firestore！");
+    await setDoc(doc(db, "projectDetail", "project_02"), projectDetailData02);
+    console.log("project_02 資料已成功寫入 Firestore！");
   } catch (error) {
     console.error("寫入失敗：", error);
   }
 }
 
 // 執行上傳
-upload();
+upload(); 

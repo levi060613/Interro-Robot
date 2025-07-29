@@ -176,37 +176,136 @@ export const projects = [
     description: "我們挑戰的不是操作流程，而是學生的學習動力。透過問題拆解和團隊協作，打造具互動、情感化的系統性改版。",
     tags: ["問題拆解", "產品再設計", "榮獲Top 3"],
     img: "src/assets/images/hahow_2_1_@3x.png",
-    template: "hahow-project",
-    document_id: "project_02"
-    // content: {
-    //   table: {
-    //     headers: ["問題", "分析", "解決方案"],
-    //     rows: [
-    //       ["用戶流失率高", "課程頁面資訊過多，用戶難以快速找到所需資訊", "重新設計資訊架構，突出重要內容"],
-    //       ["轉換率低", "購買流程複雜，需要多步驟完成", "簡化購買流程，減少必要步驟"],
-    //       ["用戶反饋不佳", "介面設計過時，不符合現代審美", "更新視覺設計，提升整體質感"]
-    //     ]
-    //   },
-    //   carousel: {
-    //     items: [
-    //       {
-    //         type: "image",
-    //         src: "src/assets/images/hahow_2_1_@3x.png",
-    //         caption: "首頁改版前後對比"
-    //       },
-    //       {
-    //         type: "image",
-    //         src: "src/assets/images/interro_2_1_@1x.png",
-    //         caption: "課程頁面優化"
-    //       },
-    //       {
-    //         type: "image",
-    //         src: "src/assets/images/六角專案_2_1_@3x.png",
-    //         caption: "購買流程簡化"
-    //       }
-    //     ]
-    //   }
-    // }
+    template: "behance-project",
+    document_id: "project_02",
+    content: {
+      sections: [
+        {
+        type: "imgBlock",
+        images: [
+          {
+            src: "src/assets/images/blue.jpg",
+            caption: "現有平台分析"
+          },
+          {
+            src: "src/assets/images/blue.jpg",
+            caption: "用戶痛點識別"
+          },
+          {
+            src: "src/assets/images/blue.jpg",
+            caption: "設計概念發想"
+          }
+        ],
+        questions: [
+          {
+            text: "Q1: 你是如何開始這個專案的？",
+            reply: `
+              我首先深入分析了現有的 Hahow 平台，識別出學生在學習過程中的主要痛點。
+              通過用戶訪談和數據分析，我發現學生最常遇到的問題是缺乏學習動力和持續性。
+              這讓我意識到，我們需要的不只是優化操作流程，而是要重新思考如何激發學生的學習熱情。`
+          },
+          {
+            text: "Q2: 團隊是如何協作的？",
+            reply: `
+              我們採用敏捷式開發流程，每週進行設計評審和用戶測試。
+              我負責 UX 設計和原型製作，與產品經理和工程師密切合作。
+              通過快速迭代和持續的用戶反饋，我們能夠及時調整設計方向。`
+          },
+          {
+            text: "Q3: 最大的挑戰是什麼？",
+            reply: `
+              最大的挑戰是如何在保持平台原有功能的同時，注入新的情感化設計元素。
+              我們需要在技術可行性和設計創新之間找到平衡點，
+              確保每個改進都能真正提升用戶體驗。`
+          }
+        ]
+        },
+        {
+          type: "imgBlock",
+          images: [
+            {
+              src: "src/assets/images/red.jpg",
+              caption: "互動設計原型"
+            },
+            {
+              src: "src/assets/images/red.jpg",
+              caption: "學習進度追蹤"
+            },
+            {
+              src: "src/assets/images/red.jpg",
+              caption: "學習進度追蹤"
+            }
+          ],
+          questions: [
+            {
+              text: "Q4: 如何解決學習動力問題？",
+              reply: `
+              我設計了一套情感化的學習激勵系統，包括：
+              • 個人化的學習路徑推薦
+              • 即時的成就感和進度反饋
+              • 社群互動和同伴學習功能
+              這些功能讓學習變得更有趣和有意義。`
+            },
+            {
+              text: "Q5: 設計系統是如何建立的？",
+              reply: `
+              我建立了一套完整的設計系統，包括色彩、字體、間距和組件庫。
+              這確保了整個平台的一致性和可維護性，
+              同時也讓開發團隊能夠更高效地實現設計。`
+            },
+            {
+              text: "Q6: 專案的成果如何？",
+              reply: `
+              這個專案獲得了 Top 3 的成績，更重要的是，
+              我們成功提升了學生的學習參與度和完成率。
+              用戶反饋顯示，新的設計讓學習體驗更加愉悅和有效。`
+            }
+          ]
+        },
+        {
+          type: "imgBlock",
+          images: [
+            {
+              src: "src/assets/images/green.jpg",
+              caption: "互動設計原型"
+            },
+            {
+              src: "src/assets/images/green.jpg",
+              caption: "學習進度追蹤"
+            },
+            {
+              src: "src/assets/images/green.jpg",
+              caption: "學習進度追蹤"
+            }
+          ],
+          questions: [
+            {
+              text: "Q4: 如何解決學習動力問題？",
+              reply: `
+              我設計了一套情感化的學習激勵系統，包括：
+              • 個人化的學習路徑推薦
+              • 即時的成就感和進度反饋
+              • 社群互動和同伴學習功能
+              這些功能讓學習變得更有趣和有意義。`
+            },
+            {
+              text: "Q5: 設計系統是如何建立的？",
+              reply: `
+              我建立了一套完整的設計系統，包括色彩、字體、間距和組件庫。
+              這確保了整個平台的一致性和可維護性，
+              同時也讓開發團隊能夠更高效地實現設計。`
+            },
+            {
+              text: "Q6: 專案的成果如何？",
+              reply: `
+              這個專案獲得了 Top 3 的成績，更重要的是，
+              我們成功提升了學生的學習參與度和完成率。
+              用戶反饋顯示，新的設計讓學習體驗更加愉悅和有效。`
+            }
+          ]
+        }
+      ]
+    }
   },
   {
     year: "2024.08",

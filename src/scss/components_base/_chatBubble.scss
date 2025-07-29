@@ -61,6 +61,17 @@ padding: fn.spacing(3);
     color: fn.color(neutral, black);
 
     &--extraMessage{
+        display: flex;
+        flex-direction: column;
+        gap: fn.spacing(2);
         min-height: 0px;
+    }
+}
+
+.chatBubbleMessage__buttonContainer{
+    width:100%;
+
+    button{
+        min-width:120px;
     }
 }

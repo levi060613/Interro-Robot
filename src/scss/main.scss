@@ -21,10 +21,11 @@
 @use "components_base/richTextStyles";
 @use "components_base/imgCarousel";
 @use "components_base/projectDetail";
+@use "components_base/lightbox";
+@use "components_base/positionSelector";
 
 //layout-4個
 @use "layout/base-layout";
-@use "layout/footer";
 @use "layout/header";
 @use "layout/sidebar";
 

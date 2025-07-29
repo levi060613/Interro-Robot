@@ -4,8 +4,8 @@
 @use "../abstracts/functions" as fn;
 
 header{
-    padding-top: fn.spacing(6);
-    padding-bottom: fn.spacing(4);
+    padding-top: fn.spacing(7);
+    padding-bottom: 1.75rem;
     width: 100%;
     display: flex;
     flex-shrink: 0;

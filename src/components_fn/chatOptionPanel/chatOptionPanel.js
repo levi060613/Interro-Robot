@@ -21,6 +21,13 @@ export default async function initChatOptionPanel(initialOptions) {
 
 
 
+    console.log('[DEBUG] 檢查元素是否存在:');
+    console.log('[DEBUG] chatOptionPanel:', !!chatOptionPanel);
+    console.log('[DEBUG] switchButton:', !!switchButton);
+    console.log('[DEBUG] menuButton:', !!menuButton);
+    console.log('[DEBUG] carousel:', !!carousel);
+    console.log('[DEBUG] carouselContainer:', !!carouselContainer);
+
     if (!chatOptionPanel || !switchButton || !menuButton || !carousel || !carouselContainer) {
         console.error('Required chat option panel elements not found');
         return;
@@ -133,6 +140,8 @@ export default async function initChatOptionPanel(initialOptions) {
         // 保存狀態到 sessionStorage
         saveChatOptionPanelState();
     });
+
+
 
     // 點擊面板外的空白處
     document.addEventListener('click', (e) => {
@@ -319,13 +328,24 @@ export default async function initChatOptionPanel(initialOptions) {
         if (!isActive) {
             // 啟動狀態
             switchButton.classList.add('active');
+            switchButton.innerHTML = '<p class="md text-neutral-black text-center">× 收合選項</p>';
             menuButton.classList.add('hidden');
             carousel.classList.add('visible');
             isActive = true;
             isCarouselVisible = true;
             
+            // 隱藏 modalLookBtn
+            const modalLookBtn = document.querySelector('.modal-lookBtn');
+            if (modalLookBtn) {
+                modalLookBtn.classList.add('hidden');
+                console.log('[DEBUG] chatOptionPanel: 已隱藏 modalLookBtn');
+            }
+            
             // 維持在最後活躍的 step，而不是自動切換到新 step
             scrollToStep(lastActiveStep);
+            
+            // 每次打開面板時檢查自我介紹狀態
+            checkAndUpdateIntroductionOverlay();
             
             // 如果有新 step 可用，為 nextButton 添加微動畫
             if (hasNewStep) {
@@ -345,7 +365,15 @@ export default async function initChatOptionPanel(initialOptions) {
         lastActiveStep = currentStep;
         
         switchButton.classList.remove('active');
+        switchButton.innerHTML = '<p class="md text-neutral-black text-center">點擊查看選項</p>';
         menuButton.classList.remove('hidden');
+        
+        // 顯示 modalLookBtn
+        const modalLookBtn = document.querySelector('.modal-lookBtn');
+        if (modalLookBtn) {
+            modalLookBtn.classList.remove('hidden');
+            console.log('[DEBUG] chatOptionPanel: 已顯示 modalLookBtn');
+        }
         
         // 一旦switchButton恢復預設狀態，carousel也要恢復隱藏
         carousel.classList.remove('visible');
@@ -372,6 +400,13 @@ export default async function initChatOptionPanel(initialOptions) {
             menu.classList.add('active');
             isMenuActive = true;
             
+            // 隱藏 modalLookBtn
+            const modalLookBtn = document.querySelector('.modal-lookBtn');
+            if (modalLookBtn) {
+                modalLookBtn.classList.add('hidden');
+                console.log('[DEBUG] chatOptionPanel: menuButton 已隱藏 modalLookBtn');
+            }
+            
             // 保存狀態到 sessionStorage
             saveChatOptionPanelState();
         } else {
@@ -387,6 +422,13 @@ export default async function initChatOptionPanel(initialOptions) {
         menuButton.classList.remove('active');
         menu.classList.remove('active');
         isMenuActive = false;
+        
+        // 顯示 modalLookBtn
+        const modalLookBtn = document.querySelector('.modal-lookBtn');
+        if (modalLookBtn) {
+            modalLookBtn.classList.remove('hidden');
+            console.log('[DEBUG] chatOptionPanel: menuButton 已顯示 modalLookBtn');
+        }
         
         // 保存狀態到 sessionStorage
         saveChatOptionPanelState();
@@ -495,40 +537,150 @@ export default async function initChatOptionPanel(initialOptions) {
             }
         } else {
             // 普通建議選項組的渲染邏輯
-            // 如果是第一步，添加附注文字
-            if (step === 1) {
-                const addText = document.createElement('div');
-                addText.className = 'suggestionGroup__item add-text';
-                addText.style.pointerEvents = 'none';
-                addText.innerHTML = '<p>你可以選擇想了解的層面：</p>';
-                group.appendChild(addText);
-            }
-            
-            // 普通建議選項
-            optionList.forEach((opt, index) => {
-                const item = document.createElement('div');
-                item.className = 'suggestionGroup__item';
-                if (opt.clicked) {
-                    item.classList.add('suggestionGroup__item--clicked');
-                    item.style.pointerEvents = 'none';
-                }
-                // 如果是父問題，添加特殊類名
-                if (opt.isParentQuestion) {
-                    item.classList.add('add-text');
-                    item.style.pointerEvents = 'none'; // 禁用點擊
-                    item.innerHTML = `<p>${opt.text}</p>`;
-                } else {
-                    item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
-                }
-                item.dataset.reply = opt.reply;
-                item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
-                item.dataset.id = opt.id; // 添加id屬性
-                group.appendChild(item);
-            });
+            // 直接渲染正常選項，自我介紹檢查會在 togglePanel 時進行
+            renderNormalSuggestions(group, optionList);
         }
         
         // 保存狀態到 sessionStorage
         saveChatOptionPanelState();
+    }
+
+    // 新增：檢查並更新自我介紹遮罩的函數
+    async function checkAndUpdateIntroductionOverlay() {
+        try {
+            // 檢查是否已經顯示過自我介紹
+            const { loadChatHistory } = await import('../../utils/chatState.js');
+            const history = await loadChatHistory();
+            const hasShownIntroduction = history.some(msg => 
+                msg.sender === 'bot' && 
+                typeof msg.text === 'string' && 
+                msg.text.includes('嗨！歡迎你進來這個聊天室')
+            );
+            
+            // 找到第一步的建議組
+            const step1Group = carouselContainer.querySelector('.suggestionGroup[data-step="1"]');
+            if (!step1Group) {
+                console.log('[DEBUG] 找不到第一步建議組');
+                return;
+            }
+            
+            // 檢查是否已經有遮罩
+            const existingOverlay = step1Group.querySelector('.introduction-overlay');
+            
+            if (!hasShownIntroduction) {
+                // 沒有顯示過自我介紹，需要顯示遮罩
+                if (!existingOverlay) {
+                    console.log('[DEBUG] 顯示自我介紹遮罩');
+                    
+                    // 清空第一步組的內容
+                    step1Group.innerHTML = '';
+                    
+                    // 創建遮罩
+                    const overlay = document.createElement('div');
+                    overlay.className = 'introduction-overlay';
+                    overlay.style.cssText = `
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(255, 255, 255, 0.95);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 10;
+                        border-radius: 12px;
+                        padding: 2rem;
+                    `;
+
+                    const overlayText = document.createElement('p');
+                    overlayText.className = 'text-neutral-black text-center mb-4';
+                    overlayText.style.cssText = `
+                        font-size: 1rem;
+                        line-height: 1.5;
+                        margin-bottom: 1.5rem;
+                        max-width: 300px;
+                    `;
+                    overlayText.textContent = '在開始對話之前，先了解一下設計師吧！';
+
+                    const introButton = document.createElement('button');
+                    introButton.className = 'primaryButton--fill';
+                    introButton.style.cssText = `
+                        min-width: 120px;
+                        padding: 0.75rem 1.5rem;
+                    `;
+                    introButton.textContent = '顯示自我介紹';
+                    introButton.onclick = async () => {
+                        console.log('[DEBUG] 自我介紹按鈕被點擊');
+                        
+                        // 顯示自我介紹
+                        const { showIntroductionMessage } = await import('../../utils/chatState.js');
+                        await showIntroductionMessage(chatWindow);
+                        
+                        // 關閉 carousel 面板
+                        resetPanel();
+                        
+                        // 保存狀態到 sessionStorage
+                        saveChatOptionPanelState();
+                    };
+
+                    overlay.appendChild(overlayText);
+                    overlay.appendChild(introButton);
+                    step1Group.appendChild(overlay);
+                    
+                    // 設置 group 為相對定位以支持絕對定位的遮罩
+                    step1Group.style.position = 'relative';
+                }
+            } else {
+                // 已經顯示過自我介紹，需要移除遮罩並顯示正常選項
+                if (existingOverlay) {
+                    console.log('[DEBUG] 移除自我介紹遮罩，顯示正常選項');
+                    existingOverlay.remove();
+                    
+                    // 重新渲染正常的建議選項
+                    const step1Options = groupsData[0] || [];
+                    renderNormalSuggestions(step1Group, step1Options);
+                }
+            }
+        } catch (error) {
+            console.error('檢查自我介紹狀態失敗:', error);
+        }
+    }
+
+    // 新增：渲染正常建議選項的輔助函數
+    function renderNormalSuggestions(group, optionList) {
+        // 如果是第一步，添加附注文字
+        const step = parseInt(group.dataset.step);
+        if (step === 1) {
+            const addText = document.createElement('div');
+            addText.className = 'suggestionGroup__item add-text';
+            addText.style.pointerEvents = 'none';
+            addText.innerHTML = '<p>你可以選擇想了解的層面：</p>';
+            group.appendChild(addText);
+        }
+        
+        // 普通建議選項
+        optionList.forEach((opt, index) => {
+            const item = document.createElement('div');
+            item.className = 'suggestionGroup__item';
+            if (opt.clicked) {
+                item.classList.add('suggestionGroup__item--clicked');
+                item.style.pointerEvents = 'none';
+            }
+            // 如果是父問題，添加特殊類名
+            if (opt.isParentQuestion) {
+                item.classList.add('add-text');
+                item.style.pointerEvents = 'none'; // 禁用點擊
+                item.innerHTML = `<p>${opt.text}</p>`;
+            } else {
+                item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
+            }
+            item.dataset.reply = opt.reply;
+            item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
+            item.dataset.id = opt.id; // 添加id屬性
+            group.appendChild(item);
+        });
     }
 
     async function showTagSuggestions(step) {
@@ -816,6 +968,10 @@ export default async function initChatOptionPanel(initialOptions) {
         // 保存狀態到 sessionStorage
         saveChatOptionPanelState();
     });
+
+
+
+
 
     // 返回控制函數供外部使用
     return {

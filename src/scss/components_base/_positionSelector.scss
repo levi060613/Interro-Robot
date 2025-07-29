@@ -1,0 +1,222 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+@use "../abstracts/mixins" as mixins;
+
+// 职位选择模态框样式
+.position-modal {
+  @include mixins.flex-center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.5) 100%);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.position-modal-content {
+  background-color: fn.color(neutral, white);
+  border-radius: fn.border-radius(xl);
+  padding: fn.spacing(6);
+  max-width: 90vw;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  
+  .position-modal.active & {
+    transform: translateY(0);
+  }
+  
+  @include mixins.respond(md) {
+    max-width: 600px;
+    padding: fn.spacing(8);
+  }
+}
+
+.position-modal-title {
+  font-size: fn.font-size(2xl);
+  font-weight: 700;
+  color: fn.color(text, primary);
+  text-align: center;
+  margin-bottom: fn.spacing(2);
+  
+  @include mixins.respond(md) {
+    font-size: fn.font-size(3xl);
+  }
+}
+
+.position-modal-subtitle {
+  font-size: fn.font-size(base);
+  color: fn.color(text, secondary);
+  text-align: center;
+  margin-bottom: fn.spacing(6);
+  line-height: 1.6;
+  
+  @include mixins.respond(md) {
+    font-size: fn.font-size(lg);
+  }
+}
+
+.position-options {
+  display: flex;
+  flex-direction: column;
+  gap: fn.spacing(3);
+}
+
+.position-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: fn.spacing(4);
+  border: 2px solid fn.color(neutral, 200);
+  border-radius: fn.border-radius(lg);
+  background-color: fn.color(neutral, white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: fn.color(primary, 300);
+    background-color: fn.color(primary, 50);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  @include mixins.respond(md) {
+    padding: fn.spacing(5);
+  }
+}
+
+.position-option-content {
+  flex: 1;
+}
+
+.position-option-title {
+  font-size: fn.font-size(lg);
+  font-weight: 600;
+  color: fn.color(text, primary);
+  margin-bottom: fn.spacing(1);
+  
+  @include mixins.respond(md) {
+    font-size: fn.font-size(xl);
+  }
+}
+
+.position-option-description {
+  font-size: fn.font-size(sm);
+  color: fn.color(text, secondary);
+  line-height: 1.5;
+  margin: 0;
+  
+  @include mixins.respond(md) {
+    font-size: fn.font-size(base);
+  }
+}
+
+.position-option-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: fn.border-radius(circle);
+  background-color: fn.color(neutral, 100);
+  color: fn.color(neutral, 400);
+  transition: all 0.2s ease;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .position-option:hover & {
+    background-color: fn.color(primary, 100);
+    color: fn.color(primary, 600);
+  }
+  
+  @include mixins.respond(md) {
+    width: 40px;
+    height: 40px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// 响应式调整
+@include mixins.respond(sm) {
+  .position-modal-content {
+    margin: fn.spacing(4);
+  }
+  
+  .position-options {
+    gap: fn.spacing(2);
+  }
+  
+  .position-option {
+    padding: fn.spacing(3);
+  }
+}
+
+// 动画效果
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.position-modal.active .position-modal-content {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+// 无障碍支持
+.position-option:focus {
+  outline: 2px solid fn.color(primary, 500);
+  outline-offset: 2px;
+}
+
+// 高对比度模式支持
+@media (prefers-contrast: high) {
+  .position-option {
+    border-width: 3px;
+  }
+  
+  .position-option:hover {
+    border-color: fn.color(primary, 700);
+  }
+}
+
+// 减少动画模式支持
+@media (prefers-reduced-motion: reduce) {
+  .position-modal,
+  .position-modal-content,
+  .position-option {
+    transition: none;
+  }
+  
+  .position-modal.active .position-modal-content {
+    animation: none;
+  }
+} 

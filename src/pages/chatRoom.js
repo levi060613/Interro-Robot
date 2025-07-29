@@ -4,6 +4,8 @@ import {
   loadChatHistory,        // 載入快取中的聊天紀錄（sessionStorage / localStorage）
   renderChatHistory,      // 將載入的歷史紀錄渲染成訊息泡泡加入聊天室
   saveMessage,            // 將新訊息儲存到快取中
+  saveMessageWithButton,  // 儲存帶按鈕的訊息
+  showIntroductionMessage, // 顯示自我介紹訊息
  } from '../utils/chatState.js';
  // 匯入建議資料（初始選項與延伸問題題庫）
  import { fetchOptions, fetchQuestions, fetchQuestionsByIds } from '../utils/fetchData.js';
@@ -47,8 +49,12 @@ import {
       const history = await loadChatHistory();
       renderChatHistory(chatWindow, history);
 
-      // 3. 如果是第一次進入聊天室（歷史紀錄為空），顯示引導語句
-      if (history.length === 0){
+      // 2. 檢查是否為從問題點擊進入的聊天室
+      const isFromQuestionClick = sessionStorage.getItem('fromQuestionClick') === 'true';
+      console.log('[DEBUG] 是否從問題點擊進入:', isFromQuestionClick);
+
+      // 3. 如果是第一次進入聊天室（歷史紀錄為空）且不是從問題點擊進入，顯示引導語句
+      if (history.length === 0 && !isFromQuestionClick){
         // 取得引導語句資料
         // 直接定義引導語句文字，不再從 fetchIntroductionInfo 獲取
         const introductionInfo = `
@@ -98,6 +104,67 @@ import {
           // 若引導語句為空或格式錯誤，發出警告
           console.warn('introduction info 為空，未顯示');
         }
+      }
+
+      // 4. 如果是從問題點擊進入的，4秒後顯示帶按鈕的訊息
+      if (isFromQuestionClick) {
+        console.log('[DEBUG] 從問題點擊進入，4秒後顯示帶按鈕的訊息');
+        setTimeout(async () => {
+          // 檢查是否已經顯示過自我介紹
+          const hasShownIntroduction = history.some(msg => 
+            msg.sender === 'bot' && 
+            typeof msg.text === 'string' && 
+            msg.text.includes('嗨！歡迎你進來這個聊天室')
+          );
+          
+          if (hasShownIntroduction) {
+            console.log('[DEBUG] 已經顯示過自我介紹，跳過顯示按鈕訊息');
+            return;
+          }
+          
+          // 儲存帶按鈕的訊息
+          await saveMessageWithButton(
+            '想了解一下設計師嗎？', 
+            '顯示介紹', 
+            'showIntroduction'
+          );
+          
+          // 創建並顯示帶按鈕的訊息泡泡
+          const bubbleWrapper = document.createElement('div');
+          bubbleWrapper.className = 'chatBubble chatBubble--bot';
+          const message = document.createElement('div');
+          message.className = 'chatBubbleMessage chatBubbleMessage--extraMessage';
+          
+          // 顯示文字
+          message.innerHTML = formatReplyText('想了解一下設計師嗎？');
+          
+          // 創建按鈕容器
+          const buttonContainer = document.createElement('div');
+          buttonContainer.className = 'chatBubbleMessage__buttonContainer';
+          
+          // 創建按鈕
+          const button = document.createElement('button');
+          button.className = 'chatBubbleMessage__button primaryButton--fill';
+          button.textContent = '顯示介紹';
+          button.onclick = () => {
+            console.log('[DEBUG] 顯示介紹按鈕被點擊');
+            showIntroductionMessage(chatWindow);
+          };
+          
+          // 將按鈕添加到容器中
+          buttonContainer.appendChild(button);
+          message.appendChild(buttonContainer);
+          bubbleWrapper.appendChild(message);
+          chatWindow.appendChild(bubbleWrapper);
+          
+          // 滾動到聊天室底部顯示最新訊息
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+          
+          console.log('[DEBUG] 帶按鈕的訊息已顯示');
+        }, 4000); // 4秒後顯示
+        
+        // 清除標記，避免重複觸發
+        sessionStorage.removeItem('fromQuestionClick');
       }
 
       // 🚀 新增這兩行：取得建議資料並初始化面板

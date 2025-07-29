@@ -59,6 +59,7 @@ export const components = {
           const img = document.createElement('img');
           img.src = image.src;
           img.alt = image.caption || '';
+          img.setAttribute('data-caption', image.caption || '');
 
           // 若有附加說明，顯示在圖片下方
           if (image.caption) {
@@ -102,6 +103,7 @@ export const components = {
               const img = document.createElement('img');
               img.src = section.image.src;
               img.alt = section.image.caption || '';
+              img.setAttribute('data-caption', section.image.caption || '');
               imgContainer.appendChild(img);
 
               if (section.image.caption) {
@@ -215,6 +217,7 @@ export const components = {
             const img = document.createElement('img');
             img.src = item.src;
             img.alt = item.caption || '';
+            img.setAttribute('data-caption', item.caption || '');
             slide.appendChild(img);
           }
 
@@ -317,6 +320,150 @@ export const components = {
       }
 
       return carousel;
+    }
+  },
+
+  // Behance 風格圖片區塊組件：垂直排列圖片，支援滾動觸發問題顯示
+  "behance-section": {
+    render: (data) => {
+      console.log('[DEBUG][behance-section] 開始渲染，data:', data);
+      
+      const behanceContainer = document.createElement('div');
+      behanceContainer.className = 'behance-container';
+
+      // 檢查是否有 firstImage 資料
+      if (data.content && data.content.firstImage) {
+        console.log('[DEBUG][behance-section] 找到 firstImage:', data.content.firstImage);
+        
+        // 渲染首頁圖片
+        const firstImageSection = document.createElement('div');
+        firstImageSection.className = 'behance-section first-img-section';
+        
+        const imagesContainer = document.createElement('div');
+        imagesContainer.className = 'behance-images';
+        
+        if (data.content.firstImage.images) {
+          let imagesArray = Array.isArray(data.content.firstImage.images) ? data.content.firstImage.images : [data.content.firstImage.images];
+          imagesArray.forEach((image, imageIndex) => {
+            const imageWrapper = document.createElement('div');
+            imageWrapper.className = 'behance-image-wrapper';
+            const img = document.createElement('img');
+            img.src = image.src;
+            img.alt = image.caption || '';
+            img.className = 'behance-image';
+            img.setAttribute('data-caption', image.caption || '');
+            img.onload = () => {
+              console.log('[DEBUG][behance-section] 首頁圖片載入成功:', image.src);
+            };
+            img.onerror = () => {
+              img.style.border = '2px solid red';
+              img.alt = `圖片載入失敗: ${image.src}`;
+            };
+            imageWrapper.appendChild(img);
+            if (image.caption) {
+              const caption = document.createElement('p');
+              caption.className = 'behance-image-caption';
+              caption.textContent = image.caption;
+              imageWrapper.appendChild(caption);
+            }
+            imagesContainer.appendChild(imageWrapper);
+          });
+        }
+        firstImageSection.appendChild(imagesContainer);
+        behanceContainer.appendChild(firstImageSection);
+      }
+
+      // 檢查是否有 sections 資料
+      if (data.content && data.content.sections) {
+        console.log('[DEBUG][behance-section] 找到 sections:', data.content.sections);
+        
+        data.content.sections.forEach((section, sectionIndex) => {
+          console.log('[DEBUG][behance-section] 處理 section:', sectionIndex, section);
+          
+          if (section.type === 'imgBlock') {
+            const sectionElement = document.createElement('div');
+            sectionElement.className = 'behance-section';
+            sectionElement.setAttribute('data-step', section.step);
+            
+            // 創建圖片容器
+            const imagesContainer = document.createElement('div');
+            imagesContainer.className = 'behance-images';
+            
+            if (section.images) {
+              let imagesArray = Array.isArray(section.images) ? section.images : [section.images];
+              console.log('[DEBUG][behance-section] 找到 images:', imagesArray);
+              console.log('[DEBUG][behance-section] 處理後的 imagesArray:', imagesArray);
+              
+              imagesArray.forEach((image, imageIndex) => {
+                console.log('[DEBUG][behance-section] 處理 image:', imageIndex, image);
+                
+                const imageWrapper = document.createElement('div');
+                imageWrapper.className = 'behance-image-wrapper';
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.caption || '';
+                img.className = 'behance-image';
+                img.setAttribute('data-caption', image.caption || '');
+                img.onload = () => {
+                  console.log('[DEBUG][behance-section] 圖片載入成功:', image.src);
+                };
+                img.onerror = () => {
+                  img.style.border = '2px solid red';
+                  img.alt = `圖片載入失敗: ${image.src}`;
+                };
+                imageWrapper.appendChild(img);
+                if (image.caption) {
+                  const caption = document.createElement('p');
+                  caption.className = 'behance-image-caption';
+                  caption.textContent = image.caption;
+                  imageWrapper.appendChild(caption);
+                }
+                imagesContainer.appendChild(imageWrapper);
+              });
+            }
+            
+            sectionElement.appendChild(imagesContainer);
+            behanceContainer.appendChild(sectionElement);
+          }
+        });
+      }
+
+      console.log('[DEBUG][behance-section] 渲染完成，container:', behanceContainer);
+      return behanceContainer;
+    }
+  },
+
+  // 載入動畫內容組件
+  "loading-content": {
+    render: (data) => {
+      const loadingContainer = document.createElement('div');
+      loadingContainer.className = 'loading-content';
+
+      // 檢查是否有自定義的載入內容
+      if (data.content && data.content.sections) {
+        const loadingSection = data.content.sections.find(section => section.type === 'loading');
+        if (loadingSection) {
+          loadingContainer.innerHTML = loadingSection.content;
+        } else {
+          // 預設載入動畫
+          loadingContainer.innerHTML = `
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">正在載入專案詳細內容...</p>
+            </div>
+          `;
+        }
+      } else {
+        // 預設載入動畫
+        loadingContainer.innerHTML = `
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">正在載入專案詳細內容...</p>
+          </div>
+        `;
+      }
+
+      return loadingContainer;
     }
   }
 };

@@ -1,58 +1,135 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/functions" as fn;
 @use "../abstracts/mixins" as mixins;
+@use "../components_base/chatOptionPanel" as *;
 
-/* 模態框樣式：顯示專案詳細內容 */
-.project-modal {
-  position: fixed;
+// modal相關樣式重建
+.project-modal{
+  @include mixins.flex-center;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); // 半透明背景遮罩
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  // background-color: rgba(0, 0, 0, 0.5);
+  // backdrop-filter: blur(4px);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.5) 100%);
+  backdrop-filter: blur(4px);
+  z-index: 899;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  backdrop-filter: blur(4px); // 添加模糊效果
-  -webkit-backdrop-filter: blur(4px); // Safari 支援
+}
 
-  // 顯示時的狀態
-  &.active {
-    opacity: 1;
-    visibility: visible;
+.project-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.project-modal.chatRoom{
+  position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  // height: 100%;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+  transform: translateX(100%);
+  opacity: 1;
+  visibility: visible;
+  // background-color: rgba(0, 0, 0, 0.5);
+  // backdrop-filter: blur(4px);
+  transition: transform 0.3s ease;
+
+  &.modal-look{
+    transform: translateX(0);
+  }
+
+  .modal-content{
+    max-height: none;
+    overflow-y: scroll;
+    border-radius: 0;
+    transform: none;
+    padding: 1rem;
+  }
+
+  .modal-panel{
+    display: flex;
+    position: absolute;
+    width: 100%;
+    transform: none;
+    // background: none;
+    pointer-events: auto;
+    padding: 1rem;
+    margin-top: 1rem;
   }
 
   @include mixins.respond(md){
-    width: 100vw; // 保持全寬
-    left: 0; // 重置左邊距
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+    background: none;
+    backdrop-filter: none;
+    transform: none;
+
+    &.modal-look{
+      transform: none;
+    }
+
+
+    .modal-content{
+      max-height: none;
+      overflow-y: scroll;
+      border-radius: 0;
+      transform: none;
+      padding: 1rem;
+    }
+  
+    .modal-panel{
+      display: flex;
+      position: absolute;
+      width: 100%;
+      transform: none;
+      background: none;
+      pointer-events: auto;
+      padding: fn.spacing(4) fn.spacing(8);
+      // margin-top: fn.spacing(4);
+    }
   }
 }
 
-/* 模態框內部內容區塊 */
-.modal-content {
+.project-modal.chatRoom.active{
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content{
   background-color: fn.color(neutral, white);
   border-radius: fn.border-radius(xl);
   padding: fn.spacing(3);
   padding-top: fn.spacing(6);
   overflow-y: auto;
   position: relative;
-  transform: translateY(20px);
+  // transform: translateY(20px);
   transition: transform 0.3s ease;
-  width: 100%; // 在手機版時有邊距
+  width: 100%;
   height: 100%;
-  margin: 0 auto;
+  // margin: 0 auto;
+}
 
-  @include mixins.respond(sm){
-    max-height: 90vh; // 限制高度，避免超出視窗
-    width: 768px; // 在 sm 斷點後設定寬度
-  }
-
-  .project-modal.active & {
-    transform: translateY(0);
+@include mixins.respond(md){
+  .modal-content{
+    max-width: 90vw;
   }
 }
 
@@ -61,503 +138,385 @@
   width: 48px;
   height: 48px;
   position: sticky;
-  z-index: 10000;
-  top: 0;
+  z-index: 900;
+  top: 2%;
   left: 95%;
   background: none;
   border: none;
   border-radius: fn.border-radius(circle);
   background-color: fn.color(neutral, 100);
-  font-size: fn.font-size(xl);
+  font-size: fn.font-size(lg);
   cursor: pointer;
-  color: fn.color(neutral, 300);
-  transition: color 0.3s ease;
+  color: fn.color(text, grey);
+  transition: transform 0.3s ease;
+}
 
-  &:hover {
+.modal-close:hover {
+  background-color: fn.color(primary, 100);
+  color: fn.color(primary, 400);
+}
+
+.modal-lookBtn{
+  @extend .menuButton;
+  position: fixed;
+  z-index: 900;
+  right: fn.spacing(6);
+  bottom: 160px;
+  transition: all 0.3s ease;
+  
+  &.active{
     background-color: fn.color(primary, 100);
-    color: fn.color(primary, 300);
+    box-shadow: inset 0px 0px 12px rgba(fn.color(primary, 400), 0.3);
+  }
+
+  &.hidden{
+    display: none;
+  }
+  
+  &.disabled{
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  @include mixins.respond(sm){
+    right: 32px;
+    bottom: 120px;
+  }
+
+  @include mixins.respond(md){
+    display: none;
   }
 }
 
-/* 專案詳細內容區塊，對應到 JS 的 `components` 渲染內容 */
-.project-detail {
-  @include mixins.respond(sm){
-    padding: 0 fn.spacing(4);
+/* Modal Panel 樣式 */
+.modal-panel {
+  width: 100%;
+  padding: fn.spacing(0) fn.spacing(10) fn.spacing(8) fn.spacing(10);
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: fn.spacing(6);
+  // justify-content: flex-end;
+  z-index: 9999;
+  // background: linear-gradient(transparent, rgba(255, 255, 255, 0.9) 20%, rgba(255, 255, 255, 1) 100%);
+  // backdrop-filter: blur(4px);
+  pointer-events: none;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+
+  &.add-mask{
+    height: 100vh;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.5) 100%);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
   }
-  /* 標題區塊 */
-  .project-header {
-    margin-top: fn.spacing(4);
-    margin-bottom: fn.spacing(6);
-    display: flex;
-    flex-direction: column;
-    gap: fn.spacing(2);
+}
 
-    h2 {
-      font-size: fn.font-size(xl);
-      color: fn.color(text, black);
-      margin-bottom: fn.spacing(2);
+.modal-panel > * {
+  pointer-events: auto;
+}
 
-      @include mixins.respond(sm){
-        font-size: fn.font-size(2xl);
-      }
-    }
+/* Switch Button 樣式 */
+.question-switchBtn {
+  @extend .switchButton;
 
-    .project-subtitle {
-      font-size: fn.font-size(sm);
-      color: fn.color(text, grey-dark);
-      margin-bottom: fn.spacing(2);
-      color: fn.color(primary, 300);
+  max-width: 400px;
+  border: 1px solid fn.color(primary, 100);
+  box-shadow: 0px 0px 32px rgba(fn.color(primary, 300), 0.2);
+  transition: all 0.3s ease;
 
-      @include mixins.respond(sm){
-        font-size: fn.font-size(md);
-      }
-    }
-
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: fn.spacing(2);
-      padding: 0 fn.spacing(1);
-
-      .tag {
-        background-color: fn.color(primary, 100);
-        padding: fn.spacing(1) fn.spacing(2);
-        border-radius: fn.border-radius(lg);
-        white-space: nowrap;
-
-        font-size: fn.fluid-type(12, 16);        // 14px +-2px
-        font-weight: $font_weight_medium;
-        line-height: $line_height_body;
-
-        @include mixins.respond(sm){
-          font-size: fn.font-size(sm);
-        }
-      }
-    }
+  &:hover{
+    background-color: fn.color(primary, 50);
+    box-shadow: 0px 0px 24px rgba(fn.color(primary, 300), 0.4);
   }
-
-  /* 圖片集區塊：Grid 排版 */
-  .image-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: fn.spacing(4);
-    margin-bottom: fn.spacing(6);
-
-    .gallery-item {
-      position: relative;
-
-      img {
-        width: 100%;
-        height: auto;
-        border-radius: fn.border-radius(lg);
-      }
-
-      .image-caption {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: fn.spacing(2);
-        font-size: fn.font-size(sm);
-      }
-    }
+  &.active{
+    border: none;
+    background-color: fn.color(primary, 100);
+    box-shadow: inset 0px 0px 12px rgba(fn.color(primary, 400), 0.5);
   }
+}
 
-  /* 純文字內容區塊 */
-  .text-content {
-    display: flex;
-    flex-direction: column;
-    gap: fn.spacing(10);
-    margin-bottom: fn.spacing(6);
-    font-size: fn.font-size(md);
-    line-height: 1.6;
-    color: fn.color(text, grey-dark);
+/* 問題列表樣式 */
+.question-list{
+  position: relative;
+  z-index: 901;  // 確保問題列表在modal-lookBtn上方
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  justify-content: space-between;
+  background-color: fn.color(neutral, white);
+  padding: fn.spacing(3);
+  border: 1px solid fn.color(primary, 100);
+  border-radius: fn.border-radius(xl);
+  transition: all 0.4s ease;
+}
 
-    .text-block {
-      display: flex;
-      flex-direction: column;
-      gap: fn.spacing(4);
 
-      @include mixins.respond(md) {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: fn.spacing(6);
-      }
-    }
+.question-item{
+  @extend .suggestionGroup__item;
+}
 
-    .text-content-wrapper {
-      flex: 1;
-      
-      h3 {
-        margin-bottom: fn.spacing(4);
-        color: fn.color(text, black);
-      }
+/* Behance Section 樣式 */
+.behance-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  // gap: fn.spacing(4);
+}
 
-      h4{
-        margin-bottom: fn.spacing(4);
-        color: fn.color(text, black);
-        font-weight: $font_weight_bold;
-      }
+.behance-section {
+  width: 100%;
 
-      p {
-        white-space: break-spaces;
-        padding: fn.spacing(2) 0;
-        font-size: fn.fluid-type(14, 18);        // 16px +-2px
-        font-weight: $font_weight_medium;
-        line-height: $line_height_body;
-    
-        @include mixins.respond(sm){
-          font-size: fn.font-size(md);
-        }
+}
 
-        strong{
-          font-weight: $font_weight_bold;
-        }
+.behance-images {
+  display: flex;
+  flex-direction: column;
+  // gap: fn.spacing(3);
+  width: 100%;
+}
 
-        h{
-          text-decoration: underline;
-          text-underline-offset: 4px;
-          color: fn.color(primary,300);
-        }
-      }
+.behance-image-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // gap: fn.spacing(2);
+}
 
-      // 添加列表样式
-      ul {
-        list-style: none;
-        padding-left: fn.spacing(4);
-        margin: fn.spacing(2) 0;
-
-        li {
-          position: relative;
-          padding-left: fn.spacing(3);
-          margin-bottom: fn.spacing(2);
-          font-size: fn.fluid-type(14, 18);
-          line-height: $line_height_body;
-          color: fn.color(text, grey-dark);
-
-          &::before {
-            content: "•";
-            position: absolute;
-            left: -8px;
-            color: fn.color(neutral, black);
-            font-size: fn.font-size(lg);
-            font-weight: $font_weight_bold;
-          }
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          strong{
-            font-weight: $font_weight_bold;
-            color: fn.color(primary,300);
-          }
+.behance-image {
+  max-width: 100%;
+  height: auto;
+  // border-radius: fn.border-radius(md);
+  // box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  // transition: transform 0.3s ease;
   
-          h{
-            text-decoration: underline;
-            text-underline-offset: 4px;
-            color: fn.color(primary,300);
-          }
+  // &:hover {
+  //   transform: scale(1.02);
+  // }
+}
 
+.behance-image-caption {
+  font-size: fn.font-size(sm);
+  color: fn.color(text, secondary);
+  text-align: center;
+  margin: 0;
+}
 
-
-        }
-      }
-
-      // 添加引用块样式
-      blockquote {
-        background-color: fn.color(neutral, white);
-        border-left: 4px solid fn.color(primary,200);
-        margin: fn.spacing(4) 0;
-        padding: fn.spacing(4);
-        background-color: fn.color(primary, 50);
-        border-left: 4px solid fn.color(primary, 200);
-        color: fn.color(primary,400);
-        font-size: fn.fluid-type(14, 18);
-        line-height: $line_height_body;
-
-        p {
-          margin: 0;
-          padding: 0;
-        }
-      }
-    }
-
-    .text-image-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: fn.spacing(2);
-      
-      img {
-        width: 100%;
-        height: auto;
-        border-radius: fn.border-radius(lg);
-      }
-
-      .text-image-caption {
-        font-size: fn.font-size(sm);
-        color: fn.color(text, grey);
-        text-align: center;
-      }
-    }
+/* 目錄條樣式 */
+.table-of-contents {
+  position: fixed;
+  right: fn.spacing(5);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  // background-color: fn.color(neutral, white);
+  // border-radius: fn.border-radius(lg);
+  padding: fn.spacing(3);
+  // box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  // border: 1px solid fn.color(neutral, 200);
+  // min-width: 60px;
+  transition: all 0.3s ease;
+  
+  // 手機版隱藏
+  // @include mixins.respond(md) {
+  //   display: none !important;
+  // }
+  
+  // 桌面版顯示（768px以上）
+  @media (min-width: 768px) {
+    display: block !important;
   }
+}
 
-  /* 嵌入影片區塊 */
-  .video-section {
-    margin-bottom: fn.spacing(6);
+.toc-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // gap: fn.spacing(2);
+}
 
-    video {
-      width: 100%;
-      border-radius: fn.border-radius(lg);
+// .toc-title {
+//   font-size: fn.font-size(sm);
+//   font-weight: 600;
+//   color: fn.color(text, primary);
+//   text-align: center;
+//   margin-bottom: fn.spacing(1);
+// }
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: fn.spacing(2);
+  align-items: center;
+}
+
+.toc-item {
+  // width: 16px;
+  // height: 16px;
+  color:fn.color(neutral,200);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    .toc-indicator {
+      height: 32px;
+      background-color: fn.color(primary, 100);
+      // border:none;
+      // color: fn.color(primary, 600);
+      // transform: scale(1.1);
+
+      @include mixins.respond(sm){
+        height: 80px;
+      }
     }
-  }
-
-  /* 表格區塊：支援水平卷軸與 Bordered Table 樣式 */
-  .table-section{
-      margin-bottom: fn.spacing(6);
-      overflow-x: auto;
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-
-        display: block;
-
-        thead {
-            display: none; // 隱藏表頭
-          }
-        tbody {
-        display: block;
-        }
-        
-        tr {
-        display: block;
-        margin-bottom: fn.spacing(4);
-        border: 1px solid fn.color(neutral, 200);
-        border-radius: fn.border-radius(lg);
-        padding: fn.spacing(3);
-        }
-        
-        td {
-        display: block;
-        padding: fn.spacing(2) 0;
-        border: none;
-        text-align: left;
-        font-size: fn.fluid-type(14, 18);        // 16px +-2px
-        font-weight: $font_weight_medium;
-        line-height: $line_height_body;
     
-        @include mixins.respond(sm){
-          font-size: fn.font-size(md);
-      }
-        
-        // 在每個單元格前添加標題
-        &::before {
-            font-size: fn.fluid-type(12, 14);        // 12px +-2px
-            font-weight: $font_weight_bold;
-            line-height: $line_height_title;
-        
-            content: attr(data-label);
-            color: fn.color(primary, 300);
-            display: block;
-            margin-bottom: fn.spacing(1);
-        
-            @include mixins.respond(sm){
-            font-size: fn.font-size(sm);
-            }
-          }
-        }
-
-        @include mixins.respond(sm){
-            thead {
-              display: none; // 隱藏表頭
-            }
-            
-            tbody {
-              display: block;
-            }
-            
-            tr {
-              display: flex;
-              margin-bottom: fn.spacing(4);
-              border: 1px solid fn.color(neutral, 200);
-              border-radius: fn.border-radius(lg);
-              padding: fn.spacing(3);
-              gap: fn.spacing(4);
-            }
-            
-            td {
-              flex: 1;
-              padding: fn.spacing(2);
-              border: none;
-              text-align: left;
-              
-              // 在每個單元格前添加標題
-              &::before {
-                content: attr(data-label);
-                font-weight: bold;
-                color: fn.color(primary, 300);
-                display: block;
-                margin-bottom: fn.spacing(1);
-              }
-            }
-          }
+    .toc-tooltip {
+      opacity: 1;
+      visibility: visible;
+      // height: 100%;
     }
   }
-  /* 輪播區塊 */
-  .carousel {
-    margin-bottom: fn.spacing(6);
-    position: relative;
+  
+  &.active {
+    .toc-indicator {
+      height: 32px;
+      background-color: fn.color(primary, 200);
+      // color: fn.color(neutral, white);
+      box-shadow: 0px 2px 8px rgba(fn.color(primary, 400), 0.3);
 
-    .carousel-container {
-      position: relative;
-      overflow: hidden;
-      border-radius: fn.border-radius(lg);
-    }
-
-    .carousel-slide {
-      position: absolute;
-      width: 100%;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      transform: translateX(100%);
-      transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-
-      &.active {
-        position: relative;
-        opacity: 1;
-        transform: translateX(0);
-      }
-
-      &.prev {
-        transform: translateX(-100%);
-      }
-
-      img {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-
-      .carousel-caption {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: fn.spacing(2);
-        font-size: fn.font-size(sm);
+      @include mixins.respond(sm){
+        height: 80px;
       }
     }
 
-    // 導航按鈕
-    .carousel-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 fn.spacing(2);
-      pointer-events: none;
+    .toc-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-10%) translateY(-50%);
 
-      button {
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s;
-        pointer-events: auto;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.8);
-        }
-
-        &.prev {
-          margin-right: auto;
-        }
-
-        &.next {
-          margin-left: auto;
-        }
-      }
-    }
-
-    // 底部指示器
-    .carousel-indicators {
-      position: absolute;
-      bottom: fn.spacing(2);
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: fn.spacing(1);
-      z-index: 1;
-
-      .indicator {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: background-color 0.3s;
-
-        &.active {
-          background: white;
-        }
-      }
+      animation: fadeOutHide 1s 1s forwards;
     }
   }
+}
 
-  &.coming-soon {
-    text-align: center;
-    padding: fn.spacing(6) 0;
+.toc-indicator {
+  @include mixins.flex-center;
+  width: 8px;
+  height: 8px;
+  border-radius: fn.border-radius(circle);
+  background-color: fn.color(neutral, 200);
+  // color: fn.color(text, secondary);
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // font-size: fn.font-size(xs);
+  // font-weight: 600;
+  transition: all 0.3s ease;
+  // border: 2px solid transparent;
 
-    .project-header {
-      margin-bottom: fn.spacing(8);
+  @include mixins.respond(sm){
+    width: 12px;
+    height: 12px;
+  }
+}
 
-      .project-subtitle {
-        color: fn.color(primary, 200);
-      }
+.toc-tooltip {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  height: 100%;
+  transform: translateX(0) translateY(-50%);
+  background-color: fn.color(primary, 50);
+  color: fn.color(neutral, 400);
+  padding: fn.spacing(1) fn.spacing(6);
+  border-radius: fn.border-radius(md);
+  font-size: fn.font-size(xs);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  margin-right: fn.spacing(2);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      .project-tags {
-        justify-content: center;
-        
-        .tag {
-          background-color: fn.color(primary, 50);
-          color: fn.color(primary, 200);
-        }
-      }
-    }
+  @include mixins.respond(sm){
+    transform: translateX(-10%) translateY(-50%);
+  }
+  
+  // 工具提示的箭頭
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   left: 100%;
+  //   top: 50%;
+  //   transform: translateY(-50%);
+  //   border: 4px solid transparent;
+  //   border-left-color: fn.color(text, primary);
+  // }
+}
 
-    .text-content {
-      max-width: 600px;
-      margin: 0 auto;
-      
-      h3 {
-        color: fn.color(primary, 300);
-        margin-bottom: fn.spacing(4);
-      }
-      
-      p {
-        color: fn.color(text, grey-dark);
-        margin-bottom: fn.spacing(2);
-        
-        &:last-child {
-          color: fn.color(primary, 200);
-          font-size: fn.font-size(sm);
-        }
-      }
-    }
+@keyframes fadeOutHide {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* 載入動畫樣式 */
+.loading-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height:200;
+  padding: fn.spacing(8);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: fn.spacing(4);
+}
+
+.loading-spinner {
+  width: 40px;
+  height:40;
+  border: 3px solid fn.color(neutral, 200);
+  border-top: 3px solid fn.color(primary, 400);
+  border-radius:50;
+  animation: spin 1 linear infinite;
+}
+
+.loading-text {
+  color: fn.color(text, grey);
+  font-size: fn.font-size(sm);
+  text-align: center;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 載入狀態的專案詳情樣式 */
+.project-detail.loading {
+  .project-header {
+    opacity: 0.7;
+  }
+  
+  .loading-content {
+    opacity: 1;
   }
 }
