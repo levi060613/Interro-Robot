@@ -175,6 +175,15 @@ export function createProjectModal() {
 function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
   let isExpanded = false;
   
+  // 清空問題列表內容，移除舊的事件監聽器
+  questionList.innerHTML = '';
+  
+  // 移除可能存在的舊事件監聽器
+  const oldListener = questionList._questionClickListener;
+  if (oldListener) {
+    questionList.removeEventListener('click', oldListener);
+  }
+  
   // 關閉問題列表的函數
   const closeQuestionList = () => {
     isExpanded = false;
@@ -216,6 +225,8 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
     }
   };
   
+
+  
   // 為按鈕添加點擊事件
   button.addEventListener('click', (e) => {
     e.stopPropagation(); // 防止事件冒泡
@@ -231,6 +242,8 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
   const handleQuestionItemClickEvent = (e) => {
     const questionItem = e.target.closest('.question-item');
     if (questionItem) {
+      console.log('[DEBUG] 問題項目被點擊，開始處理');
+      
       // 關閉問題列表
       closeQuestionList();
       
@@ -265,9 +278,13 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
       }
       
       // 調用原有的問題處理邏輯
+      console.log('[DEBUG] 即將調用 handleQuestionItemClick');
       handleQuestionItemClick(question, projectData);
     }
   };
+  
+  // 保存事件監聽器引用以便後續移除
+  questionList._questionClickListener = handleQuestionItemClickEvent;
   
   // 監聽問題列表的點擊事件
   questionList.addEventListener('click', handleQuestionItemClickEvent);
@@ -477,11 +494,20 @@ function renderStepQuestions(questionList, projectData, step) {
 
 // 處理問題項目點擊事件
 async function handleQuestionItemClick(question, projectData) {
-  console.log('[DEBUG] 問題項目被點擊:', question);
-  console.log('[DEBUG] 當前頁面滾動位置:', window.scrollY);
-  console.log('[DEBUG] 當前頁面 URL:', window.location.href);
-
+  // 防重複觸發機制
+  const clickKey = `${question.text}-${Date.now()}`;
+  if (handleQuestionItemClick._processing) {
+    console.log('[DEBUG] 問題點擊處理中，忽略重複觸發');
+    return;
+  }
+  
+    handleQuestionItemClick._processing = true;
+  
   try {
+    console.log('[DEBUG] 問題項目被點擊:', question);
+    console.log('[DEBUG] 當前頁面滾動位置:', window.scrollY);
+    console.log('[DEBUG] 當前頁面 URL:', window.location.href);
+
     // 檢查當前視窗寬度來決定使用哪種邏輯
     const isDesktop = window.innerWidth >= 768;
     console.log('[DEBUG] 當前視窗寬度:', window.innerWidth, '是否為桌面版:', isDesktop);
@@ -498,6 +524,11 @@ async function handleQuestionItemClick(question, projectData) {
 
   } catch (error) {
     console.error('[DEBUG] 處理問題點擊時發生錯誤:', error);
+  } finally {
+    // 重置處理標記
+    setTimeout(() => {
+      handleQuestionItemClick._processing = false;
+    }, 1000); // 1秒後重置，防止卡死
   }
 }
 
