@@ -108,6 +108,14 @@ export default async function initChatOptionPanel(initialOptions) {
         // 預先載入問題資料
         await fetchQuestions();
         
+        // 確保第一步的 suggestionGroup 是 active 狀態
+        const firstGroup = carouselContainer.querySelector('.suggestionGroup[data-step="1"]');
+        if (firstGroup) {
+            firstGroup.classList.add('active');
+            firstGroup.classList.remove('left', 'right');
+            console.log(`[DEBUG] 初始化後第一步 suggestionGroup 狀態:`, firstGroup.classList.toString());
+        }
+        
         // 更新指示點
         updateDots();
         
@@ -116,6 +124,18 @@ export default async function initChatOptionPanel(initialOptions) {
         
         // 保存初始狀態到 sessionStorage
         saveChatOptionPanelState();
+        
+        // 最終檢查所有 suggestionGroup 的狀態
+        const allGroups = carouselContainer.querySelectorAll('.suggestionGroup');
+        console.log(`[DEBUG] 初始化完成，共有 ${allGroups.length} 個 suggestionGroup:`);
+        allGroups.forEach((group, index) => {
+            console.log(`[DEBUG] Group ${index + 1}:`, {
+                step: group.dataset.step,
+                classes: group.classList.toString(),
+                pointerEvents: window.getComputedStyle(group).pointerEvents,
+                children: group.children.length
+            });
+        });
         
     } catch (error) {
         console.error('初始化資料失敗:', error);
@@ -458,6 +478,8 @@ export default async function initChatOptionPanel(initialOptions) {
     }
 
     function createSuggestionGroup(optionList, step) {
+        console.log(`[DEBUG] 創建 suggestionGroup，步驟: ${step}`);
+        
         // 清理重複的 step
         const existingGroups = carouselContainer.querySelectorAll('.suggestionGroup');
         const stepGroups = Array.from(existingGroups).filter(group => parseInt(group.dataset.step) === step);
@@ -476,16 +498,22 @@ export default async function initChatOptionPanel(initialOptions) {
             group.className = 'suggestionGroup';
             group.dataset.step = step;
             carouselContainer.appendChild(group);
-            
-            // 設定初始狀態
-            if (step === 1) {
-                group.classList.add('active');
-            } else {
-                group.classList.add('right');
-            }
         }
 
+        // 清空现有内容
         group.innerHTML = '';
+
+        // 設定初始狀態 - 确保第一步是 active 状态
+        if (step === 1) {
+            group.classList.add('active');
+            group.classList.remove('left', 'right');
+            console.log(`[DEBUG] 第一步 suggestionGroup 設置為 active 狀態`);
+        } else {
+            group.classList.add('right');
+            group.classList.remove('active', 'left');
+        }
+
+        console.log(`[DEBUG] suggestionGroup 狀態:`, group.classList.toString());
 
         // 檢查是否為標籤建議組
         const isTagGroup = optionList.length > 0 && optionList[0].isTag;
@@ -551,6 +579,8 @@ export default async function initChatOptionPanel(initialOptions) {
 
     // 渲染正常建議選項的輔助函數
     function renderNormalSuggestions(group, optionList) {
+        console.log(`[DEBUG] 渲染正常建議選項，步驟: ${group.dataset.step}, 選項數量: ${optionList.length}`);
+        
         // 如果是第一步，添加附注文字
         const step = parseInt(group.dataset.step);
         if (step === 1) {
@@ -581,8 +611,18 @@ export default async function initChatOptionPanel(initialOptions) {
             item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
             item.dataset.id = opt.id; // 添加id屬性
             item.dataset.label = opt.label || "其他"; // 添加label屬性
+            
+            console.log(`[DEBUG] 創建建議選項:`, {
+                text: opt.text,
+                className: item.className,
+                dataset: item.dataset,
+                pointerEvents: item.style.pointerEvents
+            });
+            
             group.appendChild(item);
         });
+        
+        console.log(`[DEBUG] 渲染完成，group 中的項目數量: ${group.children.length}`);
     }
 
     async function showTagSuggestions(step) {
