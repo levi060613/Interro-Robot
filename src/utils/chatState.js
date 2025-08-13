@@ -1,6 +1,7 @@
 // utils/chatState.js
 
 import { formatReplyText } from "./formatters.js";
+import { sendInteractionEvent } from "./positionAnalytics.js";
 
 // ========== 聊天狀態快取用的變數 ==========
 let chatHistory = [];                  // 儲存聊天訊息泡泡（依序排列）
@@ -78,8 +79,16 @@ export function getClickedOptions() {
 
 /* ========== 已點擊問題紀錄（延伸問題 questions） ========== */
 
-export function markQuestionClicked(id) {
+export function markQuestionClicked(id, label = "其他") {
   clickedQuestionIds.add(id);
+  
+  // 記錄到 Firebase Analytics
+  sendInteractionEvent('question_clicked', {
+    question_id: id,
+    question_label: label,
+    timestamp: new Date().toISOString()
+  });
+  
   sessionStorage.setItem('clickedQuestionIds', JSON.stringify([...clickedQuestionIds]));
 }
 
@@ -152,7 +161,7 @@ export async function showIntroductionMessage(chatWindow) {
 
 ### 👋 關於我 ###
 我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
-> 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
+> 目前作為六角學院的簽約UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
 ### 🎯 設計強項 ###
 - 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
 - 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
@@ -191,4 +200,20 @@ export async function showIntroductionMessage(chatWindow) {
   
   // 滾動到聊天室底部顯示最新訊息
   chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+/* ========== 測試函數 ========== */
+
+// 測試函數：手動發送測試事件到 GA4
+export function testAnalyticsEvent() {
+  console.log('[Analytics Test] 發送測試事件...');
+  
+  sendInteractionEvent('question_clicked', {
+    question_id: 'test_001',
+    question_label: '測試標籤',
+    timestamp: new Date().toISOString(),
+    test_mode: true
+  });
+  
+  console.log('[Analytics Test] 測試事件已發送，請在 GA4 實時報告中查看');
 }

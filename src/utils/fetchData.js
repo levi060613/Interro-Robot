@@ -15,6 +15,7 @@ import {
   
   // 用於存儲快取的數據
   let projectsCache = null;
+  let projectDetailsCache = new Map(); // 新增：项目详情缓存
   let lastFetchTime = null;
   const CACHE_DURATION = 5 * 60 * 1000; // 快取有效期為 5 分鐘
   
@@ -134,13 +135,62 @@ import {
     }
   }
   
+  /**
+   * 從 Firebase 獲取專案詳細內容
+   * @param {string} documentId - 專案文檔ID
+   * @returns {Promise<Object>} 專案詳細數據
+   */
   export async function fetchProjectDetailFromFirebase(documentId) {
-    const docRef = doc(db, "projectDetail", documentId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data();
+    try {
+      console.log(`開始從 Firebase 獲取專案詳細內容: ${documentId}`);
+      
+      // 檢查快取
+      if (projectDetailsCache.has(documentId)) {
+        const cachedData = projectDetailsCache.get(documentId);
+        const now = Date.now();
+        if (now - cachedData.timestamp < CACHE_DURATION) {
+          console.log(`使用快取的專案詳細內容: ${documentId}`);
+          return cachedData.data;
+        } else {
+          // 快取過期，移除
+          projectDetailsCache.delete(documentId);
+        }
+      }
+      
+      const docRef = doc(db, "projectDetail", documentId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log(`成功獲取專案詳細內容: ${documentId}`, data);
+        
+        // 快取數據
+        projectDetailsCache.set(documentId, {
+          data: data,
+          timestamp: Date.now()
+        });
+        
+        return data;
+      } else {
+        throw new Error(`找不到專案詳細內容: ${documentId}`);
+      }
+    } catch (error) {
+      console.error(`獲取專案詳細內容失敗: ${documentId}`, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * 清除專案詳情快取
+   * @param {string} documentId - 可選，指定清除特定專案的快取
+   */
+  export function clearProjectDetailCache(documentId = null) {
+    if (documentId) {
+      projectDetailsCache.delete(documentId);
+      console.log(`已清除專案 ${documentId} 的快取`);
     } else {
-      throw new Error("找不到該專案內容");
+      projectDetailsCache.clear();
+      console.log('已清除所有專案詳情快取');
     }
   }
   

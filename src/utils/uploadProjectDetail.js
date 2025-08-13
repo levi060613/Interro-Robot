@@ -9,7 +9,7 @@ const projectDetailData = {
     firstImage: {
       images: [
         {
-          src: "src/assets/images/projectModal-01_00.png"
+          src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363930/projectModal-01_00_yxldia.png"
         }
       ]
     },
@@ -20,21 +20,27 @@ const projectDetailData = {
         name: "專案背景介紹",
         images: [
           {
-            src: "src/assets/images/projectModal-01_01.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363923/projectModal-01_01_bj48np.png"
           }
         ],
         questions: [
           {
+            id: "q500",
+            label: "技術能力評估",
             text: "你所說的技術具體掌握到什麼程度？",
             reply: `
-              A1(imgBlock-1)`
+              A1(imgBlock-1)`,
           },
           {
+            id: "q501",
+            label: "專案開發細節",
             text: "這個專案在初期有建立計畫嗎？",
             reply: `
               A2(imgBlock-1)`
           },
           {
+            id: "q502",
+            label: "專案開發細節",
             text: "為何選擇採用敏捷式（alige）開發流程？",
             reply: `
               A3(imgBlock-1)`
@@ -47,24 +53,27 @@ const projectDetailData = {
         name: "研究解方與設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_02.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363928/projectModal-01_02_fhhkmo.png"
           },
           {
-            src: "src/assets/images/projectModal-01_03.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363920/projectModal-01_03_pp9ujz.png"
           }
         ],
         questions: [
           {
+            id: "q503",
             text: "如何從研究中發現、統整出這些洞察？",
             reply: `
               A1(imgBlock-2)`
           },
           {
+            id: "q504",
             text: "解方設計有經過目標用戶驗證嗎？",
             reply: `
               A2(imgBlock-2)`
           },
           {
+            id: "q505",
             text: "為何選擇開發 SPA 架構網站？有什麼取捨？",
             reply: `
               A3(imgBlock-2)`
@@ -77,21 +86,24 @@ const projectDetailData = {
         name: "設計系統",
         images: [
           {
-            src: "src/assets/images/projectModal-01_04.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363922/projectModal-01_04_lzw1cv.png"
           }
         ],
         questions: [
           {
+            id: "q506",
             text: "UI 設計有遵循什麼原則？",
             reply: `
               A1(imgBlock-3)`
           },
           {
+            id: "q507",
             text: "關於配色、grid設計、字型⋯⋯等等，有考量什麼嗎？",
             reply: `
               A2(imgBlock-3)`
           },
           {
+            id: "q508",
             text: "你有建立元件庫嗎？是怎麼管理元件重複與共用問題？",
             reply: `
               A3(imgBlock-3)`
@@ -104,21 +116,27 @@ const projectDetailData = {
         name: "Onboarding 流程設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_05.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366058/projectModal-01_05_zguudw.png"
+          },
+          {
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366058/projectModal-01_06_y9rotn.png"
           }
         ],
         questions: [
           {
+            id: "q509",
             text: "你怎麼確定這些問題是面試官想了解的？",
             reply: `
               A1(imgBlock-4)`
           },
           {
+            id: "q510",
             text: "Q2(imgBlock-4)",
             reply: `
               A2(imgBlock-4)`
           },
           {
+            id: "q511",
             text: "Q3(imgBlock-4)",
             reply: `
               A3(imgBlock-4)`
@@ -131,21 +149,30 @@ const projectDetailData = {
         name: "版本迭代設計",
         images: [
           {
-            src: "src/assets/images/projectModal-01_06.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366056/projectModal-01_07_lxbgy2.png"
+          },
+          {
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366055/projectModal-01_08_drbicj.png"
+          },
+          {
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366055/projectModal-01_09_xlwggj.png"
           }
         ],
         questions: [
           {
+            id: "q512",
             text: "Q1(imgBlock-5)",
             reply: `
               A1(imgBlock-5)`
           },
           {
+            id: "q513",
             text: "Q2(imgBlock-5)",
             reply: `
               A2(imgBlock-5)`
           },
           {
+            id: "q514",
             text: "Q3(imgBlock-5)",
             reply: `
               A3(imgBlock-5)`

@@ -6,6 +6,7 @@ import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js";
 import "./components_fn/projectDetail/lightbox.js";
 import "./components_fn/positionSelector/positionSelector.js";
 import { initPositionAnalytics } from "./utils/positionAnalytics.js";
+import "./utils/testFirebase.js"; // 引入 Firebase 測試功能
 
 window.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;

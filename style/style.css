@@ -1690,6 +1690,184 @@ p.caption {
   opacity: 1;
 }
 
+/* Coming Soon 模板樣式 */
+.project-detail.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+.project-detail.coming-soon .project-header {
+  margin-bottom: 2.5rem;
+}
+.project-detail.coming-soon .project-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin-bottom: 0.5rem;
+}
+@media (min-width: 768px) {
+  .project-detail.coming-soon .project-header h2 {
+    font-size: 2rem;
+  }
+}
+.project-detail.coming-soon .project-header .project-subtitle {
+  font-size: 1.125rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .project-detail.coming-soon .project-header .project-subtitle {
+    font-size: 1.25rem;
+  }
+}
+.project-detail.coming-soon .project-header .project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.project-detail.coming-soon .project-header .project-tags .tag {
+  background: linear-gradient(135deg, #dfd4ff, #ac87fe);
+  color: #53189a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid #ac87fe;
+  transition: all 0.3s ease;
+}
+.project-detail.coming-soon .project-header .project-tags .tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(119, 33, 224, 0.3);
+}
+.project-detail.coming-soon .coming-soon-content {
+  width: 100%;
+  max-width: 600px;
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(246, 243, 255, 0.6));
+  border: 2px solid #ac87fe;
+  border-radius: 48px;
+  padding: 2.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(172, 135, 254, 0.1);
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(223, 212, 255, 0.1) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #ac87fe, #7721e0);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: pulse 3s ease-in-out infinite;
+  z-index: 0;
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #53189a;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper h2 {
+    font-size: 2rem;
+  }
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper p {
+  font-size: 1.125rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper p {
+    font-size: 1.25rem;
+  }
+}
+.project-detail.coming-soon .coming-soon-content .coming-soon-wrapper p:last-child {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #53189a;
+}
+@media (min-width: 576px) {
+  .project-detail.coming-soon {
+    min-height: 300px;
+    padding: 1.5rem 0.75rem;
+  }
+}
+@media (min-width: 768px) {
+  .project-detail.coming-soon {
+    min-height: 500px;
+    padding: 4rem 1.5rem;
+  }
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper {
+    padding: 4rem 2.5rem;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .project-detail.coming-soon .project-header h2 {
+    color: #ffffff;
+  }
+  .project-detail.coming-soon .project-header .project-subtitle {
+    color: #666;
+  }
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(83, 24, 154, 0.2));
+    border-color: #7721e0;
+    box-shadow: 0 8px 32px rgba(119, 33, 224, 0.2);
+  }
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper h2 {
+    color: #ac87fe;
+  }
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper p {
+    color: #666;
+  }
+  .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper p:last-child {
+    color: #ac87fe;
+  }
+}
 .lightbox {
   position: fixed;
   top: 0;

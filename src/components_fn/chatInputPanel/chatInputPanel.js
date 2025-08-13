@@ -1040,14 +1040,14 @@ export default async function initChatInputPanel(initialOptions) {
           case 'q001':
           case 'q002':
           case 'q003':
-            projectData = projects.find(p => p.template === 'interro-project');
+            projectData = projects.find(p => p.template === 'behance-project');
             console.log('找到 Interro 專案:', projectData);
             break;
           // Hahow 專案組（q007-q009）
           case 'q007':
           case 'q008':
           case 'q009':
-            projectData = projects.find(p => p.template === 'hahow-project');
+            projectData = projects.find(p => p.template === 'behance-project');
             console.log('找到 Hahow 專案:', projectData);
             break;
           // 其他專案顯示預設的「即將更新」內容

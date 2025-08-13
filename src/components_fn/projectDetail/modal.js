@@ -504,6 +504,12 @@ async function handleQuestionItemClick(question, projectData) {
     handleQuestionItemClick._processing = true;
   
   try {
+    // 記錄問題點擊（包含 label）
+    const { markQuestionClicked } = await import('../../utils/chatState.js');
+    if (question.id) {
+      markQuestionClicked(question.id, question.label || "其他");
+    }
+    
     console.log('[DEBUG] 問題項目被點擊:', question);
     console.log('[DEBUG] 當前頁面滾動位置:', window.scrollY);
     console.log('[DEBUG] 當前頁面 URL:', window.location.href);

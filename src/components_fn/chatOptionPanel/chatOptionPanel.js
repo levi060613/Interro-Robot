@@ -230,6 +230,13 @@ export default async function initChatOptionPanel(initialOptions) {
         const text = item.textContent.trim();
         const reply = item.dataset.reply;
         const questionsId = JSON.parse(item.dataset.questionsId || '[]');
+        const questionId = item.dataset.id;
+        const questionLabel = item.dataset.label || "其他";
+
+        // 記錄問題點擊（包含 label）
+        if (questionId && questionId !== 'parent') {
+            markQuestionClicked(questionId, questionLabel);
+        }
 
         // 發送用戶訊息
         appendMessage(text, 'user', true);
@@ -252,7 +259,8 @@ export default async function initChatOptionPanel(initialOptions) {
                 text: q.question,
                 reply: q.answer,
                 questions_id: q.questions_id || [],
-                id: q.id
+                id: q.id,
+                label: q.label || "其他"
             }));
 
             // 添加被點擊的問題作為第一個選項
@@ -679,6 +687,7 @@ export default async function initChatOptionPanel(initialOptions) {
             item.dataset.reply = opt.reply;
             item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
             item.dataset.id = opt.id; // 添加id屬性
+            item.dataset.label = opt.label || "其他"; // 添加label屬性
             group.appendChild(item);
         });
     }

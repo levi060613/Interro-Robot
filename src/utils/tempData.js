@@ -9,7 +9,7 @@ export const projects = [
     description: "反轉傳統作品集展示方式，設計對話式體驗流程，引導面試官一步步探索我的角色與價值。",
     tags: ["0到1設計", "開發上線", "聊天機器人"],
     img: "src/assets/images/Interro_2_1_@1x.png",
-    template: "interro-project",
+    template: "behance-project",
     document_id: "project_01"
     // content: {
     //   carousel: {
@@ -314,7 +314,7 @@ export const projects = [
     description: "・了解學生需求的風格，轉化為視覺UI<br>・交稿主視覺設計 ＋ RWD畫面 + Guideline<br>・與對方溝通、並按需求調整設計稿<br>・與對方確定好主視覺後，延續風格設計其他頁面<br>",
     tags: ["RWD設計", "工程交付", "設計系統"],
     img: "src/assets/images/六角專案_2_1_@3x.png",
-    template: "interro-project",
+    template: "coming-soon",
     document_id: "project_03"
     // content: {
     //   carousel: {
@@ -391,7 +391,7 @@ export const projects = [
     tags: ["0到1設計", "上線專案", "測試數據分析"],
     img: "src/assets/images/hahow_2_1_@3x.png",
     template: "coming-soon",
-    document_id:" project_05"
+    document_id: "project_05"
     // content: {
     //   sections: [
     //     {
@@ -451,21 +451,16 @@ export const questionsData = [
   id: "q001",
   question: "你提到在六角學院擔任協作設計師，可以再多說一些實際合作的流程嗎？",
   answer: `我通常會先聆聽對方的立場與原因，\n然後找出雙方的共識點⋯⋯`,
-  tags: ["溝通能力", "團隊合作", "衝突解決"],
-  questions_id: ["q002", "q003"]
 },
 {
   id: "q002",
   question: "你說擅長 UX 研究與團隊溝通，有沒有實際例子可以分享？",
   answer: `002-answer`,
-  tags: ["學習能力", "自律", "技術專業"],
-  questions_id: ["q001", "q003"]
 },
 {
   id: "q003",
   question: "你提到最近完成一個模擬面試的 SPA 作品，可以介紹一下嗎？",
   answer: `003-answer`,
-  tags: ["領導力", "團隊合作", "專案管理"],
   questions_id: ["q001", "q002"]
 },
 {
@@ -727,6 +722,60 @@ export const projectDetail = [
         }
       ]
     },
-    template: "default-project"
+    template: "behance-project"
+  },
+  {
+    document_id: "project_03",
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 專案正在準備中</h2>
+              <p>這個專案的詳細內容正在整理中，很快就會與大家見面！</p>
+              <p>敬請期待...</p>
+            </div>
+          `
+        }
+      ]
+    },
+    template: "coming-soon"
+  },
+  {
+    document_id: "project_04",
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 專案正在準備中</h2>
+              <p>這個專案的詳細內容正在整理中，很快就會與大家見面！</p>
+              <p>敬請期待...</p>
+            </div>
+          `
+        }
+      ]
+    },
+    template: "coming-soon"
+  },
+  {
+    document_id: "project_05",
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 專案正在準備中</h2>
+              <p>這個專案的詳細內容正在整理中，很快就會與大家見面！</p>
+              <p>敬請期待...</p>
+            </div>
+          `
+        }
+      ]
+    },
+    template: "coming-soon"
   }
 ];
