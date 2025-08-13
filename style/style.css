@@ -875,48 +875,7 @@ p.caption {
     transform: scale(1);
   }
 }
-.introduction-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  border-radius: 24px;
-  padding: 2.5rem;
-  backdrop-filter: blur(2px);
-}
-.introduction-overlay p {
-  font-size: clamp(0.875rem, 13.2957746479px + 0.1877934272vw, 1rem);
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  max-width: 300px;
-  text-align: center;
-  color: #1e1e1e;
-  font-weight: 500;
-}
-.introduction-overlay button {
-  min-width: 120px;
-  padding: 0.75rem 1.5rem;
-  border-radius: 16px;
-  color: #ffffff;
-  border: none;
-  font-size: clamp(0.875rem, 13.2957746479px + 0.1877934272vw, 1rem);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.introduction-overlay button:hover {
-  transform: translateY(-1px);
-}
-.introduction-overlay button:active {
-  transform: translateY(0);
-}
+
 
 .chatBubble {
   display: flex;
