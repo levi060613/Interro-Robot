@@ -137,7 +137,27 @@ import {
         }
       }
 
-      // 5. 從問題點擊進入的邏輯現在由 chatOptionPanel 處理
+      // 5. 檢查是否有待顯示的問題訊息
+      const pendingQuestionData = sessionStorage.getItem('pendingQuestionData');
+      if (pendingQuestionData && isFromQuestionClick) {
+        try {
+          const questionData = JSON.parse(pendingQuestionData);
+          console.log('[DEBUG] 發現待顯示的問題訊息:', questionData);
+          
+          // 顯示問題訊息
+          await showPendingQuestionMessage(questionData, chatWindow);
+          
+          // 清除待顯示的問題數據
+          sessionStorage.removeItem('pendingQuestionData');
+          console.log('[DEBUG] 問題訊息已顯示，數據已清除');
+        } catch (error) {
+          console.error('[DEBUG] 顯示問題訊息失敗:', error);
+          // 清除無效的數據
+          sessionStorage.removeItem('pendingQuestionData');
+        }
+      }
+
+      // 6. 從問題點擊進入的邏輯現在由 chatOptionPanel 處理
       // 不再需要在這裡處理，因為 chatOptionPanel 會自動檢測並顯示 introductionButton
 
       // 🚀 新增這兩行：取得建議資料並初始化面板
@@ -152,7 +172,55 @@ import {
   }
   // 回傳新的頁面 DOM 元素，供 SPA 載入顯示
   return pageContentContainer; // 回傳 pageContentContainer
- }
+}
+
+// ========== 顯示待顯示問題訊息的函數 ==========
+async function showPendingQuestionMessage(questionData, chatWindow) {
+  try {
+    // 導入必要的函數
+    const { saveMessage } = await import('../utils/chatState.js');
+    const { formatReplyText, typeTextWithHTML } = await import('../utils/formatters.js');
+    
+    console.log('[DEBUG] 開始顯示問題訊息');
+    
+    // 保存用戶訊息到快取
+    await saveMessage(questionData.text, 'user');
+    console.log('[DEBUG] 用戶訊息已保存');
+    
+    // 保存 bot 回覆到快取
+    await saveMessage(questionData.reply, 'bot');
+    console.log('[DEBUG] Bot 回覆已保存');
+    
+    // 創建並添加用戶訊息泡泡
+    const userBubbleWrapper = document.createElement('div');
+    userBubbleWrapper.className = 'chatBubble chatBubble--user';
+    const userMessage = document.createElement('div');
+    userMessage.className = 'chatBubbleMessage';
+    userMessage.innerHTML = formatReplyText(questionData.text);
+    userBubbleWrapper.appendChild(userMessage);
+    chatWindow.appendChild(userBubbleWrapper);
+    console.log('[DEBUG] 用戶訊息泡泡已添加');
+    
+    // 創建並添加 bot 訊息泡泡（使用打字機效果）
+    const botBubbleWrapper = document.createElement('div');
+    botBubbleWrapper.className = 'chatBubble chatBubble--bot';
+    const botMessage = document.createElement('div');
+    botMessage.className = 'chatBubbleMessage';
+    typeTextWithHTML(formatReplyText(questionData.reply), botMessage, 100, 5);
+    botBubbleWrapper.appendChild(botMessage);
+    chatWindow.appendChild(botBubbleWrapper);
+    console.log('[DEBUG] Bot 訊息泡泡已添加');
+    
+    // 滾動到聊天室底部顯示最新訊息
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    console.log('[DEBUG] 聊天室已滾動到底部');
+    console.log('[DEBUG] 問題訊息已成功顯示');
+    
+  } catch (error) {
+    console.error('[DEBUG] 顯示問題訊息時發生錯誤:', error);
+    throw error;
+  }
+}
  
  
  

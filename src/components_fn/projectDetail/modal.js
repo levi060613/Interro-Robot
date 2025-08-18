@@ -706,7 +706,14 @@ async function handleDesktopLogic(question, projectData) {
       // 設置標記，表示是從問題點擊進入聊天室
       if (path === '/chatRoom') {
         sessionStorage.setItem('fromQuestionClick', 'true');
-        console.log('[DEBUG] 設置 fromQuestionClick 標記');
+        // 保存問題數據，讓聊天室在初始化完成後顯示
+        sessionStorage.setItem('pendingQuestionData', JSON.stringify({
+          text: question.text,
+          reply: question.reply,
+          id: question.id,
+          label: question.label || "其他"
+        }));
+        console.log('[DEBUG] 設置 fromQuestionClick 標記和問題數據');
       }
       
       // 在路由切換前再次保存滾動位置
@@ -749,7 +756,8 @@ async function handleDesktopLogic(question, projectData) {
         setTimeout(restoreScroll, 100);
         setTimeout(() => {
           restoreScroll();
-          setTimeout(showMessage, 100); // 路徑切換後顯示訊息
+          // 不再在這裡調用 showMessage，讓聊天室在初始化完成後處理問題訊息
+          console.log('[DEBUG] 路由切換完成，問題訊息將由聊天室處理');
         }, 150);
         
         // 路徑切換完成後，創建並插入 modalLookBtn
@@ -873,7 +881,14 @@ async function handleMobileLogic(question, projectData) {
       // 設置標記，表示是從問題點擊進入聊天室
       if (path === '/chatRoom') {
         sessionStorage.setItem('fromQuestionClick', 'true');
-        console.log('[DEBUG] 設置 fromQuestionClick 標記');
+        // 保存問題數據，讓聊天室在初始化完成後顯示
+        sessionStorage.setItem('pendingQuestionData', JSON.stringify({
+          text: question.text,
+          reply: question.reply,
+          id: question.id,
+          label: question.label || "其他"
+        }));
+        console.log('[DEBUG] 設置 fromQuestionClick 標記和問題數據');
       }
       
       // 在路由切換前再次保存滾動位置
@@ -916,7 +931,8 @@ async function handleMobileLogic(question, projectData) {
         setTimeout(restoreScroll, 100);
         setTimeout(() => {
           restoreScroll();
-          setTimeout(() => showMessageInChatRoom(question), 100); // 路徑切換後顯示訊息
+          // 不再在這裡調用 showMessageInChatRoom，讓聊天室在初始化完成後處理問題訊息
+          console.log('[DEBUG] 路由切換完成，問題訊息將由聊天室處理');
         }, 150);
         
         // 路徑切換完成後，創建並插入 modalLookBtn
@@ -933,7 +949,14 @@ async function handleMobileLogic(question, projectData) {
     navigate('/chatRoom');
     console.log('[DEBUG] Navigate 函數調用完成');
   } else {
-    // 如果已經在 chatRoom，直接顯示訊息
+    // 如果已經在 chatRoom，也保存問題數據並直接顯示訊息
+    sessionStorage.setItem('pendingQuestionData', JSON.stringify({
+      text: question.text,
+      reply: question.reply,
+      id: question.id,
+      label: question.label || "其他"
+    }));
+    console.log('[DEBUG] 已在 chatRoom，保存問題數據並直接顯示訊息');
     await showMessageInChatRoom(question);
     
     // 如果已經在 chatRoom，也要創建 modalLookBtn
