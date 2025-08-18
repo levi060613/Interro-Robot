@@ -79,6 +79,8 @@ export default async function initChatInputPanel(initialOptions) {
         text: opt.text,
         reply: opt.reply,
         questions_id: opt.questions_id || [],
+        id: opt.id,
+        label: opt.label || "其他",
         clicked: false
       }));
       groupsData[0] = step1Options;
@@ -90,6 +92,8 @@ export default async function initChatInputPanel(initialOptions) {
       text: opt.text,
       reply: opt.reply,
       questions_id: opt.questions_id || [],
+      id: opt.id,
+      label: opt.label || "其他",
       clicked: false
     }));
     groupsData[0] = step1Options;
@@ -210,6 +214,12 @@ export default async function initChatInputPanel(initialOptions) {
       sessionStorage.setItem('lastQuestionId', item.dataset.id);
     }
 
+    // 记录问题点击到GA（包含label）
+    if (item.dataset.id && item.dataset.id !== 'parent') {
+      const questionLabel = item.dataset.label || "其他";
+      markQuestionClicked(item.dataset.id, questionLabel);
+    }
+
     // 检查是否是特定问题，如果是则显示额外消息
     if (item.dataset.id === 'q001' || item.dataset.id === 'q002' || item.dataset.id === 'q003') {
       console.log('检测到特定问题ID:', item.dataset.id);
@@ -221,13 +231,14 @@ export default async function initChatInputPanel(initialOptions) {
       // 如果有下一层问题id，就建立下一层suggestions
       const nextQuestions = await fetchQuestionsByIds(questionsId);
 
-      // 将question数据转成{text, reply, questions_id}结构
-      const nextOptions = nextQuestions.map(q => ({
-        text: q.question,
-        reply: q.answer,
-        questions_id: q.questions_id || [],
-        id: q.id // 添加id属性
-      }));
+          // 将question数据转成{text, reply, questions_id}结构
+    const nextOptions = nextQuestions.map(q => ({
+      text: q.question,
+      reply: q.answer,
+      questions_id: q.questions_id || [],
+      id: q.id,
+      label: q.label || "其他"
+    }));
 
       // 添加被点击的问题作为第一个选项
       nextOptions.unshift({
@@ -716,7 +727,8 @@ export default async function initChatInputPanel(initialOptions) {
         item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
         item.dataset.reply = opt.reply;
         item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
-        item.dataset.id = opt.id; // 添加id属性
+        item.dataset.id = opt.id;
+        item.dataset.label = opt.label || "其他"; // 添加label属性用于GA追踪
         group.appendChild(item);
       });
     }
@@ -917,7 +929,9 @@ export default async function initChatInputPanel(initialOptions) {
     const nextOptions = questions.map(q => ({
       text: q.question,
       reply: q.answer,
-      questions_id: q.questions_id || []
+      questions_id: q.questions_id || [],
+      id: q.id,
+      label: q.label || "其他"
     }));
 
     // 清空当前容器
@@ -943,6 +957,8 @@ export default async function initChatInputPanel(initialOptions) {
       item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
       item.dataset.reply = opt.reply;
       item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
+      item.dataset.id = opt.id;
+      item.dataset.label = opt.label || "其他";
       container.appendChild(item);
     });
 
@@ -951,6 +967,155 @@ export default async function initChatInputPanel(initialOptions) {
     if (currentStep) {
       groupsData[currentStep - 1] = nextOptions;
       saveChatInputState();
+    }
+
+    // 为这些问题添加点击事件处理，支持延伸选项
+    await addClickHandlersToQuestions(container, nextOptions);
+  }
+
+  // ========== 为动态创建的问题添加点击事件处理 ==========
+  async function addClickHandlersToQuestions(container, options) {
+    // 为每个问题添加点击事件
+    const questionItems = container.querySelectorAll('.carousel__suggestionItem:not(.add-text)');
+    
+    questionItems.forEach(async (item) => {
+      // 移除可能存在的旧事件监听器
+      item.removeEventListener('click', item._questionClickHandler);
+      
+      // 创建新的事件处理函数
+      item._questionClickHandler = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // 检查是否已经点击过
+        if (item.classList.contains('carousel__suggestionItem--clicked')) {
+          return;
+        }
+
+        // 添加clicked样式
+        item.classList.add('carousel__suggestionItem--clicked');
+
+        const text = item.textContent.trim();
+        const reply = item.dataset.reply;
+        const questionsId = JSON.parse(item.dataset.questionsId || '[]');
+
+        // 用户消息从顶部开始显示
+        appendMessage(text, 'user', true);
+        await saveMessage(text, 'user');
+
+        // bot回复也从顶部开始显示
+        appendMessage(reply, 'bot', true);
+        await saveMessage(reply, 'bot');
+
+        // 记录问题点击到GA（包含label）
+        if (item.dataset.id && item.dataset.id !== 'parent') {
+          const questionLabel = item.dataset.label || "其他";
+          markQuestionClicked(item.dataset.id, questionLabel);
+        }
+
+        // 检查是否是特定问题，如果是则显示额外消息
+        if (item.dataset.id === 'q001' || item.dataset.id === 'q002' || item.dataset.id === 'q003') {
+          console.log('检测到特定问题ID:', item.dataset.id);
+          handleProjectButtonClick(item);
+        }
+
+        // 处理延伸选项（添加深度限制）
+        if (questionsId.length > 0) {
+          await handleExtensionQuestions(questionsId, text, reply, container);
+        } else {
+          // 如果没有延伸问题，显示标签建议
+          await showTagSuggestionsForContainer(container);
+        }
+      };
+      
+      // 添加事件监听器
+      item.addEventListener('click', item._questionClickHandler);
+    });
+  }
+
+  // ========== 处理延伸选项的辅助函数 ==========
+  async function handleExtensionQuestions(questionsId, parentText, parentReply, container) {
+    try {
+      // 获取下一层问题
+      const nextQuestions = await fetchQuestionsByIds(questionsId);
+      
+      if (nextQuestions.length === 0) {
+        console.log('没有找到延伸问题');
+        return;
+      }
+
+      // 将question数据转成{text, reply, questions_id}结构
+      const nextOptions = nextQuestions.map(q => ({
+        text: q.question,
+        reply: q.answer,
+        questions_id: q.questions_id || [],
+        id: q.id,
+        label: q.label || "其他"
+      }));
+
+      // 添加被点击的问题作为第一个选项
+      nextOptions.unshift({
+        text: `「${parentText.substring(0, 8)}${parentText.length > 10 ? '...' : ''}」的延伸：`,
+        reply: parentReply,
+        questions_id: questionsId,
+        isParentQuestion: true,
+        id: 'parent'
+      });
+
+      // 创建新的建议组
+      const nextStep = currentStep + 1;
+      const nextGroup = document.createElement('ul');
+      nextGroup.className = 'carousel__suggestionGroup';
+      nextGroup.dataset.step = nextStep;
+      
+      // 添加到轮播容器
+      const carouselContainer = carouselEl.querySelector('.carousel__container');
+      carouselContainer.appendChild(nextGroup);
+      
+      // 创建建议组
+      createOrReplaceSuggestionGroup(nextOptions, nextStep);
+      
+      // 更新状态
+      currentStep = nextStep;
+      groupsData[nextStep - 1] = nextOptions;
+      updateDots();
+      scrollToStep(nextStep);
+      saveChatInputState();
+      
+      console.log(`创建了第 ${nextStep} 层延伸选项`);
+      
+    } catch (error) {
+      console.error('处理延伸选项时发生错误:', error);
+    }
+  }
+
+  // ========== 为容器显示标签建议的辅助函数 ==========
+  async function showTagSuggestionsForContainer(container) {
+    try {
+      // 检查最后一个建议组是否已经是标签建议组
+      const carouselContainer = carouselEl.querySelector('.carousel__container');
+      const groups = carouselContainer.querySelectorAll('.carousel__suggestionGroup');
+      const lastGroup = groups[groups.length - 1];
+      
+      if (lastGroup && lastGroup.querySelector('.carousel__tagContainer')) {
+        return;
+      }
+      
+      const nextStep = currentStep + 1;
+      const nextGroup = document.createElement('ul');
+      nextGroup.className = 'carousel__suggestionGroup';
+      nextGroup.dataset.step = nextStep;
+      carouselContainer.appendChild(nextGroup);
+      
+      await showTagSuggestions(nextGroup);
+      
+      currentStep = nextStep;
+      updateDots();
+      scrollToStep(nextStep);
+      saveChatInputState();
+      
+    } catch (error) {
+      console.error('显示标签建议时发生错误:', error);
     }
   }
 

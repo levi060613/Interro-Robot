@@ -307,6 +307,20 @@
 
 }
 
+.chatButton__container{
+    width: 100%;
+}
+
+.introductionButton{
+    @extend .switchButton;
+    background-image: linear-gradient(
+        135deg,
+        #{fn.color(primary, 200)},
+        #{fn.color(primary, 300)}
+    );
+    color: fn.color(neutral, white);
+}
+
 .menuButton__container{
     width: 48px;
     position: relative;

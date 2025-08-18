@@ -13,22 +13,22 @@ import { all_tags } from '../../utils/tempData.js';
 export default async function initChatOptionPanel(initialOptions) {
     const chatOptionPanel = document.querySelector('.chatOptionPanel');
     const switchButton = document.getElementById('switchButton');
+    const introductionButton = document.getElementById('introductionButton');
     const menuButton = document.querySelector('.menuButton');
     const carousel = document.querySelector('.chatOptionPanel__carousel');
     const carouselContainer = document.querySelector('.carouselBlock__container');
     const dotsContainer = document.querySelector('.carouselBlock__dots');
     const chatWindow = document.getElementById('chatWindow');
 
-
-
     console.log('[DEBUG] 檢查元素是否存在:');
     console.log('[DEBUG] chatOptionPanel:', !!chatOptionPanel);
     console.log('[DEBUG] switchButton:', !!switchButton);
+    console.log('[DEBUG] introductionButton:', !!introductionButton);
     console.log('[DEBUG] menuButton:', !!menuButton);
     console.log('[DEBUG] carousel:', !!carousel);
     console.log('[DEBUG] carouselContainer:', !!carouselContainer);
 
-    if (!chatOptionPanel || !switchButton || !menuButton || !carousel || !carouselContainer) {
+    if (!chatOptionPanel || !switchButton || !introductionButton || !menuButton || !carousel || !carouselContainer) {
         console.error('Required chat option panel elements not found');
         return;
     }
@@ -41,6 +41,44 @@ export default async function initChatOptionPanel(initialOptions) {
     let isMenuActive = false;
     let hasNewStep = false;
     let lastActiveStep = 1;
+    let isFromQuestionClick = false; // 新增：是否從問題點擊進入
+
+    // ========== 檢查是否從問題點擊進入 ==========
+    const fromQuestionClick = sessionStorage.getItem('fromQuestionClick') === 'true';
+    if (fromQuestionClick) {
+        console.log('[DEBUG] 檢測到從問題點擊進入聊天室');
+        isFromQuestionClick = true;
+        
+        // 檢查按鈕是否已經被預先設置了狀態
+        const isButtonPreSet = introductionButton.style.display === 'block' && switchButton.style.display === 'none';
+        
+        if (!isButtonPreSet) {
+            // 如果按鈕沒有被預先設置，檢查是否已經顯示過自我介紹
+            const chatWindow = document.getElementById('chatWindow');
+            if (chatWindow) {
+                const chatBubbles = chatWindow.querySelectorAll('.chatBubble--bot');
+                const hasShownIntroduction = Array.from(chatBubbles).some(bubble => {
+                    const message = bubble.querySelector('.chatBubbleMessage');
+                    return message && message.textContent.includes('嗨！歡迎你進來這個聊天室');
+                });
+                
+                if (!hasShownIntroduction) {
+                    showIntroductionButton();
+                } else {
+                    console.log('[DEBUG] 已經顯示過自我介紹，跳過顯示 introductionButton');
+                    isFromQuestionClick = false;
+                }
+            } else {
+                // 如果找不到 chatWindow，直接顯示 introductionButton
+                showIntroductionButton();
+            }
+        } else {
+            console.log('[DEBUG] 按鈕狀態已被預先設置，跳過重複設置');
+        }
+        
+        // 清除標記，避免重複觸發
+        sessionStorage.removeItem('fromQuestionClick');
+    }
 
     // ========== 狀態恢復邏輯 ==========
     // 從 sessionStorage 中恢復之前的狀態
@@ -53,6 +91,7 @@ export default async function initChatOptionPanel(initialOptions) {
             groupsData = state.groupsData || [];
             lastActiveStep = state.lastActiveStep || 1;
             hasNewStep = state.hasNewStep || false;
+            isFromQuestionClick = state.isFromQuestionClick || false;
 
             // 如果快取數據存在但沒有 groupsData 或 Step 1 數據，則用初始 options 填充
             if (groupsData.length === 0 || !groupsData[0]) {
@@ -60,6 +99,8 @@ export default async function initChatOptionPanel(initialOptions) {
                     text: opt.text,
                     reply: opt.reply,
                     questions_id: opt.questions_id || [],
+                    id: opt.id,
+                    label: opt.label || "其他",
                     clicked: false
                 }));
                 groupsData[0] = step1Options;
@@ -72,6 +113,36 @@ export default async function initChatOptionPanel(initialOptions) {
                 }
             });
 
+            // 恢復按鈕狀態
+            if (isFromQuestionClick) {
+                // 檢查按鈕是否已經被預先設置了狀態
+                const isButtonPreSet = introductionButton.style.display === 'block' && switchButton.style.display === 'none';
+                
+                if (!isButtonPreSet) {
+                    // 檢查是否已經顯示過自我介紹
+                    const chatWindow = document.getElementById('chatWindow');
+                    if (chatWindow) {
+                        const chatBubbles = chatWindow.querySelectorAll('.chatBubble--bot');
+                        const hasShownIntroduction = Array.from(chatBubbles).some(bubble => {
+                            const message = bubble.querySelector('.chatBubbleMessage');
+                            return message && message.textContent.includes('嗨！歡迎你進來這個聊天室');
+                        });
+                        
+                        if (!hasShownIntroduction) {
+                            showIntroductionButton();
+                        } else {
+                            console.log('[DEBUG] 狀態恢復時已經顯示過自我介紹，跳過顯示 introductionButton');
+                            isFromQuestionClick = false;
+                        }
+                    } else {
+                        // 如果找不到 chatWindow，直接顯示 introductionButton
+                        showIntroductionButton();
+                    }
+                } else {
+                    console.log('[DEBUG] 狀態恢復時按鈕已被預先設置，跳過重複設置');
+                }
+            }
+
         } catch (e) {
             console.error("解析 chatOptionPanelState 快取失敗:", e);
             // 解析失敗，使用初始狀態
@@ -79,10 +150,13 @@ export default async function initChatOptionPanel(initialOptions) {
             groupsData = [];
             lastActiveStep = 1;
             hasNewStep = false;
+            isFromQuestionClick = false;
             const step1Options = initialOptions.map(opt => ({
                 text: opt.text,
                 reply: opt.reply,
                 questions_id: opt.questions_id || [],
+                id: opt.id,
+                label: opt.label || "其他",
                 clicked: false
             }));
             groupsData[0] = step1Options;
@@ -94,6 +168,8 @@ export default async function initChatOptionPanel(initialOptions) {
             text: opt.text,
             reply: opt.reply,
             questions_id: opt.questions_id || [],
+            id: opt.id,
+            label: opt.label || "其他",
             clicked: false
         }));
         groupsData[0] = step1Options;
@@ -142,6 +218,21 @@ export default async function initChatOptionPanel(initialOptions) {
     }
 
     // ========== 事件監聽器 ==========
+    
+    // 點擊 introductionButton 顯示自我介紹
+    introductionButton.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        console.log('[DEBUG] introductionButton 被點擊');
+        
+        // 隱藏 introductionButton，顯示 switchButton
+        hideIntroductionButton();
+        
+        // 顯示自我介紹
+        await showIntroductionMessage();
+        
+        // 保存狀態到 sessionStorage
+        saveChatOptionPanelState();
+    });
     
     // 點擊 switchButton 切換狀態
     switchButton.addEventListener('click', (e) => {
@@ -678,7 +769,9 @@ export default async function initChatOptionPanel(initialOptions) {
         const nextOptions = questions.map(q => ({
             text: q.question,
             reply: q.answer,
-            questions_id: q.questions_id || []
+            questions_id: q.questions_id || [],
+            id: q.id,
+            label: q.label || "其他"
         }));
 
         // 清空當前容器
@@ -706,6 +799,8 @@ export default async function initChatOptionPanel(initialOptions) {
             }
             item.dataset.reply = opt.reply;
             item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
+            item.dataset.id = opt.id;
+            item.dataset.label = opt.label || "其他";
             container.appendChild(item);
         });
 
@@ -715,6 +810,155 @@ export default async function initChatOptionPanel(initialOptions) {
             groupsData[currentStep - 1] = nextOptions;
             // 保存狀態到 sessionStorage
             saveChatOptionPanelState();
+        }
+
+        // 为这些问题添加点击事件处理，支持延伸选项
+        await addClickHandlersToQuestions(container, nextOptions);
+    }
+
+    // ========== 为动态创建的问题添加点击事件处理 ==========
+    async function addClickHandlersToQuestions(container, options) {
+        // 为每个问题添加点击事件
+        const questionItems = container.querySelectorAll('.suggestionGroup__item:not(.add-text)');
+        
+        questionItems.forEach(async (item) => {
+            // 移除可能存在的旧事件监听器
+            item.removeEventListener('click', item._questionClickHandler);
+            
+            // 创建新的事件处理函数
+            item._questionClickHandler = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 检查是否已经点击过
+                if (item.classList.contains('suggestionGroup__item--clicked')) {
+                    return;
+                }
+
+                // 添加clicked样式
+                item.classList.add('suggestionGroup__item--clicked');
+
+                const text = item.textContent.trim();
+                const reply = item.dataset.reply;
+                const questionsId = JSON.parse(item.dataset.questionsId || '[]');
+
+                // 记录问题点击（包含 label）
+                if (item.dataset.id && item.dataset.id !== 'parent') {
+                    const questionLabel = item.dataset.label || "其他";
+                    markQuestionClicked(item.dataset.id, questionLabel);
+                }
+
+                // 發送用戶訊息
+                appendMessage(text, 'user', true);
+                await saveMessage(text, 'user');
+
+                // 發送bot回覆
+                appendMessage(reply, 'bot', true);
+                await saveMessage(reply, 'bot');
+
+                // 點擊選項後重置面板狀態
+                resetPanel();
+
+                // 处理延伸选项（添加深度限制）
+                if (questionsId.length > 0) {
+                    await handleExtensionQuestions(questionsId, text, reply, container);
+                } else {
+                    // 如果没有延伸问题，显示标签建议
+                    await showTagSuggestionsForContainer(container);
+                }
+            };
+            
+            // 添加事件监听器
+            item.addEventListener('click', item._questionClickHandler);
+        });
+    }
+
+    // ========== 处理延伸选项的辅助函数 ==========
+    async function handleExtensionQuestions(questionsId, parentText, parentReply, container) {
+        try {
+            // 获取下一层问题
+            const nextQuestions = await fetchQuestionsByIds(questionsId);
+            
+            if (nextQuestions.length === 0) {
+                console.log('没有找到延伸问题');
+                return;
+            }
+
+            // 將question數據轉成{text, reply, questions_id}結構
+            const nextOptions = nextQuestions.map(q => ({
+                text: q.question,
+                reply: q.answer,
+                questions_id: q.questions_id || [],
+                id: q.id,
+                label: q.label || "其他"
+            }));
+
+            // 添加被點擊的問題作為第一個選項
+            nextOptions.unshift({
+                text: `「${parentText.substring(0, 8)}${parentText.length > 10 ? '...' : ''}」的延伸：`,
+                reply: parentReply,
+                questions_id: questionsId,
+                isParentQuestion: true,
+                id: 'parent'
+            });
+
+            // 只有當新產生的下一層有內容時才增加步驟和儲存
+            if (nextOptions.length > 0) {
+                // 找到最後一個非空的步驟
+                let lastStep = groupsData.length;
+                while (lastStep > 0 && (!groupsData[lastStep - 1] || groupsData[lastStep - 1].length === 0)) {
+                    lastStep--;
+                }
+               
+                // 在最後一個非空步驟後添加新的步驟
+                const newStep = lastStep + 1;
+                groupsData[newStep - 1] = nextOptions;
+                createSuggestionGroup(nextOptions, newStep);
+                updateDots();
+                
+                // 設置有新 step 的標誌，但不自動切換
+                hasNewStep = true;
+                
+                // 保存狀態到 sessionStorage
+                saveChatOptionPanelState();
+                
+                console.log(`创建了第 ${newStep} 层延伸选项`);
+            }
+            
+        } catch (error) {
+            console.error('处理延伸选项时发生错误:', error);
+        }
+    }
+
+    // ========== 为容器显示标签建议的辅助函数 ==========
+    async function showTagSuggestionsForContainer(container) {
+        try {
+            // 检查最后一个建议组是否已经是标签建议组
+            const groups = carouselContainer.querySelectorAll('.suggestionGroup');
+            const lastGroup = groups[groups.length - 1];
+            
+            if (lastGroup && lastGroup.querySelector('.tagContainer')) {
+                return;
+            }
+            
+            // 找到最後一個非空的步驟
+            let lastStep = groupsData.length;
+            while (lastStep > 0 && (!groupsData[lastStep - 1] || groupsData[lastStep - 1].length === 0)) {
+                lastStep--;
+            }
+            
+            const nextStep = lastStep + 1;
+            await showTagSuggestions(nextStep);
+            
+            // 設置有新 step 的標誌，但不自動切換
+            hasNewStep = true;
+            updateDots();
+            
+            // 保存狀態到 sessionStorage
+            saveChatOptionPanelState();
+            
+        } catch (error) {
+            console.error('显示标签建议时发生错误:', error);
         }
     }
 
@@ -868,12 +1112,13 @@ export default async function initChatOptionPanel(initialOptions) {
 
     // ========== 狀態保存函數 ==========
     function saveChatOptionPanelState() {
-        // 保存 currentStep、groupsData、lastActiveStep 和 hasNewStep
+        // 保存 currentStep、groupsData、lastActiveStep、hasNewStep 和 isFromQuestionClick
         sessionStorage.setItem('chatOptionPanelState', JSON.stringify({
             currentStep: currentStep,
             groupsData: groupsData,
             lastActiveStep: lastActiveStep,
-            hasNewStep: hasNewStep
+            hasNewStep: hasNewStep,
+            isFromQuestionClick: isFromQuestionClick
         }));
     }
 
@@ -911,8 +1156,68 @@ export default async function initChatOptionPanel(initialOptions) {
         saveChatOptionPanelState();
     });
 
+    // ========== 顯示自我介紹函數 ==========
+    async function showIntroductionMessage() {
+        try {
+            // 導入 showIntroductionMessage 函數
+            const { showIntroductionMessage: showIntro } = await import('../../utils/chatState.js');
+            
+            // 調用外部的自我介紹函數
+            await showIntro(chatWindow);
+            
+            // 自我介紹完成後，恢復正常流程
+            isFromQuestionClick = false;
+            
+        } catch (error) {
+            console.error('顯示自我介紹失敗:', error);
+            // 如果導入失敗，使用備用方案
+            const introductionText = `嗨！歡迎你進來這個聊天室，接下來我們會模擬一個面試場合的互動。  
+那在開始之前，先讓我簡單介紹一下自己吧！
 
+### 👋 關於我 ###
+我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
+> 目前作為六角學院的簽約UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
 
+### 🎯 設計強項 ###
+- 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
+- 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
+- 熟練使用 Figma 製作 wireframe、UI 與 prototype，並能彈性配合專案時程
+- 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通
+
+### 🛠 自學開發的動機與進展 ###
+目前也在**自學前端開發（以切版為主）**，希望能進一步理解開發與設計的接軌，探索更多優化 UX 體驗的方式。
+目前已能處理：
+- HTML/CSS 切版
+- JavaScript 基本元件化操作
+
+### 🚀 進行中的個人專案 ###
+我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
+希望透過這個專案，讓我整合：
+- 用戶研究分析的能力
+- UI 設計
+- 前端開發實作
+- 後續數據測試、迭代優化
+> 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。`;
+            
+            appendMessage(introductionText, 'bot', true);
+            await saveMessage(introductionText, 'bot');
+            isFromQuestionClick = false;
+        }
+    }
+
+    // ========== 顯示 introductionButton 函數 ==========
+    function showIntroductionButton() {
+        introductionButton.style.display = 'block';
+        switchButton.style.display = 'none';
+        console.log('[DEBUG] introductionButton 已顯示，switchButton 已隱藏');
+    }
+
+    // ========== 隱藏 introductionButton 函數 ==========
+    function hideIntroductionButton() {
+        introductionButton.style.display = 'none';
+        switchButton.style.display = 'block';
+        console.log('[DEBUG] introductionButton 已隱藏，switchButton 已顯示');
+    }
 
 
     // 返回控制函數供外部使用

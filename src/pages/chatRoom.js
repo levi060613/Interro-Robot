@@ -53,7 +53,38 @@ import {
       const isFromQuestionClick = sessionStorage.getItem('fromQuestionClick') === 'true';
       console.log('[DEBUG] 是否從問題點擊進入:', isFromQuestionClick);
 
-      // 3. 如果是第一次進入聊天室（歷史紀錄為空）且不是從問題點擊進入，顯示引導語句
+      // 3. 如果是從問題點擊進入，檢查是否顯示過自我介紹，再決定按鈕狀態
+      if (isFromQuestionClick) {
+        console.log('[DEBUG] 從問題點擊進入，檢查是否顯示過自我介紹');
+        
+        // 檢查是否已經顯示過自我介紹
+        const hasShownIntroduction = history.some(msg => 
+          msg.sender === 'bot' && 
+          typeof msg.text === 'string' && 
+          msg.text.includes('嗨！歡迎你進來這個聊天室')
+        );
+        
+        if (!hasShownIntroduction) {
+          console.log('[DEBUG] 未顯示過自我介紹，預先設置 introductionButton');
+          
+          // 找到按鈕元素並預先設置狀態
+          const introductionButton = chatInputPanel.querySelector('#introductionButton');
+          const switchButton = chatInputPanel.querySelector('#switchButton');
+          
+          if (introductionButton && switchButton) {
+            introductionButton.style.display = 'block';
+            switchButton.style.display = 'none';
+            console.log('[DEBUG] 按鈕狀態已預先設置');
+          }
+        } else {
+          console.log('[DEBUG] 已經顯示過自我介紹，保持 switchButton 顯示');
+          // 已經顯示過自我介紹，不需要顯示 introductionButton
+          // 清除標記，避免 chatOptionPanel 重複處理
+          sessionStorage.removeItem('fromQuestionClick');
+        }
+      }
+
+      // 4. 如果是第一次進入聊天室（歷史紀錄為空）且不是從問題點擊進入，顯示引導語句
       if (history.length === 0 && !isFromQuestionClick){
         // 取得引導語句資料
         // 直接定義引導語句文字，不再從 fetchIntroductionInfo 獲取
@@ -106,66 +137,8 @@ import {
         }
       }
 
-      // 4. 如果是從問題點擊進入的，4秒後顯示帶按鈕的訊息
-      if (isFromQuestionClick) {
-        console.log('[DEBUG] 從問題點擊進入，4秒後顯示帶按鈕的訊息');
-        setTimeout(async () => {
-          // 檢查是否已經顯示過自我介紹
-          const hasShownIntroduction = history.some(msg => 
-            msg.sender === 'bot' && 
-            typeof msg.text === 'string' && 
-            msg.text.includes('嗨！歡迎你進來這個聊天室')
-          );
-          
-          if (hasShownIntroduction) {
-            console.log('[DEBUG] 已經顯示過自我介紹，跳過顯示按鈕訊息');
-            return;
-          }
-          
-          // 儲存帶按鈕的訊息
-          await saveMessageWithButton(
-            '想了解一下設計師嗎？', 
-            '顯示介紹', 
-            'showIntroduction'
-          );
-          
-          // 創建並顯示帶按鈕的訊息泡泡
-          const bubbleWrapper = document.createElement('div');
-          bubbleWrapper.className = 'chatBubble chatBubble--bot';
-          const message = document.createElement('div');
-          message.className = 'chatBubbleMessage chatBubbleMessage--extraMessage';
-          
-          // 顯示文字
-          message.innerHTML = formatReplyText('想了解一下設計師嗎？');
-          
-          // 創建按鈕容器
-          const buttonContainer = document.createElement('div');
-          buttonContainer.className = 'chatBubbleMessage__buttonContainer';
-          
-          // 創建按鈕
-          const button = document.createElement('button');
-          button.className = 'chatBubbleMessage__button primaryButton--fill';
-          button.textContent = '顯示介紹';
-          button.onclick = () => {
-            console.log('[DEBUG] 顯示介紹按鈕被點擊');
-            showIntroductionMessage(chatWindow);
-          };
-          
-          // 將按鈕添加到容器中
-          buttonContainer.appendChild(button);
-          message.appendChild(buttonContainer);
-          bubbleWrapper.appendChild(message);
-          chatWindow.appendChild(bubbleWrapper);
-          
-          // 滾動到聊天室底部顯示最新訊息
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-          
-          console.log('[DEBUG] 帶按鈕的訊息已顯示');
-        }, 4000); // 4秒後顯示
-        
-        // 清除標記，避免重複觸發
-        sessionStorage.removeItem('fromQuestionClick');
-      }
+      // 5. 從問題點擊進入的邏輯現在由 chatOptionPanel 處理
+      // 不再需要在這裡處理，因為 chatOptionPanel 會自動檢測並顯示 introductionButton
 
       // 🚀 新增這兩行：取得建議資料並初始化面板
       const options = await fetchOptions();          // Step 1 選項

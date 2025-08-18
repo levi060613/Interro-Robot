@@ -7,9 +7,15 @@ export function getSuggestionsByKeyword(keyword) {
     const trimmed = keyword.trim();
     if (!trimmed) return [];
   
-    const matchedOptions = options.filter(opt =>
-      opt.text.includes(trimmed)
-    );
+      const matchedOptions = options.filter(opt =>
+    opt.text.includes(trimmed)
+  ).map(opt => ({
+    text: opt.text,
+    reply: opt.reply,
+    questions_id: opt.questions_id || [],
+    id: opt.id,
+    label: opt.label || "其他"
+  }));
   
     const matchedQuestions = questionsData
       .filter(q => q.question.includes(trimmed))
