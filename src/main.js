@@ -1,24 +1,106 @@
-import "./components_fn/sidebar/sidebar.js"
-import "./components_fn/chatInputPanel/chatInputPanel.js"
-import router from "./router/index.js";          // 匯入 router 函式（負責根據 pathname 載入對應頁面）
-import { routes } from "./router/index.js";          // 匯入 routes 函式
-import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js";
-import "./components_fn/projectDetail/lightbox.js";
-import "./components_fn/positionSelector/positionSelector.js";
-import { initPositionAnalytics } from "./utils/positionAnalytics.js";
-import "./utils/testFirebase.js"; // 引入 Firebase 測試功能
+// 🚀 核心功能 - 立即加载（首屏必需）
+import "./components_fn/positionSelector/positionSelector.js"  // 职业选择器（用户必须点击收集数据）
+import "./components_fn/sidebar/sidebar.js"                   // 侧边栏导航
+import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js"  // 首页轮播图
+import router from "./router/index.js";                       // 路由功能
+import { routes } from "./router/index.js";                   // 路由配置
+import { initPositionAnalytics } from "./utils/positionAnalytics.js";  // 职位分析
 
+// 🔄 非核心功能 - 延迟加载（通过预加载优化）
+let chatInputPanelLoaded = false;
+let lightboxLoaded = false;
+let firebaseLoaded = false;
+
+// 🎯 静默预加载函数
+function silentPreloadOtherFeatures() {
+  console.log("🚀 [预加载] 开始静默预加载其他功能...");
+  
+  // 第一阶段：预加载聊天功能（用户最可能使用的）
+  preloadChatFeatures();
+  
+  // 第二阶段：预加载项目详情功能
+  setTimeout(() => {
+    preloadProjectFeatures();
+  }, 300);
+  
+  // 第三阶段：预加载其他辅助功能
+  setTimeout(() => {
+    preloadAuxiliaryFeatures();
+  }, 600);
+}
+
+// 💬 预加载聊天功能
+async function preloadChatFeatures() {
+  if (chatInputPanelLoaded) return;
+  
+  try {
+    console.log("💬 [预加载] 正在预加载聊天功能...");
+    await import("./components_fn/chatInputPanel/chatInputPanel.js");
+    chatInputPanelLoaded = true;
+    console.log("✅ [预加载] 聊天功能预加载完成");
+  } catch (error) {
+    console.warn("⚠️ [预加载] 聊天功能预加载失败:", error);
+  }
+}
+
+// 🖼️ 预加载项目详情功能
+async function preloadProjectFeatures() {
+  if (lightboxLoaded) return;
+  
+  try {
+    console.log("🖼️ [预加载] 正在预加载项目详情功能...");
+    await import("./components_fn/projectDetail/lightbox.js");
+    lightboxLoaded = true;
+    console.log("✅ [预加载] 项目详情功能预加载完成");
+  } catch (error) {
+    console.warn("⚠️ [预加载] 项目详情功能预加载失败:", error);
+  }
+}
+
+// 🔧 预加载辅助功能
+async function preloadAuxiliaryFeatures() {
+  if (firebaseLoaded) return;
+  
+  try {
+    console.log("🔧 [预加载] 正在预加载辅助功能...");
+    await import("./utils/testFirebase.js");
+    firebaseLoaded = true;
+    console.log("✅ [预加载] 辅助功能预加载完成");
+  } catch (error) {
+    console.warn("⚠️ [预加载] 辅助功能预加载失败:", error);
+  }
+}
+
+// 🚀 智能预加载启动函数
+function startSmartPreloading() {
+  // 使用 requestIdleCallback 在浏览器空闲时预加载
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      silentPreloadOtherFeatures();
+    }, { timeout: 2000 }); // 2秒超时，确保不会等待太久
+  } else {
+    // 降级方案：延迟预加载
+    setTimeout(() => {
+      silentPreloadOtherFeatures();
+    }, 1000);
+  }
+}
+
+// 🎯 首屏核心功能初始化
 window.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;
-  // 如果不是首頁，重整時自動導回首頁，並加上 console.log
+  
+  // 如果不是首頁，重整時自動導回首頁
   const isHome = pathname === "/" || pathname === "/index.html";
   if (!isHome) {
     console.log("[重整偵測] 非首頁路徑，將導回首頁。當前路徑:", pathname);
     history.replaceState({}, "", "/");
-    location.reload(); // 重新載入首頁
-    return; // 阻止後續執行
+    location.reload();
+    return;
   } else {
     console.log("[重整偵測] 首頁路徑，正常載入。當前路徑:", pathname);
+    
+    // 🚀 立即执行首屏核心功能
     router(pathname);
     bindImgCarousel();
     handleResponsiveHomeTitle();
@@ -26,6 +108,12 @@ window.addEventListener("DOMContentLoaded", () => {
     
     // 初始化职位 Analytics
     initPositionAnalytics();
+    
+    // 🎯 首屏完成后，启动智能预加载
+    setTimeout(() => {
+      startSmartPreloading();
+      addHoverPreloading(); // 启动悬停预加载
+    }, 100); // 短暂延迟，确保首屏渲染完成
   }
 });
 
@@ -85,6 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (link) {
       e.preventDefault();
       const href = link.getAttribute("href");
+      
+      // 🚀 用户点击导航时，确保对应功能已预加载
+      ensureFeaturePreloaded(href);
+      
       navigate(href);
     }
   });
@@ -101,6 +193,56 @@ document.addEventListener("DOMContentLoaded", () => {
   router(currentPath);         // 初次進入頁面時載入對應內容
   setActiveLink(currentPath);  // 設定正確的 active 導覽樣式
 });
+
+// 🎯 确保功能预加载的函数
+function ensureFeaturePreloaded(path) {
+  switch (path) {
+    case "/chatRoom":
+      if (!chatInputPanelLoaded) {
+        console.log("🚀 [即时加载] 用户点击聊天页面，立即加载聊天功能");
+        preloadChatFeatures();
+      }
+      break;
+    case "/projectList":
+      if (!lightboxLoaded) {
+        console.log("🚀 [即时加载] 用户点击项目页面，立即加载项目功能");
+        preloadProjectFeatures();
+      }
+      break;
+  }
+}
+
+// 🎯 添加hover预加载功能
+function addHoverPreloading() {
+  const links = document.querySelectorAll("[data-link]");
+  
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    
+    // 鼠标悬停时预加载
+    link.addEventListener("mouseenter", () => {
+      preloadFeatureOnHover(href);
+    });
+  });
+}
+
+// 🚀 悬停预加载功能
+function preloadFeatureOnHover(path) {
+  switch (path) {
+    case "/chatRoom":
+      if (!chatInputPanelLoaded) {
+        console.log("🖱️ [悬停预加载] 预加载聊天功能");
+        preloadChatFeatures();
+      }
+      break;
+    case "/projectList":
+      if (!lightboxLoaded) {
+        console.log("🖱️ [悬停预加载] 预加载项目功能");
+        preloadProjectFeatures();
+      }
+      break;
+  }
+}
 
 /**
  * popstate 事件：當使用者點「上一頁 / 下一頁」時觸發
@@ -151,4 +293,31 @@ function handleResponsiveHomeTitle() {
     subtitle.innerHTML = `「想快速知道我是不是你需要的設計師嗎？<b>那直接與我來場面試吧！</b> 」`;
   }
 }
+
+// 📊 性能监控 - 显示预加载状态
+function showPreloadStatus() {
+  const status = {
+    "职业选择器": "✅ 已加载",
+    "侧边栏": "✅ 已加载", 
+    "轮播图": "✅ 已加载",
+    "聊天功能": chatInputPanelLoaded ? "✅ 已预加载" : "⏳ 预加载中...",
+    "项目功能": lightboxLoaded ? "✅ 已预加载" : "⏳ 预加载中...",
+    "辅助功能": firebaseLoaded ? "✅ 已预加载" : "⏳ 预加载中..."
+  };
+  
+  console.log("📊 [性能监控] 当前加载状态:");
+  Object.entries(status).forEach(([feature, state]) => {
+    console.log(`  ${feature}: ${state}`);
+  });
+}
+
+// 🎯 在预加载完成后显示状态
+function updatePreloadStatus() {
+  setTimeout(() => {
+    showPreloadStatus();
+  }, 2000); // 2秒后显示状态
+}
+
+// 启动状态监控
+updatePreloadStatus();
   
