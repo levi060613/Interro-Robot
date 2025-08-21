@@ -36,14 +36,22 @@ const projectDetailData = {
             label: "專案開發細節",
             text: "這個專案在初期有建立計畫嗎？",
             reply: `
-              A2(imgBlock-1)`
+              A2(imgBlock-1)
+              `
           },
           {
             id: "q502",
             label: "專案開發細節",
             text: "為何選擇採用敏捷式（alige）開發流程？",
             reply: `
-              A3(imgBlock-1)`
+### 🚀 進行中的個人專案 ###
+我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
+希望透過這個專案，讓我整合：
+- 用戶研究分析的能力
+- UI 設計
+- 前端開發實作
+- 後續數據測試、迭代優化
+> 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。`
           }
         ]
       },
@@ -113,7 +121,7 @@ const projectDetailData = {
       {
         type: "imgBlock",
         step: 4,
-        name: "Onboarding 流程設計",
+        name: "互動功能介紹",
         images: [
           {
             src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754366058/projectModal-01_05_zguudw.png"
@@ -125,19 +133,19 @@ const projectDetailData = {
         questions: [
           {
             id: "q509",
-            text: "你怎麼確定這些問題是面試官想了解的？",
+            text: "為什麼會設計這種「模擬面試」的互動方式？",
             reply: `
               A1(imgBlock-4)`
           },
           {
             id: "q510",
-            text: "Q2(imgBlock-4)",
+            text: "互動體驗有沒有做過使用者測試？結果如何？",
             reply: `
               A2(imgBlock-4)`
           },
           {
             id: "q511",
-            text: "Q3(imgBlock-4)",
+            text: "你怎麼衡量這些互動設計是否成功？",
             reply: `
               A3(imgBlock-4)`
           }
@@ -161,19 +169,19 @@ const projectDetailData = {
         questions: [
           {
             id: "q512",
-            text: "Q1(imgBlock-5)",
+            text: "在第一次版本釋出後，你收到的主要回饋是什麼？",
             reply: `
               A1(imgBlock-5)`
           },
           {
             id: "q513",
-            text: "Q2(imgBlock-5)",
+            text: "你是如何判斷優先要改進的項目？",
             reply: `
               A2(imgBlock-5)`
           },
           {
             id: "q514",
-            text: "Q3(imgBlock-5)",
+            text: "如果有時間或資源限制，你是怎麼做取捨的？",
             reply: `
               A3(imgBlock-5)`
           }

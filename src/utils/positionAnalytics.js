@@ -9,10 +9,10 @@ const analytics = getAnalytics(app);
 
 // 职位映射表
 const POSITION_MAP = {
-  'design_manager': '設計主管',
-  'senior_designer': '資深設計師',
-  'engineer': '工程師',
-  'other': '其他'
+  'design_manager': '設計主管/資深設計師',
+  'hr_recruiter': '人資/招募相關',
+  'uiux_designer': 'UIUX設計師',
+  'other': '其他類型'
 };
 
 // 获取用户职位信息

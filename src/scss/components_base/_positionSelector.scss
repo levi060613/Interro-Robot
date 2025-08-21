@@ -4,18 +4,15 @@
 
 // 职位选择模态框样式
 .position-modal {
-  @include mixins.flex-center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.5) 100%);
-  backdrop-filter: blur(4px);
-  z-index: 999;
+  z-index: 100000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
   
   &.active {
     opacity: 1;
@@ -23,49 +20,47 @@
   }
 }
 
-.position-modal-content {
-  background-color: fn.color(neutral, white);
-  border-radius: fn.border-radius(xl);
-  padding: fn.spacing(6);
-  max-width: 90vw;
+// 添加 overlay 背景层
+.position-modal::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  transform: translateY(20px);
-  transition: transform 0.3s ease;
-  
-  .position-modal.active & {
-    transform: translateY(0);
-  }
-  
-  @include mixins.respond(md) {
-    max-width: 600px;
-    padding: fn.spacing(8);
-  }
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+.position-modal-content {
+  width: 100%;
+  height: 85vh;
+  background-color: fn.color(neutral, white);
+  border-radius: fn.border-radius(2xl) fn.border-radius(2xl) 0 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .position-modal-title {
-  font-size: fn.font-size(2xl);
-  font-weight: 700;
-  color: fn.color(text, primary);
+  font-size: fn.font-size(xl);
+  font-weight: $font_weight_bold;
+  color: fn.color(text, black);
   text-align: center;
-  margin-bottom: fn.spacing(2);
-  
-  @include mixins.respond(md) {
-    font-size: fn.font-size(3xl);
-  }
+  margin-top: fn.spacing(7);
+  padding: 0 fn.spacing(4);
 }
 
 .position-modal-subtitle {
-  font-size: fn.font-size(base);
-  color: fn.color(text, secondary);
+  font-size: fn.font-size(sm);
+  color: fn.color(text, grey-dark);
   text-align: center;
-  margin-bottom: fn.spacing(6);
-  line-height: 1.6;
-  
-  @include mixins.respond(md) {
-    font-size: fn.font-size(lg);
+  padding: fn.spacing(4);
+
+  strong{
+    color: fn.color(text, black);
+    font-weight: $font_weight_bold;
   }
 }
 
@@ -73,107 +68,79 @@
   display: flex;
   flex-direction: column;
   gap: fn.spacing(3);
+  padding: fn.spacing(4);
+  overflow-y: scroll;
+  flex: 1;
 }
 
 .position-option {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: fn.spacing(4);
-  border: 2px solid fn.color(neutral, 200);
-  border-radius: fn.border-radius(lg);
+  flex-direction: column;
   background-color: fn.color(neutral, white);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: fn.color(primary, 300);
-    background-color: fn.color(primary, 50);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  @include mixins.respond(md) {
-    padding: fn.spacing(5);
-  }
-}
-
-.position-option-content {
-  flex: 1;
-}
-
-.position-option-title {
-  font-size: fn.font-size(lg);
-  font-weight: 600;
-  color: fn.color(text, primary);
-  margin-bottom: fn.spacing(1);
-  
-  @include mixins.respond(md) {
-    font-size: fn.font-size(xl);
-  }
-}
-
-.position-option-description {
-  font-size: fn.font-size(sm);
-  color: fn.color(text, secondary);
-  line-height: 1.5;
-  margin: 0;
-  
-  @include mixins.respond(md) {
-    font-size: fn.font-size(base);
-  }
-}
-
-.position-option-check {
-  display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: fn.border-radius(circle);
-  background-color: fn.color(neutral, 100);
-  color: fn.color(neutral, 400);
-  transition: all 0.2s ease;
+  padding: fn.spacing(4) fn.spacing(3);
+  gap: fn.spacing(3);
+  border-radius: fn.border-radius(md);
+  outline: 1px solid fn.color(neutral, 200);
+  cursor: pointer;
+  height: auto;
+  transition: height 0.3s ease;
   
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .position-option:hover & {
-    background-color: fn.color(primary, 100);
-    color: fn.color(primary, 600);
-  }
-  
-  @include mixins.respond(md) {
+  // 职位选项图片样式
+  .position-option-image {
+    flex-shrink: 0;
     width: 40px;
     height: 40px;
-    
-    svg {
-      width: 20px;
-      height: 20px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
-}
-
-// 响应式调整
-@include mixins.respond(sm) {
-  .position-modal-content {
-    margin: fn.spacing(4);
-  }
   
-  .position-options {
+  .position-option-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: fn.spacing(2);
   }
   
-  .position-option {
-    padding: fn.spacing(3);
+  
+  // 选择状态样式
+  &.selected {
+    outline: 2px solid fn.color(primary, 200);
+    box-shadow: 0 0 12px 4px rgba(fn.color(primary, 300), 0.15);
+  }
+  
+  // 悬停效果
+  &:hover:not(.selected) {
+    outline: 1px solid fn.color(primary, 300);
+    background-color: fn.color(neutral, 50);
+    box-shadow: 0 0 8px 4px rgba(fn.color(primary, 300), 0.15);
   }
 }
+
+.position-option-title{
+  @include mixins.flex-center;
+  text-align: center;
+  font-size: fn.font-size(md);
+  color: fn.color(text, black);
+}
+
+.position-option-description{
+  display: none;
+  font-size: fn.font-size(sm);
+  text-align: center;
+  color: fn.color(neutral, 300);
+  transition: all 0.3s ease;
+  
+  &.visible{
+    display: block;
+  }
+}
+
 
 // 动画效果
 @keyframes fadeInUp {
@@ -191,22 +158,6 @@
   animation: fadeInUp 0.3s ease-out;
 }
 
-// 无障碍支持
-.position-option:focus {
-  outline: 2px solid fn.color(primary, 500);
-  outline-offset: 2px;
-}
-
-// 高对比度模式支持
-@media (prefers-contrast: high) {
-  .position-option {
-    border-width: 3px;
-  }
-  
-  .position-option:hover {
-    border-color: fn.color(primary, 700);
-  }
-}
 
 // 减少动画模式支持
 @media (prefers-reduced-motion: reduce) {
@@ -220,3 +171,132 @@
     animation: none;
   }
 } 
+
+// 确认按钮容器样式
+.position-confirm-btn-container {
+  padding: fn.spacing(5) fn.spacing(4);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  background-color: fn.color(neutral, white);
+}
+
+// 确认按钮样式
+.position-confirm-btn {
+  min-height: 48px;
+  cursor: pointer;
+  width: 100%;
+} 
+
+@include mixins.respond(sm){
+  .position-modal{
+    @include mixins.flex-center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .position-modal-content{
+    width: auto;
+    height: auto;
+    border-radius: fn.border-radius(2xl);
+    overflow: hidden;
+    padding: fn.spacing(5);
+    box-shadow: 0 0 0 6px fn.color(primary, 100);
+  }
+
+  .position-options{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: fn.spacing(3);
+    padding: fn.spacing(3);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+
+  .position-modal-title{
+    margin-top: fn.spacing(4);
+  }
+
+  .position-option{
+    width: 200px;
+    padding: fn.spacing(4) fn.spacing(5);
+    gap: fn.spacing(2);
+    
+    .position-option-image {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .position-option-title{
+      font-size: fn.font-size(sm);
+      height: auto;
+      min-height: fn.spacing(6);
+    }
+    
+    .position-option-description{
+      display: block;
+      font-size: fn.font-size(sm);
+      margin-top: fn.spacing(1);
+      
+      &.visible{
+        display: block;
+      }
+    }
+  }
+
+  .position-confirm-btn-container{
+    box-shadow: none;
+    background-color: transparent;
+    width: 100%;
+    
+  }
+}
+
+@include mixins.respond(md){
+  .position-modal-content{
+    max-width: 80%;
+    width: auto;
+    height: auto;
+  }
+
+  .position-modal-title{
+    font-size: fn.font-size(2xl);
+  }
+
+
+  .position-modal-subtitle{
+    font-size: fn.font-size(md);
+  }
+
+  .position-options{
+    display: flex;
+    flex-direction: row;
+    gap: fn.spacing(5);
+  }
+
+  .position-option{
+    max-width: 350px;
+    height: auto;
+
+    .position-option-image {
+      width: 72px;
+      height: 72px;
+    }
+  }
+
+  .position-option-title{
+    font-size: fn.font-size(xl);
+  }
+
+  .position-option-description{
+    font-size: fn.font-size(md);
+  }
+
+  .position-confirm-btn-container{
+    @include mixins.flex-center;
+    width: 100%;
+  }
+
+  .position-confirm-btn{
+    max-width: 400px;
+  }
+}

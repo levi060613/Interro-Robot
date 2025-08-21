@@ -53,6 +53,13 @@
     &:hover{
         background-color: fn.color(primary, 50);
     }
+
+    &:disabled{
+        background-image: none;
+        background-color: fn.color(neutral, 200);
+        color: fn.color(neutral, white);
+        cursor: not-allowed;
+    }
 }
 
 
@@ -79,6 +86,13 @@
     &:hover{
         background-image:none;
         background-color: fn.color(primary, 200);
+    }
+
+    &:disabled{
+        background-image: none;
+        background-color: fn.color(neutral, 200);
+        color: fn.color(neutral, white);
+        cursor: not-allowed;
     }
 }
 
