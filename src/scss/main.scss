@@ -15,7 +15,7 @@
 //components_base-5個
 @use "components_base/button";
 @use "components_base/card";
-// @use "components_base/chatInputPanel";
+// chatInputPanel已移除，聊天功能现在由chatOptionPanel处理
 @use "components_base/chatOptionPanel";
 @use "components_base/chatBubble";
 @use "components_base/richTextStyles";

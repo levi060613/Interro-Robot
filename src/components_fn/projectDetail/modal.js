@@ -1,6 +1,7 @@
 import { templates } from './templates.js';
 import { components } from './components.js';
 import { projects } from '../../utils/tempData.js';
+import { ImagePreloader } from '../../utils/imagePreloader.js';
 
 // 統一的錯誤處理函數，當專案資料載入或顯示失敗時，回傳一個標準化的錯誤資料物件
 function handleProjectError(error, title = '載入失敗') {
@@ -120,10 +121,68 @@ export function createProjectModal() {
   
   // 回傳一個物件，提供 show 方法用來顯示專案細節
   return {
-    show: (projectData) => {
+    show: async (projectData) => {
       try {
         // 清空現有內容（保留關閉按鈕）
         const closeButton = modalContent.querySelector('.modal-close');
+        modalContent.innerHTML = '';
+        if (closeButton) {
+          modalContent.appendChild(closeButton);
+        }
+
+        // 先显示loading状态
+        const loadingTemplate = templates['loading'];
+        if (loadingTemplate) {
+          const loadingContent = loadingTemplate.render({
+            template: 'loading',
+            basicInfo: projectData.basicInfo || {},
+            content: {
+              sections: [{
+                type: 'loading',
+                content: `
+                  <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">正在載入專案詳細內容...</p>
+                    <p class="loading-progress" id="loading-progress">準備中...</p>
+                  </div>
+                `
+              }]
+            }
+          });
+          modalContent.appendChild(loadingContent);
+        }
+
+        // 将模态框加入DOM并显示
+        const mainContent = document.getElementById('mainContent');
+        if (mainContent) {
+          mainContent.appendChild(modal);
+          setTimeout(() => {
+            modal.classList.add('active');
+          }, 10);
+        } else {
+          document.body.appendChild(modal);
+          setTimeout(() => {
+            modal.classList.add('active');
+          }, 10);
+        }
+
+        // 预加载所有图片
+        const imagePreloader = new ImagePreloader();
+        console.log('[Modal] 开始预加载图片...');
+        
+        // 进度更新函数
+        const updateProgress = (completed, total, currentSrc) => {
+          const progressElement = document.getElementById('loading-progress');
+          if (progressElement) {
+            const percentage = Math.round((completed / total) * 100);
+            progressElement.textContent = `載入中... ${completed}/${total} (${percentage}%)`;
+          }
+        };
+        
+        const preloadResult = await imagePreloader.preloadProjectImages(projectData, updateProgress);
+        console.log('[Modal] 图片预加载结果:', preloadResult);
+
+        // 图片预加载完成后，清空loading内容并显示实际内容
         modalContent.innerHTML = '';
         if (closeButton) {
           modalContent.appendChild(closeButton);
@@ -149,23 +208,21 @@ export function createProjectModal() {
         // 設置滾動監聽
         setupScrollListener(modalContent, questionList, projectData);
         
-        // 將模態框加入 mainContent，並啟動顯示動畫
-        const mainContent = document.getElementById('mainContent');
-        if (mainContent) {
-          mainContent.appendChild(modal);
-          setTimeout(() => {
-            modal.classList.add('active');
-          }, 10);
-        } else {
-          // fallback: 如果找不到 mainContent，則加入 body
-          document.body.appendChild(modal);
-          setTimeout(() => {
-            modal.classList.add('active');
-          }, 10);
-        }
       } catch (error) {
         // 若渲染過程發生錯誤，顯示錯誤訊息內容
         console.error('顯示專案內容時發生錯誤:', error);
+        
+        // 显示错误内容
+        modalContent.innerHTML = '';
+        if (closeButton) {
+          modalContent.appendChild(closeButton);
+        }
+        
+        const errorTemplate = templates['coming-soon'];
+        if (errorTemplate) {
+          const errorContent = errorTemplate.render(handleProjectError(error, '載入失敗'));
+          modalContent.appendChild(errorContent);
+        }
       }
     }
   };

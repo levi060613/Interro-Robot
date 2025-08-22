@@ -7,7 +7,6 @@ import { routes } from "./router/index.js";                   // 路由配置
 import { initPositionAnalytics } from "./utils/positionAnalytics.js";  // 职位分析
 
 // 🔄 非核心功能 - 延迟加载（通过预加载优化）
-let chatInputPanelLoaded = false;
 let lightboxLoaded = false;
 let firebaseLoaded = false;
 
@@ -15,33 +14,19 @@ let firebaseLoaded = false;
 function silentPreloadOtherFeatures() {
   console.log("🚀 [预加载] 开始静默预加载其他功能...");
   
-  // 第一阶段：预加载聊天功能（用户最可能使用的）
-  preloadChatFeatures();
-  
-  // 第二阶段：预加载项目详情功能
+  // 第一阶段：预加载项目详情功能
   setTimeout(() => {
     preloadProjectFeatures();
   }, 300);
   
-  // 第三阶段：预加载其他辅助功能
+  // 第二阶段：预加载其他辅助功能
   setTimeout(() => {
     preloadAuxiliaryFeatures();
   }, 600);
 }
 
-// 💬 预加载聊天功能
-async function preloadChatFeatures() {
-  if (chatInputPanelLoaded) return;
-  
-  try {
-    console.log("💬 [预加载] 正在预加载聊天功能...");
-    await import("./components_fn/chatInputPanel/chatInputPanel.js");
-    chatInputPanelLoaded = true;
-    console.log("✅ [预加载] 聊天功能预加载完成");
-  } catch (error) {
-    console.warn("⚠️ [预加载] 聊天功能预加载失败:", error);
-  }
-}
+// 💬 聊天功能现在由chatOptionPanel处理，无需预加载
+// 聊天功能已集成到chatRoom页面中，用户访问时自动加载
 
 // 🖼️ 预加载项目详情功能
 async function preloadProjectFeatures() {
@@ -49,7 +34,12 @@ async function preloadProjectFeatures() {
   
   try {
     console.log("🖼️ [预加载] 正在预加载项目详情功能...");
-    await import("./components_fn/projectDetail/lightbox.js");
+    const lightboxModule = await import("./components_fn/projectDetail/lightbox.js");
+    // 初始化lightbox
+    if (lightboxModule.initLightbox) {
+      lightboxModule.initLightbox();
+      console.log("✅ [预加载] Lightbox初始化完成");
+    }
     lightboxLoaded = true;
     console.log("✅ [预加载] 项目详情功能预加载完成");
   } catch (error) {
@@ -197,12 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🎯 确保功能预加载的函数
 function ensureFeaturePreloaded(path) {
   switch (path) {
-    case "/chatRoom":
-      if (!chatInputPanelLoaded) {
-        console.log("🚀 [即时加载] 用户点击聊天页面，立即加载聊天功能");
-        preloadChatFeatures();
-      }
-      break;
     case "/projectList":
       if (!lightboxLoaded) {
         console.log("🚀 [即时加载] 用户点击项目页面，立即加载项目功能");
@@ -229,12 +213,6 @@ function addHoverPreloading() {
 // 🚀 悬停预加载功能
 function preloadFeatureOnHover(path) {
   switch (path) {
-    case "/chatRoom":
-      if (!chatInputPanelLoaded) {
-        console.log("🖱️ [悬停预加载] 预加载聊天功能");
-        preloadChatFeatures();
-      }
-      break;
     case "/projectList":
       if (!lightboxLoaded) {
         console.log("🖱️ [悬停预加载] 预加载项目功能");
@@ -300,7 +278,7 @@ function showPreloadStatus() {
     "职业选择器": "✅ 已加载",
     "侧边栏": "✅ 已加载", 
     "轮播图": "✅ 已加载",
-    "聊天功能": chatInputPanelLoaded ? "✅ 已预加载" : "⏳ 预加载中...",
+    "聊天功能": "✅ 已集成到chatOptionPanel",
     "项目功能": lightboxLoaded ? "✅ 已预加载" : "⏳ 预加载中...",
     "辅助功能": firebaseLoaded ? "✅ 已预加载" : "⏳ 预加载中..."
   };

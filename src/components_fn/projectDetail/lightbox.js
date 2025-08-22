@@ -125,9 +125,8 @@ export class Lightbox {
     this.lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // 重置縮放並設置初始游標圖標
+    // 重置縮放
     this.resetZoom();
-    this.image.style.setProperty('--cursor-icon', '"🔍➕"');
   }
 
   close() {
@@ -148,16 +147,17 @@ export class Lightbox {
   zoomToFit() {
     this.isZoomed = true;
     this.currentScale = 1;
-    this.image.style.cursor = 'zoom-out';
+    
+    // 添加缩放类
+    this.image.classList.add('zoomed');
+    
+    // 设置图片为全屏显示
     this.image.style.width = '100vw';
     this.image.style.height = 'auto';
     this.image.style.maxWidth = 'none';
     this.image.style.maxHeight = 'none';
     this.image.style.margin = '0';
     this.image.style.borderRadius = '0';
-    
-    // 添加自定義游標樣式
-    this.image.style.setProperty('--cursor-icon', '"🔍➖"');
     
     // 添加 full-width 類以移除 padding
     this.content.classList.add('full-width');
@@ -169,7 +169,11 @@ export class Lightbox {
   resetZoom() {
     this.isZoomed = false;
     this.currentScale = 1;
-    this.image.style.cursor = 'zoom-in';
+    
+    // 移除缩放类
+    this.image.classList.remove('zoomed');
+    
+    // 重置图片样式
     this.image.style.width = 'auto';
     this.image.style.height = 'auto';
     this.image.style.maxWidth = '90vw';
@@ -180,19 +184,17 @@ export class Lightbox {
     
     // 移除 full-width 類以恢復 padding
     this.content.classList.remove('full-width');
-    
-    // 添加自定義游標樣式
-    this.image.style.setProperty('--cursor-icon', '"🔍➕"');
   }
 
   // 移除滾輪縮放相關方法，因為現在只支援滾動檢視
 
   // 為所有圖片添加 Lightbox 功能
   static init() {
+    console.log('[Lightbox] 开始初始化...');
     const lightbox = new Lightbox();
     
     // 為所有圖片添加點擊事件
-    document.addEventListener('click', (e) => {
+    const handleImageClick = (e) => {
       if (e.target.matches('img[data-lightbox]') || 
           e.target.matches('.behance-image') ||
           e.target.matches('.carousel-slide img') ||
@@ -200,6 +202,9 @@ export class Lightbox {
           e.target.matches('.text-image-wrapper img') ||
           e.target.matches('.test-image img')) {
         e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('[Lightbox] 图片被点击:', e.target.src);
         
         const img = e.target;
         const src = img.src;
@@ -207,13 +212,17 @@ export class Lightbox {
         
         lightbox.open(src, caption);
       }
-    });
-    https://res.cloudinary.com/dgp6aecqw/image/upload/v1752220648/project-01__img-03_xwb73y.png
+    };
+    
+    // 使用事件委托，确保能捕获到动态添加的图片
+    document.addEventListener('click', handleImageClick, true);
+    
+    console.log('[Lightbox] 初始化完成，事件监听器已绑定');
     return lightbox;
   }
 }
 
-// 自動初始化 Lightbox
-document.addEventListener('DOMContentLoaded', () => {
-  Lightbox.init();
-}); 
+// 导出初始化函数，供外部调用
+export function initLightbox() {
+  return Lightbox.init();
+} 

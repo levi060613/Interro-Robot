@@ -29,19 +29,19 @@ import {
   chatWindow.id = "chatWindow";
 
   // 建立輸入面板容器（裝載輸入欄與建議選項）
-  const chatInputPanel = document.createElement('div');
-  chatInputPanel.className = 'chatOptionPanel';
+  const chatOptionPanelContainer = document.createElement('div');
+  chatOptionPanelContainer.className = 'chatOptionPanel';
 
   // 將聊天室與輸入面板依序放進新的頁面內容容器中
   pageContentContainer.appendChild(chatWindow);
-  pageContentContainer.appendChild(chatInputPanel);
+  pageContentContainer.appendChild(chatOptionPanelContainer);
 
   // ========= 非同步載入輸入面板 HTML 並初始化互動邏輯 =========
   try {
-    // 從外部載入 chatInputPanel 的 HTML 模板（通常包含輸入欄與 suggestions 容器）
+    // 從外部載入 chatOptionPanel 的 HTML 模板（通常包含輸入欄與 suggestions 容器）
     const response = await fetch('src/components_fn/chatOptionPanel/chatOptionPanel.html');
     const html = await response.text();
-    chatInputPanel.innerHTML = html;
+    chatOptionPanelContainer.innerHTML = html;
     // 等待下一畫面更新循環再執行初始化，確保 DOM 元素已完全插入
     requestAnimationFrame(async () => {
     
@@ -68,8 +68,8 @@ import {
           console.log('[DEBUG] 未顯示過自我介紹，預先設置 introductionButton');
           
           // 找到按鈕元素並預先設置狀態
-          const introductionButton = chatInputPanel.querySelector('#introductionButton');
-          const switchButton = chatInputPanel.querySelector('#switchButton');
+          const introductionButton = chatOptionPanelContainer.querySelector('#introductionButton');
+          const switchButton = chatOptionPanelContainer.querySelector('#switchButton');
           
           if (introductionButton && switchButton) {
             introductionButton.style.display = 'block';

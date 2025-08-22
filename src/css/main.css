@@ -1605,7 +1605,7 @@ p.caption {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200;
+  min-height: 200px;
   padding: 2.5rem;
 }
 
@@ -1613,23 +1613,32 @@ p.caption {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  text-align: center;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40;
-  border: 3px solid #b4b4b4;
-  border-top: 3px solid #53189a;
-  border-radius: 50;
-  animation: spin 1 linear infinite;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f0f0f0;
+  border-top: 4px solid #7721e0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 4px 12px rgba(119, 33, 224, 0.2);
 }
 
 .loading-text {
   color: #666;
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-align: center;
   margin: 0;
+  font-weight: 500;
+}
+
+.loading-progress {
+  color: #7721e0;
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 @keyframes spin {
@@ -1658,6 +1667,9 @@ p.caption {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .lightbox.active {
   opacity: 1;
@@ -1707,20 +1719,9 @@ p.caption {
   position: relative;
   margin: auto;
 }
-.lightbox-image::after {
-  content: var(--cursor-icon, "🔍➕");
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 10001;
-}
-.lightbox-image:hover::after {
-  opacity: 1;
+
+.lightbox-image.zoomed {
+  cursor: zoom-out;
 }
 @media (hover: none) and (pointer: coarse) {
   .lightbox-image {

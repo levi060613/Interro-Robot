@@ -73,9 +73,7 @@ export const components = {
             img.alt = image.caption || '';
             img.className = 'behance-image';
             img.setAttribute('data-caption', image.caption || '');
-            img.onload = () => {
-              console.log('[DEBUG][behance-section] 首頁圖片載入成功:', image.src);
-            };
+            // 图片已预加载，无需onload事件
             img.onerror = () => {
               img.style.border = '2px solid red';
               img.alt = `圖片載入失敗: ${image.src}`;
@@ -115,32 +113,30 @@ export const components = {
               console.log('[DEBUG][behance-section] 找到 images:', imagesArray);
               console.log('[DEBUG][behance-section] 處理後的 imagesArray:', imagesArray);
               
-              imagesArray.forEach((image, imageIndex) => {
-                console.log('[DEBUG][behance-section] 處理 image:', imageIndex, image);
-                
-                const imageWrapper = document.createElement('div');
-                imageWrapper.className = 'behance-image-wrapper';
-                const img = document.createElement('img');
-                img.src = image.src;
-                img.alt = image.caption || '';
-                img.className = 'behance-image';
-                img.setAttribute('data-caption', image.caption || '');
-                img.onload = () => {
-                  console.log('[DEBUG][behance-section] 圖片載入成功:', image.src);
-                };
-                img.onerror = () => {
-                  img.style.border = '2px solid red';
-                  img.alt = `圖片載入失敗: ${image.src}`;
-                };
-                imageWrapper.appendChild(img);
-                if (image.caption) {
-                  const caption = document.createElement('p');
-                  caption.className = 'behance-image-caption';
-                  caption.textContent = image.caption;
-                  imageWrapper.appendChild(caption);
-                }
-                imagesContainer.appendChild(imageWrapper);
-              });
+                          imagesArray.forEach((image, imageIndex) => {
+              console.log('[DEBUG][behance-section] 處理 image:', imageIndex, image);
+              
+              const imageWrapper = document.createElement('div');
+              imageWrapper.className = 'behance-image-wrapper';
+              const img = document.createElement('img');
+              img.src = image.src;
+              img.alt = image.caption || '';
+              img.className = 'behance-image';
+              img.setAttribute('data-caption', image.caption || '');
+              // 图片已预加载，无需onload事件
+              img.onerror = () => {
+                img.style.border = '2px solid red';
+                img.alt = `圖片載入失敗: ${image.src}`;
+              };
+              imageWrapper.appendChild(img);
+              if (image.caption) {
+                const caption = document.createElement('p');
+                caption.className = 'behance-image-caption';
+                caption.textContent = image.caption;
+                imageWrapper.appendChild(caption);
+              }
+              imagesContainer.appendChild(imageWrapper);
+            });
             }
             
             sectionElement.appendChild(imagesContainer);
