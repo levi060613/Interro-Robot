@@ -593,6 +593,7 @@ p.caption {
   background-color: #dfdfdf;
   color: #414141;
   opacity: 50%;
+  cursor: not-allowed;
 }
 .suggestionGroup__item.add-text, .add-text.question-item, .menuButton__container ul li.add-text {
   background-color: transparent;
@@ -1465,6 +1466,19 @@ p.caption {
   border: 1px solid #dfd4ff;
   border-radius: 24px;
   transition: all 0.4s ease;
+}
+
+.question-item--clicked {
+  background-color: #dfdfdf;
+  color: #414141;
+  opacity: 50%;
+  cursor: not-allowed;
+}
+.question-item--clicked:hover {
+  background-color: #dfdfdf;
+  color: #414141;
+  opacity: 50%;
+  cursor: not-allowed;
 }
 
 /* Behance Section 樣式 */

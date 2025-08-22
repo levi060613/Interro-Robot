@@ -301,6 +301,10 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
     if (questionItem) {
       console.log('[DEBUG] 問題項目被點擊，開始處理');
       
+      // 為被點擊的問題項添加 --clicked 類
+      questionItem.classList.add('question-item--clicked');
+      console.log('[DEBUG] 已為問題項添加 --clicked 類');
+      
       // 關閉問題列表
       closeQuestionList();
       
@@ -535,6 +539,24 @@ function renderStepQuestions(questionList, projectData, step) {
     
     const questionItem = document.createElement('li');
     questionItem.className = 'question-item';
+    
+    // 檢查問題是否已被點擊過
+    if (question.id) {
+      // 從 sessionStorage 檢查是否已被點擊
+      const clickedQuestions = sessionStorage.getItem('clickedQuestionIds');
+      if (clickedQuestions) {
+        try {
+          const clickedIds = JSON.parse(clickedQuestions);
+          if (clickedIds.includes(question.id)) {
+            questionItem.classList.add('question-item--clicked');
+            console.log(`[DEBUG] 問題 ${question.id} 已被點擊過，添加 --clicked 類`);
+          }
+        } catch (error) {
+          console.warn('[DEBUG] 解析 clickedQuestionIds 失敗:', error);
+        }
+      }
+    }
+    
     questionItem.innerHTML = `
       <div class="question-text">${question.text}</div>
     `;

@@ -252,7 +252,74 @@ export default async function initChatOptionPanel(initialOptions) {
         saveChatOptionPanelState();
     });
 
+    // 點擊"其他面試主題"選項
+    const otherInterviewTopicsItem = document.querySelector('.menu__item');
+    if (otherInterviewTopicsItem) {
+        otherInterviewTopicsItem.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            console.log('[DEBUG] "其他面試主題"被點擊');
+            
+            // 關閉選單
+            closeMenu();
+            
+            // 自動開啟carousel顯示
+            if (!isActive) {
+                console.log('[DEBUG] 自動開啟carousel顯示');
+                switchButton.classList.add('active');
+                switchButton.innerHTML = '<p class="md text-neutral-black text-center">× 收合選項</p>';
+                menuButton.classList.add('hidden');
+                carousel.classList.add('visible');
+                isActive = true;
+                isCarouselVisible = true;
+                
+                // 隱藏 modalLookBtn
+                const modalLookBtn = document.querySelector('.modal-lookBtn');
+                if (modalLookBtn) {
+                    modalLookBtn.classList.add('hidden');
+                    console.log('[DEBUG] chatOptionPanel: 已隱藏 modalLookBtn');
+                }
+            }
+            
+            // 檢測最新一個suggestionGroup是否是標籤建議組
+            const groups = carouselContainer.querySelectorAll('.suggestionGroup');
+            const lastGroup = groups[groups.length - 1];
+            
+            if (lastGroup && lastGroup.querySelector('.tagContainer')) {
+                // 如果最新的是標籤建議組，跳轉到最新的suggestionGroup
+                console.log('[DEBUG] 最新的是標籤建議組，跳轉到最新組');
+                const lastStep = parseInt(lastGroup.dataset.step);
+                scrollToStep(lastStep);
+            } else {
+                // 如果不是，新增一個標籤建議組
+                console.log('[DEBUG] 最新的不是標籤建議組，新增標籤建議組');
+                await addNewTagSuggestionGroup();
+            }
+            
+            // 保存狀態到 sessionStorage
+            saveChatOptionPanelState();
+        });
+    }
 
+    // 點擊"重新聊天"選項
+    const restartChatItem = document.getElementById('restartChatBtn');
+    if (restartChatItem) {
+        restartChatItem.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            console.log('[DEBUG] "重新聊天"被點擊');
+            
+            // 關閉選單
+            closeMenu();
+            
+            // 重置聊天室到初始狀態
+            await restartChat();
+            
+            // 保存狀態到 sessionStorage
+            saveChatOptionPanelState();
+        });
+        console.log('[DEBUG] 重新聊天按鈕事件監聽器已綁定');
+    } else {
+        console.warn('[DEBUG] 找不到重新聊天按鈕元素');
+    }
 
     // 點擊面板外的空白處
     document.addEventListener('click', (e) => {
@@ -962,6 +1029,65 @@ export default async function initChatOptionPanel(initialOptions) {
         }
     }
 
+    // ========== 新增標籤建議組的函數 ==========
+    async function addNewTagSuggestionGroup() {
+        try {
+            // 找到最後一個非空的步驟
+            let lastStep = groupsData.length;
+            while (lastStep > 0 && (!groupsData[lastStep - 1] || groupsData[lastStep - 1].length === 0)) {
+                lastStep--;
+            }
+            
+            const nextStep = lastStep + 1;
+            
+            // 獲取所有標籤
+            let tags;
+            try {
+                const tagNames = await fetchTags();
+                if (!tagNames || tagNames.length === 0) {
+                    tags = all_tags;
+                } else {
+                    // 如果API返回的是標籤名稱，使用本地標籤數據
+                    tags = all_tags;
+                }
+            } catch (error) {
+                tags = all_tags;
+            }
+            
+            // 將標籤數據轉換為建議選項格式並保存到 groupsData
+            const tagOptions = tags.map(tag => ({
+                text: tag.name,
+                reply: '',
+                questions_id: tag.questions_id || [],
+                isTag: true, // 標記這是標籤選項
+                clicked: false
+            }));
+
+            // 保存標籤數據到 groupsData
+            groupsData[nextStep - 1] = tagOptions;
+            
+            // 建立標籤建議組
+            createSuggestionGroup(tagOptions, nextStep);
+            
+            // 更新指示點
+            updateDots();
+            
+            // 設置有新 step 的標誌
+            hasNewStep = true;
+            
+            // 自動跳轉到新建立的標籤建議組
+            scrollToStep(nextStep);
+            
+            // 保存狀態到 sessionStorage
+            saveChatOptionPanelState();
+            
+            console.log(`[DEBUG] 已新增標籤建議組，步驟: ${nextStep}`);
+            
+        } catch (error) {
+            console.error('新增標籤建議組失敗:', error);
+        }
+    }
+
     function scrollToStep(step) {
         const groups = carouselContainer.querySelectorAll('.suggestionGroup');
         const currentActiveGroup = carouselContainer.querySelector('.suggestionGroup.active');
@@ -1219,6 +1345,83 @@ export default async function initChatOptionPanel(initialOptions) {
         console.log('[DEBUG] introductionButton 已隱藏，switchButton 已顯示');
     }
 
+    // ========== 重新聊天函數 ==========
+    async function restartChat() {
+        try {
+            console.log('[DEBUG] 開始重新聊天流程');
+            
+            // 清空聊天窗口
+            if (chatWindow) {
+                chatWindow.innerHTML = '';
+                console.log('[DEBUG] 已清空聊天窗口');
+            }
+            
+            // 重置聊天選項面板狀態
+            resetPanel();
+            
+            // 重置所有狀態變數
+            currentStep = 1;
+            lastActiveStep = 1;
+            hasNewStep = false;
+            isFromQuestionClick = false;
+            
+            // 清空 groupsData，只保留第一步的初始選項
+            groupsData = [];
+            const step1Options = initialOptions.map(opt => ({
+                text: opt.text,
+                reply: opt.reply,
+                questions_id: opt.questions_id || [],
+                id: opt.id,
+                label: opt.label || "其他",
+                clicked: false
+            }));
+            groupsData[0] = step1Options;
+            
+            // 清空 carousel 容器，重新創建第一步的 suggestionGroup
+            if (carouselContainer) {
+                carouselContainer.innerHTML = '';
+                createSuggestionGroup(step1Options, 1);
+                console.log('[DEBUG] 已重新創建第一步 suggestionGroup');
+            }
+            
+            // 更新指示點
+            updateDots();
+            
+            // 重置按鈕狀態
+            if (introductionButton) {
+                introductionButton.style.display = 'none';
+            }
+            if (switchButton) {
+                switchButton.style.display = 'block';
+                switchButton.classList.remove('active');
+                switchButton.innerHTML = '<p class="md text-neutral-black text-center">點擊查看選項</p>';
+            }
+            if (menuButton) {
+                menuButton.classList.remove('hidden');
+            }
+            
+            // 顯示 modalLookBtn
+            const modalLookBtn = document.querySelector('.modal-lookBtn');
+            if (modalLookBtn) {
+                modalLookBtn.classList.remove('hidden');
+                console.log('[DEBUG] chatOptionPanel: 已顯示 modalLookBtn');
+            }
+            
+            // 清除相關的 sessionStorage
+            sessionStorage.removeItem('chatOptionPanelState');
+            sessionStorage.removeItem('chatHistory');
+            sessionStorage.removeItem('clickedOptions');
+            sessionStorage.removeItem('clickedQuestionIds');
+            
+            // 重置後自動顯示自我介紹
+            await showIntroductionMessage();
+            
+            console.log('[DEBUG] 重新聊天完成，聊天室已恢復初始狀態，並顯示自我介紹');
+            
+        } catch (error) {
+            console.error('重新聊天時發生錯誤:', error);
+        }
+    }
 
     // 返回控制函數供外部使用
     return {

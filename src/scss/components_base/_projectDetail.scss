@@ -258,6 +258,20 @@
 
 .question-item{
   @extend .suggestionGroup__item;
+
+  &--clicked{
+    background-color: #dfdfdf;
+    color: #414141;
+    opacity: 50%;
+    cursor: not-allowed;
+
+    &:hover{
+        background-color: #dfdfdf;
+        color: #414141;
+        opacity: 50%;
+        cursor: not-allowed;
+    }
+  }
 }
 
 /* Behance Section 樣式 */

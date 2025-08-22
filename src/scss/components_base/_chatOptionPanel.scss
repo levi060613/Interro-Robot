@@ -169,11 +169,12 @@
             opacity: 50%;
             cursor: not-allowed;
     
-          &:hover{
-            background-color: #dfdfdf;
-            color: #414141;
-            opacity: 50%;
-          }
+            &:hover{
+                background-color: #dfdfdf;
+                color: #414141;
+                opacity: 50%;
+                cursor: not-allowed;
+            }
         }
     
         &.add-text {
