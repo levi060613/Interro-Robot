@@ -1261,8 +1261,14 @@ p.caption {
 }
 
 .project-modal.active {
+  display: none;
   opacity: 1;
   visibility: visible;
+}
+@media (min-width: 768px) {
+  .project-modal.active {
+    display: block;
+  }
 }
 
 .project-modal.chatRoom {
@@ -1274,9 +1280,11 @@ p.caption {
   opacity: 1;
   visibility: visible;
   transition: transform 0.3s ease;
+  display: none;
 }
 .project-modal.chatRoom.modal-look {
   transform: translateX(0);
+  display: block;
 }
 .project-modal.chatRoom .modal-content {
   max-height: none;
@@ -1311,6 +1319,7 @@ p.caption {
     background: none;
     backdrop-filter: none;
     transform: none;
+    display: block;
   }
   .project-modal.chatRoom.modal-look {
     transform: none;
@@ -2308,7 +2317,7 @@ body {
   font-family: "Noto Sans TC", "Inter", Arial, sans-serif;
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 100dvh;
   width: 100vw;
   background-image: url("/src/assets/images/bgc-1920_1080_@1x.jpg");
   background-size: cover;

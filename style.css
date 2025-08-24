@@ -1068,15 +1068,7 @@ p.caption {
   color: #7721e0;
 }
 
-/* 專案詳細內容區塊，對應到 JS 的 `components` 渲染內容 */
-.project-detail {
-  /* 標題區塊 */
-  /* 圖片集區塊：Grid 排版 */
-  /* 純文字內容區塊 */
-  /* 嵌入影片區塊 */
-  /* 表格區塊：支援水平卷軸與 Bordered Table 樣式 */
-  /* 輪播區塊 */
-}
+
 @media (min-width: 576px) {
   .project-detail {
     padding: 0 1rem;

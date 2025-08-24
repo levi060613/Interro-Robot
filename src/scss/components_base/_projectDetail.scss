@@ -18,18 +18,19 @@
   z-index: 899;
   opacity: 0;
   visibility: hidden;
-  display: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+
+.project-modal.active {
+  display: none;
+
+  opacity: 1;
+  visibility: visible;
 
   @include mixins.respond(md){
     display: block;
   }
-}
-
-.project-modal.active {
-  opacity: 1;
-  visibility: visible;
-  display: block;
 }
 
 .project-modal.chatRoom{
@@ -48,8 +49,12 @@
   // backdrop-filter: blur(4px);
   transition: transform 0.3s ease;
 
+  display: none;
+
+
   &.modal-look{
     transform: translateX(0);
+    display: block;
   }
 
   .modal-content{
@@ -87,6 +92,7 @@
     background: none;
     backdrop-filter: none;
     transform: none;
+    display: block;
 
     &.modal-look{
       transform: none;
