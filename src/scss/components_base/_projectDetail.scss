@@ -21,16 +21,9 @@
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-
 .project-modal.active {
-  display: none;
-
   opacity: 1;
   visibility: visible;
-
-  @include mixins.respond(md){
-    display: block;
-  }
 }
 
 .project-modal.chatRoom{
@@ -51,10 +44,9 @@
 
   display: none;
 
-
   &.modal-look{
-    transform: translateX(0);
     display: block;
+    transform: translateX(0);
   }
 
   .modal-content{
@@ -95,6 +87,7 @@
     display: block;
 
     &.modal-look{
+      display: block;
       transform: none;
     }
 
