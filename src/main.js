@@ -10,8 +10,24 @@ import { initPositionAnalytics } from "./utils/positionAnalytics.js";  // 职位
 let lightboxLoaded = false;
 let firebaseLoaded = false;
 
+// 🎯 性能监控
+const performanceMonitor = {
+  startTime: performance.now(),
+  
+  logMetric(name, value) {
+    console.log(`📊 [性能] ${name}: ${value}`);
+  },
+  
+  measureTime(name, startTime) {
+    const duration = performance.now() - startTime;
+    this.logMetric(name, `${duration.toFixed(2)}ms`);
+    return duration;
+  }
+};
+
 // 🎯 静默预加载函数
 function silentPreloadOtherFeatures() {
+  const startTime = performance.now();
   console.log("🚀 [预加载] 开始静默预加载其他功能...");
   
   // 第一阶段：预加载项目详情功能
@@ -23,6 +39,8 @@ function silentPreloadOtherFeatures() {
   setTimeout(() => {
     preloadAuxiliaryFeatures();
   }, 600);
+  
+  performanceMonitor.measureTime('预加载总时间', startTime);
 }
 
 // 💬 聊天功能现在由chatOptionPanel处理，无需预加载
@@ -31,6 +49,8 @@ function silentPreloadOtherFeatures() {
 // 🖼️ 预加载项目详情功能
 async function preloadProjectFeatures() {
   if (lightboxLoaded) return;
+  
+  const startTime = performance.now();
   
   try {
     console.log("🖼️ [预加载] 正在预加载项目详情功能...");
@@ -41,6 +61,7 @@ async function preloadProjectFeatures() {
       console.log("✅ [预加载] Lightbox初始化完成");
     }
     lightboxLoaded = true;
+    performanceMonitor.measureTime('Lightbox预加载', startTime);
     console.log("✅ [预加载] 项目详情功能预加载完成");
   } catch (error) {
     console.warn("⚠️ [预加载] 项目详情功能预加载失败:", error);
@@ -51,10 +72,13 @@ async function preloadProjectFeatures() {
 async function preloadAuxiliaryFeatures() {
   if (firebaseLoaded) return;
   
+  const startTime = performance.now();
+  
   try {
     console.log("🔧 [预加载] 正在预加载辅助功能...");
     await import("./utils/testFirebase.js");
     firebaseLoaded = true;
+    performanceMonitor.measureTime('Firebase预加载', startTime);
     console.log("✅ [预加载] 辅助功能预加载完成");
   } catch (error) {
     console.warn("⚠️ [预加载] 辅助功能预加载失败:", error);
@@ -76,8 +100,31 @@ function startSmartPreloading() {
   }
 }
 
+// 💾 资源缓存策略
+function initResourceCache() {
+  if ('caches' in window) {
+    caches.open('interro-v1').then(cache => {
+      const criticalResources = [
+        '/src/assets/images/project-05_imgCarousel.jpg',
+        '/src/assets/images/project-02_imgCarousel.jpg',
+        '/src/assets/images/project-03_imgCarousel.jpg',
+        '/src/assets/images/project-01_imgCarousel.jpg',
+        '/style/style.css',
+        '/src/css/main.css'
+      ];
+      
+      cache.addAll(criticalResources).then(() => {
+        console.log('✅ [缓存] 关键资源已缓存');
+      }).catch(error => {
+        console.warn('⚠️ [缓存] 部分资源缓存失败:', error);
+      });
+    });
+  }
+}
+
 // 🎯 首屏核心功能初始化
 window.addEventListener("DOMContentLoaded", () => {
+  const domContentStart = performance.now();
   const pathname = window.location.pathname;
   
   // 如果不是首頁，重整時自動導回首頁
@@ -99,11 +146,14 @@ window.addEventListener("DOMContentLoaded", () => {
     // 初始化职位 Analytics
     initPositionAnalytics();
     
-    // 🎯 首屏完成后，启动智能预加载
-    setTimeout(() => {
-      startSmartPreloading();
-      addHoverPreloading(); // 启动悬停预加载
-    }, 100); // 短暂延迟，确保首屏渲染完成
+    // 初始化资源缓存
+    initResourceCache();
+    
+    // 启动智能预加载
+    startSmartPreloading();
+    
+    // 记录DOM内容加载时间
+    performanceMonitor.measureTime('DOM内容加载', domContentStart);
   }
 });
 

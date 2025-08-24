@@ -193,22 +193,22 @@ export const all_tags = [
   }
 ];
 
-// 本地詳細內容模擬資料（Firebase 失敗時的備用方案）
+// 本地详细内容模拟数据（Firebase 失败时的备用方案）
 export const projectDetail = [
   {
     document_id: "project_01",
     template: "behance-project",
     basicInfo: {
-      title: "Interro 模擬面試機器人｜互動式網站",
-      subtitle: "2025.04 - 個人專案",
-      tags: ["0到1設計", "開發上線", "聊天機器人"]
+      title: "Interro 模拟面试机器人｜互动式网站",
+      subtitle: "2025.04 - 个人项目",
+      tags: ["0到1设计", "开发上线", "聊天机器人"]
     },
     content: {
       firstImage: {
         images: [
           {
-            src: "src/assets/images/Interro_2_1_@1x.png",
-            caption: "首頁設計"
+            src: "src/assets/images/project-01_imgCarousel.jpg",
+            caption: "首页设计"
           }
         ]
       },
@@ -216,9 +216,107 @@ export const projectDetail = [
         {
           type: "text",
           content: `
-            <h3>🚧 專案內容正在準備中</h3>
-            <p>這個專案的詳細內容正在整理中，很快就會與大家見面！</p>
-            <p>敬請期待...</p>
+            <h3>🚧 项目内容正在准备中</h3>
+            <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+            <p>敬请期待...</p>
+          `
+        }
+      ]
+    }
+  },
+  {
+    document_id: "project_02",
+    template: "behance-project",
+    basicInfo: {
+      title: "Hahow 线上课程平台｜情感化体验设计",
+      subtitle: "2024.11 - 团队项目",
+      tags: ["问题拆解", "产品再设计", "荣获Top 3"]
+    },
+    content: {
+      firstImage: {
+        images: [
+          {
+            src: "src/assets/images/project-02_imgCarousel.jpg",
+            caption: "平台设计"
+          }
+        ]
+      },
+      sections: [
+        {
+          type: "text",
+          content: `
+            <h3>🚧 项目内容正在准备中</h3>
+            <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+            <p>敬请期待...</p>
+          `
+        }
+      ]
+    }
+  },
+  {
+    document_id: "project_03",
+    template: "coming-soon",
+    basicInfo: {
+      title: "六角学院 专题UI｜RWD设计",
+      subtitle: "2024.08 - 接案性质",
+      tags: ["RWD设计", "工程交付", "设计系统"]
+    },
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 项目正在准备中</h2>
+              <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+              <p>敬请期待...</p>
+            </div>
+          `
+        }
+      ]
+    }
+  },
+  {
+    document_id: "project_04",
+    template: "coming-soon",
+    basicInfo: {
+      title: "京都散策 APP",
+      subtitle: "2024.7 - 旅游应用",
+      tags: ["0到1设计", "产品定位", "实战营 佳作"]
+    },
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 项目正在准备中</h2>
+              <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+              <p>敬请期待...</p>
+            </div>
+          `
+        }
+      ]
+    }
+  },
+  {
+    document_id: "project_05",
+    template: "coming-soon",
+    basicInfo: {
+      title: "Ｅ起购APP｜为您处理团购大小事",
+      subtitle: "2024.11 - 全端项目",
+      tags: ["0到1设计", "上线项目", "测试数据分析"]
+    },
+    content: {
+      sections: [
+        {
+          type: "text",
+          content: `
+            <div class="coming-soon-wrapper">
+              <h2>🚧 项目正在准备中</h2>
+              <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+              <p>敬请期待...</p>
+            </div>
           `
         }
       ]

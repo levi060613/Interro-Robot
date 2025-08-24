@@ -188,16 +188,30 @@ export function createProjectModal() {
           modalContent.appendChild(closeButton);
         }
         
+        console.log('[Modal] 开始渲染项目内容，projectData:', projectData);
+        console.log('[Modal] 项目模板:', projectData.template);
+        
         // 根據 projectData.template 取得對應的模板
         const template = templates[projectData.template];
         if (!template) {
           console.error(`Template ${projectData.template} not found`);
+          console.log('[Modal] 可用的模板:', Object.keys(templates));
           throw new Error(`找不到模板：${projectData.template}`);
         }
         
+        console.log('[Modal] 找到模板:', template);
+        
         // 使用模板的 render 方法渲染專案內容
         const content = template.render(projectData);
-        modalContent.appendChild(content);
+        console.log('[Modal] 模板渲染结果:', content);
+        
+        if (content) {
+          modalContent.appendChild(content);
+          console.log('[Modal] 内容已添加到 modalContent');
+        } else {
+          console.error('[Modal] 模板渲染返回空内容');
+          throw new Error('模板渲染失败');
+        }
         
         // 設置目錄條
         setupTableOfContents(tableOfContents, projectData, modalContent);

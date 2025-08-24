@@ -98,53 +98,63 @@ export default async function renderProjectListPage() {
             }
           }
 
-          // 如果 Firebase 數據獲取失敗，使用本地數據
+          // 如果 Firebase 数据获取失败，使用本地数据
           if (!remoteDetail) {
-            console.log('[DEBUG] Firebase 數據獲取失敗，使用本地專案詳細內容');
-            // 根據專案 ID 找到對應的本地資料
+            console.log('[DEBUG] Firebase 数据获取失败，使用本地项目详细内容');
+            // 根据项目 ID 找到对应的本地资料
             const localDetail = projectDetail.find(detail => detail.document_id === project.document_id);
             if (localDetail) {
               remoteDetail = localDetail;
-              console.log('[DEBUG] 找到對應的本地資料:', localDetail);
+              console.log('[DEBUG] 找到对应的本地资料:', localDetail);
             } else {
-              // 如果找不到對應的本地資料，使用預設的 coming-soon 資料
+              // 如果找不到对应的本地资料，使用默认的 coming-soon 资料
               remoteDetail = {
                 document_id: project.document_id,
                 template: 'coming-soon',
+                basicInfo: {
+                  title: project.title,
+                  subtitle: project.subtitle || '',
+                  tags: project.tags || []
+                },
                 content: {
                   sections: [
                     {
                       type: 'text',
                       content: `
                         <div class="coming-soon-wrapper">
-                          <h2>🚧 專案正在準備中</h2>
-                          <p>這個專案的詳細內容正在整理中，很快就會與大家見面！</p>
-                          <p>敬請期待...</p>
+                          <h2>🚧 项目正在准备中</h2>
+                          <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+                          <p>敬请期待...</p>
                         </div>
                       `
                     }
                   ]
                 }
               };
-              console.log('[DEBUG] 使用預設 coming-soon 資料');
+              console.log('[DEBUG] 使用默认 coming-soon 资料');
             }
             isFromFirebase = false;
           }
 
-          // 根據 template 欄位決定使用哪個模板
-          const template = remoteDetail.template || 'behance-project';
-          console.log(`[DEBUG] 數據來源: ${isFromFirebase ? 'Firebase' : '本地'}`);
-          console.log(`[DEBUG] 使用模板: ${template}`);
-          console.log(`[DEBUG] 完整數據結構:`, remoteDetail);
-
-          // 更新 modal 內容為真實資料
-          modal.show({
-            template: template,
-            basicInfo: {
+          // 确保 remoteDetail 有正确的结构
+          if (!remoteDetail.basicInfo) {
+            remoteDetail.basicInfo = {
               title: project.title,
               subtitle: project.subtitle || '',
               tags: project.tags || []
-            },
+            };
+          }
+
+          // 根据 template 字段决定使用哪个模板
+          const template = remoteDetail.template || 'coming-soon';
+          console.log(`[DEBUG] 数据来源: ${isFromFirebase ? 'Firebase' : '本地'}`);
+          console.log(`[DEBUG] 使用模板: ${template}`);
+          console.log(`[DEBUG] 完整数据结构:`, remoteDetail);
+
+          // 更新 modal 内容为真实资料
+          modal.show({
+            template: template,
+            basicInfo: remoteDetail.basicInfo,
             content: remoteDetail.content || remoteDetail
           });
         } catch (error) {

@@ -21,8 +21,13 @@
       <!-- 預設圖標設置 -->
       <link rel="icon" href="assets/images/icons/interro-logo.svg" type="image/x-icon" />
 
-      <!-- 字型引入設置 -->
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+      <!-- 字型引入設置 - 优化加载 -->
+      <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+      <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap"></noscript>
+      
+      <!-- DNS 预解析 -->
+      <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+      <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 
       <!-- Apple Touch Icon -->
       <link rel="apple-touch-icon" href="assets/images/icons/interro-logo.svg" />
@@ -34,6 +39,12 @@
       <meta property="og:type" content="website">
       <!-- <meta property="og:url" content="待更新連結">             之後上架完成再來更新  -->
 
+      <!-- 关键图片预加载 -->
+      <link rel="preload" href="src/assets/images/project-05_imgCarousel.jpg" as="image">
+      <link rel="preload" href="src/assets/images/project-02_imgCarousel.jpg" as="image">
+      <link rel="preload" href="src/assets/images/project-03_imgCarousel.jpg" as="image">
+      <link rel="preload" href="src/assets/images/project-01_imgCarousel.jpg" as="image">
+      
       <!-- 網站的樣式 -->
       <link rel="stylesheet" href="style/style.css">
   </head>
@@ -138,7 +149,24 @@
     <script type="module" src="src/main.js"></script>
     <script type="module" src="src/utils/uploadProjectDetail.js"></script>
     <script type="module" src="src/utils/uploadProjectDetail02.js"></script>
+    <script type="module" src="src/utils/testProjectModal.js"></script>
     <script type="module" src="src/utils/uploadComingSoonProject.js"></script>
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay">    </div>
+    
+    <!-- 性能监控脚本 -->
+    <script>
+      // 性能监控
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          const navigation = performance.getEntriesByType('navigation')[0];
+          if (navigation) {
+            console.log('🚀 页面性能数据:');
+            console.log('DOM内容加载时间:', navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart, 'ms');
+            console.log('页面完全加载时间:', navigation.loadEventEnd - navigation.loadEventStart, 'ms');
+            console.log('总加载时间:', navigation.loadEventEnd - navigation.fetchStart, 'ms');
+          }
+        });
+      }
+    </script>
   </body>
 </html>

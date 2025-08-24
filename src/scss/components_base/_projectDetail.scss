@@ -117,18 +117,124 @@
   visibility: visible;
 }
 
-.modal-content{
+/* 图片懒加载和渐进式加载样式 */
+.behance-image {
+  max-width: 100%;
+  height: auto;
+  opacity: 0;
+  transition: all 0.5s ease;
+  
+  &.loaded {
+    opacity: 1;
+  }
+  
+  &.loading {
+    filter: blur(10px);
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+  
+  &.error {
+    opacity: 0.5;
+    filter: grayscale(100%);
+  }
+}
+
+// 图片占位符样式
+.image-placeholder {
+  background: linear-gradient(135deg, 
+    fn.color(neutral, 100), 
+    fn.color(neutral, 200)
+  );
+  border-radius: fn.border-radius(md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: fn.color(text, grey);
+  font-size: fn.font-size(sm);
+  min-height: 200px;
+  
+  &::before {
+    content: '🖼️';
+    font-size: fn.font-size(2xl);
+    margin-bottom: fn.spacing(2);
+  }
+}
+
+// 空状态和文本内容样式
+.empty-section {
+  padding: fn.spacing(8) fn.spacing(4);
+  text-align: center;
+  
+  .empty-content {
+    max-width: 600px;
+    margin: 0 auto;
+    
+    h3 {
+      font-size: fn.font-size(2xl);
+      color: fn.color(text, primary);
+      margin-bottom: fn.spacing(4);
+    }
+    
+    p {
+      font-size: fn.font-size(lg);
+      color: fn.color(text, secondary);
+      line-height: 1.6;
+      margin-bottom: fn.spacing(2);
+      
+      &:last-child {
+        margin-bottom: 0;
+        font-weight: 600;
+        color: fn.color(primary, 400);
+      }
+    }
+  }
+}
+
+.text-section {
+  padding: fn.spacing(6) fn.spacing(4);
+  
+  h3 {
+    font-size: fn.font-size(xl);
+    color: fn.color(text, primary);
+    margin-bottom: fn.spacing(3);
+  }
+  
+  p {
+    font-size: fn.font-size(lg);
+    color: fn.color(text, secondary);
+    line-height: 1.6;
+    margin-bottom: fn.spacing(2);
+  }
+}
+
+// 确保 modal 内容可见
+.modal-content {
   background-color: fn.color(neutral, white);
   border-radius: fn.border-radius(xl);
   padding: fn.spacing(3);
   padding-top: fn.spacing(6);
   overflow-y: auto;
   position: relative;
-  // transform: translateY(20px);
   transition: transform 0.3s ease;
   width: 100%;
   height: 100%;
-  // margin: 0 auto;
+  min-height: 400px; // 确保有最小高度
+  
+  // 确保内容可见
+  .project-detail {
+    min-height: 300px;
+    
+    &.behance-project {
+      .behance-container {
+        min-height: 200px;
+      }
+    }
+    
+    &.coming-soon {
+      min-height: 400px;
+    }
+  }
 }
 
 @include mixins.respond(md){
@@ -304,18 +410,6 @@
   flex-direction: column;
   align-items: center;
   // gap: fn.spacing(2);
-}
-
-.behance-image {
-  max-width: 100%;
-  height: auto;
-  // border-radius: fn.border-radius(md);
-  // box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  // transition: transform 0.3s ease;
-  
-  // &:hover {
-  //   transform: scale(1.02);
-  // }
 }
 
 .behance-image-caption {

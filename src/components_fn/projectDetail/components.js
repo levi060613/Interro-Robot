@@ -53,7 +53,7 @@ export const components = {
       behanceContainer.className = 'behance-container';
 
       // 檢查是否有 firstImage 資料
-      if (data.content && data.content.firstImage) {
+      if (data.content && data.content.firstImage && data.content.firstImage.images) {
         console.log('[DEBUG][behance-section] 找到 firstImage:', data.content.firstImage);
         
         // 渲染首頁圖片
@@ -63,31 +63,29 @@ export const components = {
         const imagesContainer = document.createElement('div');
         imagesContainer.className = 'behance-images';
         
-        if (data.content.firstImage.images) {
-          let imagesArray = Array.isArray(data.content.firstImage.images) ? data.content.firstImage.images : [data.content.firstImage.images];
-          imagesArray.forEach((image, imageIndex) => {
-            const imageWrapper = document.createElement('div');
-            imageWrapper.className = 'behance-image-wrapper';
-            const img = document.createElement('img');
-            img.src = image.src;
-            img.alt = image.caption || '';
-            img.className = 'behance-image';
-            img.setAttribute('data-caption', image.caption || '');
-            // 图片已预加载，无需onload事件
-            img.onerror = () => {
-              img.style.border = '2px solid red';
-              img.alt = `圖片載入失敗: ${image.src}`;
-            };
-            imageWrapper.appendChild(img);
-            if (image.caption) {
-              const caption = document.createElement('p');
-              caption.className = 'behance-image-caption';
-              caption.textContent = image.caption;
-              imageWrapper.appendChild(caption);
-            }
-            imagesContainer.appendChild(imageWrapper);
-          });
-        }
+        let imagesArray = Array.isArray(data.content.firstImage.images) ? data.content.firstImage.images : [data.content.firstImage.images];
+        imagesArray.forEach((image, imageIndex) => {
+          const imageWrapper = document.createElement('div');
+          imageWrapper.className = 'behance-image-wrapper';
+          const img = document.createElement('img');
+          img.src = image.src;
+          img.alt = image.caption || '';
+          img.className = 'behance-image loaded'; // 添加 loaded 类
+          img.setAttribute('data-caption', image.caption || '');
+          // 图片已预加载，无需onload事件
+          img.onerror = () => {
+            img.style.border = '2px solid red';
+            img.alt = `圖片載入失敗: ${image.src}`;
+          };
+          imageWrapper.appendChild(img);
+          if (image.caption) {
+            const caption = document.createElement('p');
+            caption.className = 'behance-image-caption';
+            caption.textContent = image.caption;
+            imageWrapper.appendChild(caption);
+          }
+          imagesContainer.appendChild(imageWrapper);
+        });
         firstImageSection.appendChild(imagesContainer);
         behanceContainer.appendChild(firstImageSection);
       }
@@ -99,7 +97,7 @@ export const components = {
         data.content.sections.forEach((section, sectionIndex) => {
           console.log('[DEBUG][behance-section] 處理 section:', sectionIndex, section);
           
-          if (section.type === 'imgBlock') {
+          if (section.type === 'imgBlock' && section.images) {
             const sectionElement = document.createElement('div');
             sectionElement.className = 'behance-section';
             sectionElement.setAttribute('data-step', section.step);
@@ -108,12 +106,10 @@ export const components = {
             const imagesContainer = document.createElement('div');
             imagesContainer.className = 'behance-images';
             
-            if (section.images) {
-              let imagesArray = Array.isArray(section.images) ? section.images : [section.images];
-              console.log('[DEBUG][behance-section] 找到 images:', imagesArray);
-              console.log('[DEBUG][behance-section] 處理後的 imagesArray:', imagesArray);
-              
-                          imagesArray.forEach((image, imageIndex) => {
+            let imagesArray = Array.isArray(section.images) ? section.images : [section.images];
+            console.log('[DEBUG][behance-section] 找到 images:', imagesArray);
+            
+            imagesArray.forEach((image, imageIndex) => {
               console.log('[DEBUG][behance-section] 處理 image:', imageIndex, image);
               
               const imageWrapper = document.createElement('div');
@@ -121,7 +117,7 @@ export const components = {
               const img = document.createElement('img');
               img.src = image.src;
               img.alt = image.caption || '';
-              img.className = 'behance-image';
+              img.className = 'behance-image loaded'; // 添加 loaded 类
               img.setAttribute('data-caption', image.caption || '');
               // 图片已预加载，无需onload事件
               img.onerror = () => {
@@ -137,12 +133,31 @@ export const components = {
               }
               imagesContainer.appendChild(imageWrapper);
             });
-            }
             
             sectionElement.appendChild(imagesContainer);
             behanceContainer.appendChild(sectionElement);
+          } else if (section.type === 'text') {
+            // 处理文本类型的内容
+            const textSection = document.createElement('div');
+            textSection.className = 'behance-section text-section';
+            textSection.innerHTML = section.content;
+            behanceContainer.appendChild(textSection);
           }
         });
+      }
+
+      // 如果没有内容，添加默认提示
+      if (behanceContainer.children.length === 0) {
+        const emptySection = document.createElement('div');
+        emptySection.className = 'behance-section empty-section';
+        emptySection.innerHTML = `
+          <div class="empty-content">
+            <h3>🚧 项目内容正在准备中</h3>
+            <p>这个项目的详细内容正在整理中，很快就会与大家见面！</p>
+            <p>敬请期待...</p>
+          </div>
+        `;
+        behanceContainer.appendChild(emptySection);
       }
 
       console.log('[DEBUG][behance-section] 渲染完成，container:', behanceContainer);
