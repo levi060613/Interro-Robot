@@ -18,12 +18,18 @@
   z-index: 899;
   opacity: 0;
   visibility: hidden;
+  display: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  @include mixins.respond(md){
+    display: block;
+  }
 }
 
 .project-modal.active {
   opacity: 1;
   visibility: visible;
+  display: block;
 }
 
 .project-modal.chatRoom{
