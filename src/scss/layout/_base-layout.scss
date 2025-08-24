@@ -6,6 +6,14 @@
 html{
     min-height: 100%;
     height: 100dvh;
+    width: 100vw;
+    background-image: url('/src/assets/images/bgc-1920_1080_@1x.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-top: env(safe-area-inset-top);     /* 保護 header */
+    padding-bottom: env(safe-area-inset-bottom); /* 保護 footer */
+    box-sizing: border-box;
 }
 
 body {
@@ -13,13 +21,8 @@ body {
   display: flex;
   flex-direction: row;
   height: 100%;
-  width: 100vw;
-  background-image: url('/src/assets/images/bgc-1920_1080_@1x.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100%;
   overflow: hidden;
-
 }
 
 // 主要版型
@@ -68,6 +71,8 @@ body {
     height: 100%;
     gap: fn.spacing(2);
     padding-bottom: fn.spacing(2);
+    flex: 1 1 auto;  /* 中間內容撐開 */
+    // overflow-y: auto;
 }
 
 .imgBlock{
@@ -89,7 +94,7 @@ body {
     display:flex;
     flex-direction: column;
     padding: fn.spacing(4);
-    gap: fn.spacing(4);
+    gap: fn.spacing(3);
     text-align: center;
 
     .info__title{
