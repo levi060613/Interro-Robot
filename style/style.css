@@ -1156,6 +1156,11 @@ p.caption {
   perspective: 500px;
   transform-style: preserve-3d;
 }
+@media (min-width: 768px) {
+  .imgCarousel {
+    width: 400px;
+  }
+}
 
 .card-container {
   position: absolute;
@@ -1202,7 +1207,7 @@ p.caption {
   background-color: #dfd4ff;
   padding: 0.25rem 0.5rem;
   border-radius: 16px;
-  font-size: clamp(0.75rem, 10.5915492958px + 0.3755868545vw, 1rem);
+  font-size: clamp(0.625rem, 8.5915492958px + 0.3755868545vw, 0.875rem);
   font-weight: 400;
   line-height: 1.5;
   white-space: nowrap;
@@ -2410,8 +2415,6 @@ html {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding-top: env(safe-area-inset-top); /* 保護 header */
-  padding-bottom: env(safe-area-inset-bottom); /* 保護 footer */
   box-sizing: border-box;
 }
 

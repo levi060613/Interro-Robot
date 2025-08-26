@@ -9,6 +9,10 @@
   height: 100%;
   perspective: 500px;
   transform-style: preserve-3d;
+
+  @include mixins.respond(md){
+    width: 400px;
+  }
 }
 
 .card-container {
@@ -65,7 +69,7 @@
       padding: fn.spacing(1) fn.spacing(2);
       border-radius: fn.border-radius(lg);
 
-      font-size: fn.fluid-type(12, 16);        // 16px +-2px
+      font-size: fn.fluid-type(10, 14);        // 14px +-2px
       font-weight: $font_weight_medium;
       line-height: $line_height_body;
       white-space: nowrap;

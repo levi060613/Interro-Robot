@@ -11,8 +11,9 @@ html{
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding-top: env(safe-area-inset-top);     /* 保護 header */
-    padding-bottom: env(safe-area-inset-bottom); /* 保護 footer */
+    // padding-top: env(safe-area-inset-top);     /* 保護 header */
+    // padding-bottom: env(safe-area-inset-bottom); /* 保護 footer */
+    // 暫時關閉，用其他裝置測試一下
     box-sizing: border-box;
 }
 

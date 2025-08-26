@@ -9,7 +9,7 @@ const projectDetailData = {
     firstImage: {
       images: [
         {
-          src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363930/projectModal-01_00_yxldia.png"
+          src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1756106027/project_01--modal_%E9%A6%96%E9%A0%81_zvkxp2.png"
         }
       ]
     },
