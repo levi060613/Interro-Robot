@@ -442,6 +442,8 @@ p.caption {
   flex-direction: column-reverse;
   gap: 0.5rem;
   justify-content: flex-end;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+  backdrop-filter: blur(10px); /* 模糊背景 */
 }
 .chatOptionPanel p {
   width: 100%;
@@ -470,6 +472,8 @@ p.caption {
   .chatOptionPanel {
     position: relative;
     padding: 0.75rem 0;
+    background: none;
+    backdrop-filter: none;
   }
 }
 @media (min-width: 768px) {
@@ -721,8 +725,8 @@ p.caption {
 
 .menuButton__container {
   width: 48px;
-  position: relative;
-  bottom: 1rem;
+  position: absolute;
+  bottom: 100px;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -763,6 +767,7 @@ p.caption {
 @media (min-width: 576px) {
   .menuButton__container {
     bottom: 0;
+    position: relative;
   }
 }
 
@@ -818,9 +823,6 @@ p.caption {
   padding: 0.75rem;
   margin-top: 0.25rem;
   margin-bottom: 0.75rem;
-}
-.tagContainer .tag {
-  height: 40px;
 }
 
 .tag {
@@ -943,12 +945,17 @@ p.caption {
   word-break: break-word;
   display: inline-block;
   border-radius: 16px;
-  font-size: clamp(1rem, 14.5915492958px + 0.3755868545vw, 1.25rem);
-  font-weight: 400;
-  line-height: 1.5;
   visibility: visible !important;
   opacity: 1 !important;
   transition: height 0.3s ease;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+@media (min-width: 576px) {
+  .chatBubbleMessage {
+    font-size: clamp(1rem, 15.2957746479px + 0.1877934272vw, 1.125rem);
+  }
 }
 
 /* 使用者的泡泡背景 */
@@ -1191,11 +1198,11 @@ p.caption {
   opacity: var(--active);
   transition: all 0.3s ease-out;
 }
-.card .tag {
+.card .tags-container .card-tag {
   background-color: #dfd4ff;
   padding: 0.25rem 0.5rem;
   border-radius: 16px;
-  font-size: clamp(0.625rem, 8.5915492958px + 0.3755868545vw, 0.875rem);
+  font-size: clamp(0.75rem, 10.5915492958px + 0.3755868545vw, 1rem);
   font-weight: 400;
   line-height: 1.5;
   white-space: nowrap;
@@ -1819,18 +1826,13 @@ p.caption {
   justify-content: center;
 }
 .project-detail.coming-soon .project-header .project-tags .tag {
-  background: linear-gradient(135deg, #dfd4ff, #ac87fe);
-  color: #53189a;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: 1px solid #ac87fe;
-  transition: all 0.3s ease;
-}
-.project-detail.coming-soon .project-header .project-tags .tag:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(119, 33, 224, 0.3);
+  background-color: #dfd4ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 16px;
+  font-size: clamp(0.75rem, 10.5915492958px + 0.3755868545vw, 1rem);
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 .project-detail.coming-soon .coming-soon-content {
   width: 100%;
@@ -2580,12 +2582,13 @@ body {
   overflow: hidden;
   overflow-y: auto;
   flex-direction: column;
+  padding-bottom: 120px;
   padding-right: 16px;
   margin-right: -32px;
-  margin-bottom: 120px;
 }
 @media (min-width: 576px) {
   .chatWindow {
+    padding-bottom: 0px;
     margin-bottom: 0px;
   }
 }
@@ -2858,6 +2861,7 @@ header {
   display: none; /* Chrome, Safari, Opera */
 }
 .timeline-block .timeline-content .project-tags .tag {
+  border: none;
   background-color: #dfd4ff;
   padding: 0.25rem 0.5rem;
   border-radius: 16px;
@@ -2865,10 +2869,6 @@ header {
   font-size: clamp(0.75rem, 10.5915492958px + 0.3755868545vw, 1rem);
   font-weight: 400;
   line-height: 1.5;
-}
-.timeline-block .timeline-content:hover {
-  box-shadow: 0px 0px 24px rgba(172, 135, 254, 0.4);
-  transition: box-shadow 0.3s ease-in-out;
 }
 
 @media (min-width: 576px) {

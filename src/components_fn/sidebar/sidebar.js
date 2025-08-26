@@ -1,4 +1,5 @@
 // components_fn/sidebar.js
+import { sendInteractionEvent } from '../../utils/positionAnalytics.js';
 
 export function initSidebar() {
   const toggleBtn = document.getElementById('toggle-btn');
@@ -84,4 +85,19 @@ export function initSidebar() {
     }
     deltaX = 0;
   });
+
+  // 監聽下載履歷按鈕點擊事件，發送 GA4 事件
+  const downloadCvButton = sidebar.querySelector('a[href*="詹奕淇＿履歷.pdf"] button');
+  if (downloadCvButton) {
+    downloadCvButton.addEventListener('click', () => {
+      // 發送 download_cv 事件到 GA4
+      sendInteractionEvent('download_cv', {
+        button_location: 'sidebar',
+        file_name: '詹奕淇＿履歷.pdf',
+        file_type: 'pdf'
+      });
+      
+      console.log('[Sidebar] 下載履歷按鈕點擊事件已發送');
+    });
+  }
 }

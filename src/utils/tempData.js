@@ -3,14 +3,24 @@
 // 專案列表數據
 export const projects = [
   {
-    year: "2025.04",
+    year: "2025.04 ~ Now",
     title: "Interro 模擬面試機器人｜互動式網站",
     subtitle: "“不是展示作品，而是設計給面試官的產品。”",
     description: "反轉傳統作品集展示方式，設計對話式體驗流程，引導面試官一步步探索我的角色與價值。",
     tags: ["0到1設計", "開發上線", "聊天機器人"],
-    img: "src/assets/images/project-01_projectCard.jpg",
+    img: "src/assets/images/project-01_projectCard.webp",
     template: "behance-project",
     document_id: "project_01"
+  },
+  {
+    year: "2024.08 ~ Now",
+    title: "六角學院 專題UI｜RWD設計",
+    subtitle: "接案性質",
+    description: "・了解學生需求的風格，轉化為視覺UI<br>・交稿主視覺設計 ＋ RWD畫面 + Guideline<br>・與對方溝通、並按需求調整設計稿<br>・與對方確定好主視覺後，延續風格設計其他頁面<br>",
+    tags: ["RWD設計", "工程交付", "設計系統"],
+    img: "src/assets/images/project-02_projectCard.webp",
+    template: "coming-soon",
+    document_id: "project_02"
   },
   {
     year: "2024.11",
@@ -18,18 +28,8 @@ export const projects = [
     subtitle: "“設計不只要做得好看，還要讓人願意持續使用。”",
     description: "我們挑戰的不是操作流程，而是學生的學習動力。透過問題拆解和團隊協作，打造具互動、情感化的系統性改版。",
     tags: ["問題拆解", "產品再設計", "榮獲Top 3"],
-    img: "src/assets/images/project-02_projectCard.jpg",
+    img: "src/assets/images/project-03_projectCard.webp",
     template: "behance-project",
-    document_id: "project_02"
-  },
-  {
-    year: "2024.08",
-    title: "六角學院 專題UI｜RWD設計",
-    subtitle: "接案性質",
-    description: "・了解學生需求的風格，轉化為視覺UI<br>・交稿主視覺設計 ＋ RWD畫面 + Guideline<br>・與對方溝通、並按需求調整設計稿<br>・與對方確定好主視覺後，延續風格設計其他頁面<br>",
-    tags: ["RWD設計", "工程交付", "設計系統"],
-    img: "src/assets/images/project-03_projectCard.jpg",
-    template: "coming-soon",
     document_id: "project_03"
   },
   {
@@ -38,7 +38,7 @@ export const projects = [
     subtitle: "旅遊應用",
     description: "為日本京都旅遊設計的移動應用，整合了景點導覽、行程規劃和本地文化體驗等功能。",
     tags: ["0到1設計", "產品定位", "實戰營 佳作"],
-    img: "src/assets/images/project-04_projectCard.jpg",
+    img: "src/assets/images/project-04_projectCard.webp",
     template: "coming-soon",
     document_id: "project_04"
   },
@@ -48,7 +48,7 @@ export const projects = [
     subtitle: "全端專案",
     description: "從零開始設計和開發的響應式網站，通過數據分析和用戶測試持續優化產品體驗。",
     tags: ["0到1設計", "上線專案", "測試數據分析"],
-    img: "src/assets/images/project-05_projectCard.jpg",
+    img: "src/assets/images/project-05_projectCard.webp",
     template: "coming-soon",
     document_id: "project_05"
   }

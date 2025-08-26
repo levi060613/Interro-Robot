@@ -34,16 +34,18 @@
     word-break: break-word;
     display: inline-block;
     border-radius: fn.border-radius(lg);
-    font-size: fn.fluid-type(16, 20);        // 18px +-2px
-    font-weight: $font_weight_medium;
-    line-height: $line_height_body;
     visibility: visible !important;
     opacity: 1 !important;
     transition: height 0.3s ease;
 
-    // @include mixins.respond(sm){
-    //     font-size: fn.font-size(md);
-    // }
+
+    font-size: fn.font-size(md);
+    font-weight: $font_weight_medium;
+    line-height: $line_height_body;
+    
+    @include mixins.respond(sm){
+        font-size: fn.fluid-type(16, 18);        // 18px +-2px
+    }
 }
 
 /* 使用者的泡泡背景 */

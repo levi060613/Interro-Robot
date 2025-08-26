@@ -13,6 +13,9 @@
     gap: fn.spacing(2);
     justify-content:flex-end;
 
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px); /* 模糊背景 */
+
     p{
         width: 100%;  // 強制文字區塊填滿
     }
@@ -43,6 +46,8 @@
     @include mixins.respond(sm){
         position: relative;
         padding: fn.spacing(3) fn.spacing(0);
+        background: none;
+        backdrop-filter: none;
     }
 
 
@@ -253,7 +258,7 @@
                 opacity: 0.6;
 
                 svg{
-                    opacity: 0.5;
+                    opacity: 0.5;    
                 }
             }
         }
@@ -331,8 +336,10 @@
 
 .menuButton__container{
     width: 48px;
-    position: relative;
-    bottom: fn.spacing(4);
+    // position: relative;
+    position: absolute;
+    // bottom: fn.spacing(4);
+    bottom: 100px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -376,6 +383,7 @@
 
     @include mixins.respond(sm){
         bottom: fn.spacing(0);
+        position: relative;
     }
 }
 
@@ -437,9 +445,6 @@
     margin-top: fn.spacing(1);
     margin-bottom: fn.spacing(3);
 
-    .tag{
-        height: 40px;
-    }
 }
 
 .tag {

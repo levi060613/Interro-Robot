@@ -199,12 +199,14 @@ body {
     overflow: hidden;
     overflow-y: auto;
     flex-direction: column;
+    padding-bottom: 120px;
 
     padding-right: 16px;   // 預留滾動條空間
     margin-right: -32px;   // 把空間推回去，不讓內容被擠
-    margin-bottom: 120px;  // 預留空間給選項面板
+    // margin-bottom: 120px;  // 預留空間給選項面板
 
     @include mixins.respond(sm){
+        padding-bottom: 0px;
         margin-bottom: 0px;
     }
     @include mixins.respond(md){

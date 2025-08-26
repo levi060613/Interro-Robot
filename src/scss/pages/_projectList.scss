@@ -106,6 +106,7 @@
       }
 
       .tag{
+        border: none;
         background-color: fn.color(primary, 100);
         padding: fn.spacing(1) fn.spacing(2);
         border-radius: fn.border-radius(lg);
@@ -117,10 +118,10 @@
       }
     }
 
-    &:hover{
-      box-shadow: 0px 0px 24px rgba(172, 135, 254, 0.4);
-      transition: box-shadow 0.3s ease-in-out;
-    }
+    // &:hover{
+    //   box-shadow: 0px 0px 24px rgba(172, 135, 254, 0.4);
+    //   transition: box-shadow 0.3s ease-in-out;
+    // }
   }
 }
 

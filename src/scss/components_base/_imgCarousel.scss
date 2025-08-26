@@ -58,17 +58,18 @@
     margin: fn.spacing(2) fn.spacing(2) fn.spacing(4) fn.spacing(2);
     opacity: var(--active);
     transition: all 0.3s ease-out;
-  }
 
-  .tag {
-    background-color: fn.color(primary, 100);
-    padding: fn.spacing(1) fn.spacing(2);
-    border-radius: fn.border-radius(lg);
+    .card-tag {
+      // border: none;
+      background-color: fn.color(primary, 100);
+      padding: fn.spacing(1) fn.spacing(2);
+      border-radius: fn.border-radius(lg);
 
-    font-size: fn.fluid-type(10, 14);        // 14px +-2px
-    font-weight: $font_weight_medium;
-    line-height: $line_height_body;
-    white-space: nowrap;
+      font-size: fn.fluid-type(12, 16);        // 16px +-2px
+      font-weight: $font_weight_medium;
+      line-height: $line_height_body;
+      white-space: nowrap;
+    }
   }
 }
 
