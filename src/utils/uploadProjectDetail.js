@@ -116,7 +116,7 @@ const projectDetailData = {
             src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363928/projectModal-01_02_fhhkmo.png"
           },
           {
-            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363920/projectModal-01_03_pp9ujz.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1756298007/projectModal-01_03_fftylu.png"
           }
         ],
         questions: [
@@ -181,7 +181,7 @@ const projectDetailData = {
         name: "設計系統",
         images: [
           {
-            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1754363922/projectModal-01_04_lzw1cv.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1756298007/projectModal-01_04_ppdcdp.png"
           }
         ]
         // questions: [
