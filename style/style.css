@@ -1158,7 +1158,7 @@ p.caption {
 }
 @media (min-width: 768px) {
   .imgCarousel {
-    width: 400px;
+    width: 300px;
   }
 }
 
@@ -1844,7 +1844,7 @@ p.caption {
   max-width: 600px;
 }
 .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(246, 243, 255, 0.6));
+  background: linear-gradient(135deg, rgba(223, 212, 255, 0.9), rgba(223, 212, 255, 0.2));
   border: 2px solid #ac87fe;
   border-radius: 48px;
   padding: 2.5rem 1.5rem;
@@ -1859,7 +1859,7 @@ p.caption {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(223, 212, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, white 0%, transparent 70%);
   animation: float 6s ease-in-out infinite;
   z-index: 0;
 }
@@ -1949,7 +1949,7 @@ p.caption {
     color: #666;
   }
   .project-detail.coming-soon .coming-soon-content .coming-soon-wrapper {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(83, 24, 154, 0.2));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(83, 24, 154, 0.2));
     border-color: #7721e0;
     box-shadow: 0 8px 32px rgba(119, 33, 224, 0.2);
   }

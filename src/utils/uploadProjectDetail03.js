@@ -1,13 +1,15 @@
+// src/utils/uploadProjectDetail03.js
 import { db } from './firebase.js';
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// project_02 的 coming-soon 模板資料結構
-const projectDetailData02 = {
+
+// project_03 的 coming-soon 模板資料結構
+const projectDetailData03 = {
   template: 'coming-soon',
   basicInfo: {
-    title: '六角學院 專題UI｜RWD設計',
-    subtitle: '接案性質',
-    tags: ["RWD設計", "工程交付", "設計系統"]
+    title: 'Hahow 線上課程平台｜情感化體驗設計',
+    subtitle: '團隊競賽專案',
+    tags: ['問題拆解', '產品再設計', '榮獲Top 3']
   },
   content: {
     sections: [
@@ -25,15 +27,16 @@ const projectDetailData02 = {
   }
 };
 
+
 // 寫入 Firestore
 async function upload() {
-  try {
-    await setDoc(doc(db, "projectDetail", "project_02"), projectDetailData02);
-    console.log("project_02 資料已成功寫入 Firestore！");
-  } catch (error) {
-    console.error("寫入失敗：", error);
+    try {
+      await setDoc(doc(db, "projectDetail", "project_03"), projectDetailData03);
+      console.log("project_03 資料已成功寫入 Firestore！");
+    } catch (error) {
+      console.error("寫入失敗：", error);
+    }
   }
-}
-
-// 執行上傳
-upload(); 
+  
+  // 執行上傳
+  upload(); 

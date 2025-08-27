@@ -707,8 +707,8 @@
     
     .coming-soon-wrapper {
       background: linear-gradient(135deg, 
-        rgba(fn.color(neutral, white), 0.9), 
-        rgba(fn.color(primary, 50), 0.6)
+        rgba(fn.color(primary, 100), 0.9), 
+        rgba(fn.color(primary, 100), 0.2)
       );
       border: 2px solid fn.color(primary, 200);
       border-radius: fn.border-radius(2xl);
@@ -727,7 +727,7 @@
         height: 200%;
         background: radial-gradient(
           circle,
-          rgba(fn.color(primary, 100), 0.1) 0%,
+          rgba(fn.color(neutral, white), 1) 0%,
           transparent 70%
         );
         animation: float 6s ease-in-out infinite;
@@ -837,7 +837,7 @@
     
     .coming-soon-content .coming-soon-wrapper {
       background: linear-gradient(135deg, 
-        rgba(fn.color(neutral, black), 0.9), 
+        rgba(fn.color(neutral, white), 0.9), 
         rgba(fn.color(primary, 400), 0.2)
       );
       border-color: fn.color(primary, 300);

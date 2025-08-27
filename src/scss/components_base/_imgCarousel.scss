@@ -11,7 +11,7 @@
   transform-style: preserve-3d;
 
   @include mixins.respond(md){
-    width: 400px;
+    width: 300px;
   }
 }
 

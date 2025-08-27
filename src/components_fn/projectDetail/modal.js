@@ -448,8 +448,18 @@ function setupScrollListener(modalContent, questionList, projectData) {
         
         // 如果滾動百分比在 10%~80% 之間，記錄這個 section
         if (scrollPercentage >= 10 && scrollPercentage <= 80) {
-          currentVisibleStep = parseInt(section.getAttribute('data-step'));
-          currentScrollPercentage = scrollPercentage;
+          const stepNumber = parseInt(section.getAttribute('data-step'));
+          
+          // 檢查該 section 是否有 questions 數據
+          const sectionData = projectData.content.sections.find(s => s.step === stepNumber);
+          if (sectionData && sectionData.questions && sectionData.questions.length > 0) {
+            // 只有當 section 有 questions 數據時，才記錄為可見的 step
+            currentVisibleStep = stepNumber;
+            currentScrollPercentage = scrollPercentage;
+            console.log(`[DEBUG] step ${stepNumber} 有 questions 數據，可以觸發 modal-panel`);
+          } else {
+            console.log(`[DEBUG] step ${stepNumber} 沒有 questions 數據，不觸發 modal-panel`);
+          }
         }
       }
     });
