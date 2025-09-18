@@ -122,6 +122,7 @@ const projectDetailData = {
         questions: [
           {
             id: "q503",
+            label: "專業能力",
             text: "研究結果是怎麼幫助你做設計決策的？",
             reply: `
 ^^🔴 Obstacle｜挑戰^^
@@ -142,6 +143,7 @@ const projectDetailData = {
           },
           {
             id: "q504",
+            label: "專業能力",
             text: "解方設計有經過目標用戶驗證嗎？",
             reply: `
 ^^🔴 Obstacle｜挑戰^^
@@ -158,6 +160,7 @@ const projectDetailData = {
           },
           {
             id: "q505",
+            label: "職涯動機與自我成長",
             text: "選擇 SPA 有帶來什麼優勢與挑戰？",
             reply: `
 ^^🔴 Obstacle｜挑戰^^
