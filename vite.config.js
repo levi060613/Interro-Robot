@@ -40,7 +40,7 @@ export default defineConfig({
   },
   // 优化依赖预构建
   optimizeDeps: {
-    include: ['firebase']
+    exclude: ['firebase']
   },
   // CSS 预处理
   css: {

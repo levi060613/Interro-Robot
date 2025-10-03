@@ -13,9 +13,199 @@ import {
  import initChatOptionPanel from '../components_fn/chatOptionPanel/chatOptionPanel.js';
  
  
- // 匯入文字格式化及打字機效果函式
- import { formatReplyText, typeTextWithHTML } from '../utils/formatters.js';
- // 渲染聊天室頁面主函式（供 SPA 路由系統載入）
+// 匯入文字格式化及打字機效果函式
+import { formatReplyText, typeTextWithHTML } from '../utils/formatters.js';
+// 匯入專案模態框創建函式
+import { createProjectModal } from '../components_fn/projectDetail/modal.js';
+// 匯入專案資料
+import { projectCards } from '../utils/tempData.js';
+import { fetchProjectDetailFromFirebase } from '../utils/fetchData.js';
+
+// 創建專案按鈕的函數
+function createProjectButton(projectId, buttonText) {
+  const button = document.createElement('button');
+  button.className = 'project-button';
+  button.innerHTML = buttonText;
+  button.style.cssText = `
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  `;
+  
+  // 添加懸停效果
+  button.addEventListener('mouseenter', () => {
+    button.style.transform = 'translateY(-2px)';
+    button.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+  });
+  
+  button.addEventListener('mouseleave', () => {
+    button.style.transform = 'translateY(0)';
+    button.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+  });
+  
+  // 點擊事件處理
+  button.addEventListener('click', async () => {
+    try {
+      const project = projectCards.find(p => p.document_id === projectId);
+      if (!project) {
+        console.error('找不到專案:', projectId);
+        return;
+      }
+      
+      const modal = createProjectModal();
+      
+      // 顯示載入狀態
+      modal.show({
+        template: 'loading',
+        basicInfo: {
+          title: project.title,
+          subtitle: '載入中...',
+          tags: project.tags || []
+        },
+        content: { 
+          sections: [{ 
+            type: 'loading', 
+            content: `
+              <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">正在載入專案詳細內容...</p>
+              </div>
+            ` 
+          }] 
+        }
+      });
+      
+      // 從 Firebase 獲取詳細內容
+      let projectDetail = null;
+      try {
+        projectDetail = await fetchProjectDetailFromFirebase(projectId);
+      } catch (error) {
+        console.error('從 Firebase 獲取專案詳情失敗:', error);
+        // 使用本地資料作為備用
+        const { projectDetail: localProjectDetail } = await import('../utils/tempData.js');
+        projectDetail = localProjectDetail.find(detail => detail.document_id === projectId);
+      }
+      
+      if (projectDetail) {
+        modal.show({
+          template: projectDetail.template || 'coming-soon',
+          basicInfo: projectDetail.basicInfo || {
+            title: project.title,
+            subtitle: project.subtitle || '',
+            tags: project.tags || []
+          },
+          content: projectDetail.content || projectDetail
+        });
+      }
+    } catch (error) {
+      console.error('顯示專案詳情失敗:', error);
+    }
+  });
+  
+  return button;
+}
+
+// 渲染分段式自我介紹的函數
+async function renderIntroductionWithProjects(chatWindow) {
+  // 第一段：基本介紹
+  const introPart1 = `
+嗨！歡迎你進來這個聊天室，接下來我們會模擬一個面試場合的互動。  
+那在開始之前，先讓我簡單介紹一下自己吧！
+
+### 👋 關於我 ###
+我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
+> 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
+
+### 🎯 設計強項 ###
+- 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
+- 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
+- 熟練使用 Figma 製作 wireframe、UI 與 prototype，並能彈性配合專案時程
+- 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通
+`;
+
+  // 第二段：自學開發
+  const introPart2 = `
+### 🛠 自學開發的動機與進展 ###
+目前也在**自學前端開發（以切版為主）**，希望能進一步理解開發與設計的接軌，探索更多優化 UX 體驗的方式。
+目前已能處理：
+- HTML/CSS 切版
+- JavaScript 基本元件化操作
+`;
+
+  // 第三段：個人專案
+  const introPart3 = `
+### 🚀 進行中的個人專案 ###
+我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
+希望透過這個專案，讓我整合：
+- 用戶研究分析的能力
+- UI 設計
+- 前端開發實作
+- 後續數據測試、迭代優化
+> 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。
+`;
+
+  // 渲染第一段
+  const bubble1 = document.createElement('div');
+  bubble1.className = 'chatBubble chatBubble--bot';
+  const message1 = document.createElement('div');
+  message1.className = 'chatBubbleMessage';
+  typeTextWithHTML(formatReplyText(introPart1), message1, 100, 5);
+  bubble1.appendChild(message1);
+  chatWindow.appendChild(bubble1);
+  
+  // 等待2秒後添加第一個專案按鈕
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  const button1 = createProjectButton('project_02', '查看六角學院專案作品');
+  const buttonContainer1 = document.createElement('div');
+  buttonContainer1.className = 'project-button-container';
+  buttonContainer1.style.textAlign = 'center';
+  buttonContainer1.appendChild(button1);
+  chatWindow.appendChild(buttonContainer1);
+  
+  // 渲染第二段（立即顯示，無打字機效果）
+  const bubble2 = document.createElement('div');
+  bubble2.className = 'chatBubble chatBubble--bot';
+  const message2 = document.createElement('div');
+  message2.className = 'chatBubbleMessage';
+  message2.innerHTML = formatReplyText(introPart2);
+  bubble2.appendChild(message2);
+  chatWindow.appendChild(bubble2);
+  
+  // 立即添加第二個專案按鈕
+  const button2 = createProjectButton('project_03', '查看 Hahow 課程平台設計');
+  const buttonContainer2 = document.createElement('div');
+  buttonContainer2.className = 'project-button-container';
+  buttonContainer2.style.textAlign = 'center';
+  buttonContainer2.appendChild(button2);
+  chatWindow.appendChild(buttonContainer2);
+  
+  // 渲染第三段（立即顯示，無打字機效果）
+  const bubble3 = document.createElement('div');
+  bubble3.className = 'chatBubble chatBubble--bot';
+  const message3 = document.createElement('div');
+  message3.className = 'chatBubbleMessage';
+  message3.innerHTML = formatReplyText(introPart3);
+  bubble3.appendChild(message3);
+  chatWindow.appendChild(bubble3);
+  
+  // 立即添加第三個專案按鈕
+  const button3 = createProjectButton('project_01', '查看模擬面試網站專案');
+  const buttonContainer3 = document.createElement('div');
+  buttonContainer3.className = 'project-button-container';
+  buttonContainer3.style.textAlign = 'center';
+  buttonContainer3.appendChild(button3);
+  chatWindow.appendChild(buttonContainer3);
+}
+
+// 渲染聊天室頁面主函式（供 SPA 路由系統載入）
  export default async function renderChatRoomPage() {
   // ========= 建立聊天室畫面主要容器區塊 =========
 
@@ -84,28 +274,35 @@ import {
         }
       }
 
-      // 4. 如果是第一次進入聊天室（歷史紀錄為空）且不是從問題點擊進入，顯示引導語句
+      // 4. 如果是第一次進入聊天室（歷史紀錄為空）且不是從問題點擊進入，顯示分段式自我介紹
       if (history.length === 0 && !isFromQuestionClick){
-        // 取得引導語句資料
-        // 直接定義引導語句文字，不再從 fetchIntroductionInfo 獲取
-        const introductionInfo = `
+        // 使用新的分段式自我介紹渲染函數
+        await renderIntroductionWithProjects(chatWindow);
+        
+        // 將完整的自我介紹內容儲存到快取中（用於歷史記錄）
+        const fullIntroductionText = `
 嗨！歡迎你進來這個聊天室，接下來我們會模擬一個面試場合的互動。  
 那在開始之前，先讓我簡單介紹一下自己吧！
 
 ### 👋 關於我 ###
 我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
 > 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
+
 ### 🎯 設計強項 ###
 - 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
 - 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
 - 熟練使用 Figma 製作 wireframe、UI 與 prototype，並能彈性配合專案時程
 - 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通
 
+💡 **若想進一步瞭解，可前往專案列表 > 六角學院專案小卡**
+
 ### 🛠 自學開發的動機與進展 ###
 目前也在**自學前端開發（以切版為主）**，希望能進一步理解開發與設計的接軌，探索更多優化 UX 體驗的方式。
 目前已能處理：
 - HTML/CSS 切版
 - JavaScript 基本元件化操作
+
+💡 **若想進一步瞭解，可前往專案列表 > Hahow 課程平台專案小卡**
 
 ### 🚀 進行中的個人專案 ###
 我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
@@ -115,26 +312,11 @@ import {
 - 前端開發實作
 - 後續數據測試、迭代優化
 > 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。
+
+💡 **若想進一步瞭解，可前往專案列表 > 模擬面試網站專案小卡**
 `;
-        // 確認資料存在且為字串格式
-        if (introductionInfo && typeof introductionInfo === 'string'){
-          // 將引導語句儲存為 bot 訊息到快取
-          await saveMessage(introductionInfo,'bot');
-          // 在聊天室中建立並顯示 bot 訊息泡泡（使用打字機效果）
-          const bubbleWrapper = document.createElement('div');
-          bubbleWrapper.className = 'chatBubble chatBubble--bot';
-          const message = document.createElement('div');
-          message.className = 'chatBubbleMessage';
-          // 格式化文字後，以打字機效果顯示在訊息區
-          typeTextWithHTML(formatReplyText(introductionInfo), message, 100, 5);
-          bubbleWrapper.appendChild(message);
-          chatWindow.appendChild(bubbleWrapper);
-          // 滾動到聊天室底部顯示最新訊息
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-        } else {
-          // 若引導語句為空或格式錯誤，發出警告
-          console.warn('introduction info 為空，未顯示');
-        }
+        // 將完整的自我介紹儲存為 bot 訊息到快取
+        await saveMessage(fullIntroductionText, 'bot');
       }
 
       // 5. 檢查是否有待顯示的問題訊息

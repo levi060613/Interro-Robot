@@ -158,32 +158,32 @@ export const questionsData = [
 export const all_tags = [
   {
     // 01_ 開頭
-    name:"💼 工作經驗與角色",
+    name:"🌱 自我成長與反思",
     questions_id: ["q010", "q011", "q012"]
   },
   {
     // 02_ 開頭
-    name:"🛠️ 技術能力與工具",
+    name:"🚀 主動性與挑戰",
     questions_id: ["q020", "q021", "q022"]
   },
   {
     // 03_ 開頭
-    name:"🎯 專案管理與流程",
+    name:"🎯 決策與問題解決",
     questions_id: ["q030", "q031", "q032"]
   },
   {
     // 04_ 開頭
-    name:"🤝 團隊協作與溝通",
+    name:"💬 回饋與影響",
     questions_id: ["q040", "q041", "q042"]
   },
   {
     // 05_ 開頭
-    name:"📚 學習成長與規劃",
+    name:"🧭 個人價值與角色",
     questions_id: ["q050", "q051", "q052"]
   },
   {
     // 06_ 開頭
-    name:"💡 創意思維與解決方案",
+    name:"🤝 團隊協作與溝通",
     questions_id: ["q060", "q061", "q062"]
   },
   {

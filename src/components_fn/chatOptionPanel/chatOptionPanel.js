@@ -410,6 +410,18 @@ export default async function initChatOptionPanel(initialOptions) {
         const questionsId = JSON.parse(item.dataset.questionsId || '[]');
         const questionId = item.dataset.id;
         const questionLabel = item.dataset.label || "其他";
+        const isDefaultOption = item.dataset.isDefaultOption === 'true';
+
+        // 如果是預設選項，不觸發訊息泡泡，直接處理延伸問題
+        if (isDefaultOption) {
+            console.log('[DEBUG] 預設選項被點擊，不觸發訊息泡泡');
+            
+            // 直接處理下一層問題，不關閉 carousel
+            if (questionsId.length > 0) {
+                await handleDefaultOptionClick(questionsId, text);
+            }
+            return;
+        }
 
         // 記錄問題點擊（包含 label）
         if (questionId && questionId !== 'parent') {
@@ -504,6 +516,63 @@ export default async function initChatOptionPanel(initialOptions) {
     });
 
     // ========== 核心函數 ==========
+
+    // 處理預設選項點擊的函數
+    async function handleDefaultOptionClick(questionsId, parentText) {
+        try {
+            console.log('[DEBUG] 處理預設選項點擊，questionsId:', questionsId);
+            
+            // 如果有下一層問題id，就建立下一層suggestions
+            const nextQuestions = await fetchQuestionsByIds(questionsId);
+
+            // 將question數據轉成{text, reply, questions_id}結構
+            const nextOptions = nextQuestions.map(q => ({
+                text: q.question,
+                reply: q.answer,
+                questions_id: q.questions_id || [],
+                id: q.id,
+                label: q.label || "其他"
+            }));
+
+            // 添加被點擊的預設選項作為第一個選項（不觸發訊息）
+            nextOptions.unshift({
+                text: `「${parentText.substring(0, 8)}${parentText.length > 10 ? '...' : ''}」的延伸：`,
+                reply: '',
+                questions_id: questionsId,
+                isParentQuestion: true,
+                id: 'parent'
+            });
+
+            // 只有當新產生的下一層有內容時才增加步驟和儲存
+            if (nextOptions.length > 0) {
+                // 找到最後一個非空的步驟
+                let lastStep = groupsData.length;
+                while (lastStep > 0 && (!groupsData[lastStep - 1] || groupsData[lastStep - 1].length === 0)) {
+                    lastStep--;
+                }
+               
+                // 在最後一個非空步驟後添加新的步驟
+                const newStep = lastStep + 1;
+                groupsData[newStep - 1] = nextOptions;
+                createSuggestionGroup(nextOptions, newStep);
+                updateDots();
+                
+                // 設置有新 step 的標誌，但不自動切換
+                hasNewStep = true;
+                
+                // 自動滾動到新創建的 suggestionGroup
+                scrollToStep(newStep);
+                
+                // 保存狀態到 sessionStorage
+                saveChatOptionPanelState();
+                
+                console.log(`[DEBUG] 預設選項點擊後創建了第 ${newStep} 層選項並自動滾動到該層`);
+            }
+            
+        } catch (error) {
+            console.error('處理預設選項點擊時發生錯誤:', error);
+        }
+    }
 
     function togglePanel() {
         // 如果選單是開啟狀態，先關閉選單
@@ -739,8 +808,9 @@ export default async function initChatOptionPanel(initialOptions) {
     function renderNormalSuggestions(group, optionList) {
         console.log(`[DEBUG] 渲染正常建議選項，步驟: ${group.dataset.step}, 選項數量: ${optionList.length}`);
         
-        // 如果是第一步，添加附注文字
         const step = parseInt(group.dataset.step);
+        
+        // 如果是第一步，添加附注文字
         if (step === 1) {
             const addText = document.createElement('div');
             addText.className = 'suggestionGroup__item add-text';
@@ -749,10 +819,25 @@ export default async function initChatOptionPanel(initialOptions) {
             group.appendChild(addText);
         }
         
+        // 如果是第一步，為預設選項創建容器
+        let optionContainer = null;
+        if (step === 1) {
+            optionContainer = document.createElement('div');
+            optionContainer.className = 'suggestionGroup__optionContainer';
+            group.appendChild(optionContainer);
+        }
+        
         // 普通建議選項
         optionList.forEach((opt, index) => {
             const item = document.createElement('div');
             item.className = 'suggestionGroup__item';
+            
+            // 如果是第一步的預設選項，添加特殊類別和標識
+            if (step === 1) {
+                item.classList.add('suggestionGroup__option');
+                item.dataset.isDefaultOption = 'true';
+            }
+            
             if (opt.clicked) {
                 item.classList.add('suggestionGroup__item--clicked');
                 item.style.pointerEvents = 'none';
@@ -763,7 +848,21 @@ export default async function initChatOptionPanel(initialOptions) {
                 item.style.pointerEvents = 'none'; // 禁用點擊
                 item.innerHTML = `<p>${opt.text}</p>`;
             } else {
-                item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
+                // 如果是預設選項，添加 icon
+                if (step === 1) {
+                    // 根據索引選擇對應的圖片
+                    const imageNumber = (index % 4) + 1; // 循環使用 1-4
+                    item.innerHTML = `
+                        <div class="suggestionGroup__option-content">
+                            <div class="suggestionGroup__option-icon">
+                                <img src="/src/assets/images/option_img${imageNumber}.png" alt="選項圖標" width="20" height="20">
+                            </div>
+                            <p class="md text-neutral-black">${opt.text}</p>
+                        </div>
+                    `;
+                } else {
+                    item.innerHTML = `<p class="md text-neutral-black">${opt.text}</p>`;
+                }
             }
             item.dataset.reply = opt.reply;
             item.dataset.questionsId = JSON.stringify(opt.questions_id || []);
@@ -774,10 +873,16 @@ export default async function initChatOptionPanel(initialOptions) {
                 text: opt.text,
                 className: item.className,
                 dataset: item.dataset,
-                pointerEvents: item.style.pointerEvents
+                pointerEvents: item.style.pointerEvents,
+                isDefaultOption: step === 1
             });
             
-            group.appendChild(item);
+            // 如果是第一步的預設選項，添加到容器中；否則直接添加到 group
+            if (step === 1 && optionContainer) {
+                optionContainer.appendChild(item);
+            } else {
+                group.appendChild(item);
+            }
         });
         
         console.log(`[DEBUG] 渲染完成，group 中的項目數量: ${group.children.length}`);
