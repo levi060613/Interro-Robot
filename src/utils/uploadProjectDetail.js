@@ -168,7 +168,7 @@ const projectDetailData = {
         name: "目前成效與規劃",
         images: [
           {
-            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1759380119/project_01--img4_zxecin.png"
+            src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1759649311/project_01--img4_zpmimu.png"
           },
           {
             src: "https://res.cloudinary.com/dgp6aecqw/image/upload/v1759474374/QA_%E7%9B%AE%E5%89%8D%E6%88%90%E6%95%88%E8%88%87%E8%A6%8F%E5%8A%83_qiagm3.png"

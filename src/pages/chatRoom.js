@@ -24,32 +24,32 @@ import { fetchProjectDetailFromFirebase } from '../utils/fetchData.js';
 // 創建專案按鈕的函數
 function createProjectButton(projectId, buttonText) {
   const button = document.createElement('button');
-  button.className = 'project-button';
+  button.className = 'startButton';
   button.innerHTML = buttonText;
-  button.style.cssText = `
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    margin: 10px 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  `;
+  // button.style.cssText = `
+  //   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  //   color: white;
+  //   border: none;
+  //   padding: 12px 24px;
+  //   border-radius: 25px;
+  //   font-size: 14px;
+  //   font-weight: 500;
+  //   cursor: pointer;
+  //   margin: 10px 0;
+  //   transition: all 0.3s ease;
+  //   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  // `;
   
   // 添加懸停效果
-  button.addEventListener('mouseenter', () => {
-    button.style.transform = 'translateY(-2px)';
-    button.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
-  });
+  // button.addEventListener('mouseenter', () => {
+  //   button.style.transform = 'translateY(-2px)';
+  //   button.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+  // });
   
-  button.addEventListener('mouseleave', () => {
-    button.style.transform = 'translateY(0)';
-    button.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
-  });
+  // button.addEventListener('mouseleave', () => {
+  //   button.style.transform = 'translateY(0)';
+  //   button.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+  // });
   
   // 點擊事件處理
   button.addEventListener('click', async () => {
@@ -122,26 +122,22 @@ async function renderIntroductionWithProjects(chatWindow) {
 
 ### 👋 關於我 ###
 我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
-> 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
+> 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。`;
 
-### 🎯 設計強項 ###
+  // 第二段：自學開發
+  const introPart2 = 
+`### 🎯 設計強項 ###
 - 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
 - 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
 - 熟練使用 Figma 製作 wireframe、UI 與 prototype，並能彈性配合專案時程
-- 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通
-`;
-
-  // 第二段：自學開發
-  const introPart2 = `
-### 🛠 自學開發的動機與進展 ###
+- 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通`;
+  // 第三段：個人專案
+  const introPart3 = 
+`### 🛠 自學開發的動機與進展 ###
 目前也在**自學前端開發（以切版為主）**，希望能進一步理解開發與設計的接軌，探索更多優化 UX 體驗的方式。
 目前已能處理：
 - HTML/CSS 切版
 - JavaScript 基本元件化操作
-`;
-
-  // 第三段：個人專案
-  const introPart3 = `
 ### 🚀 進行中的個人專案 ###
 我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
 希望透過這個專案，讓我整合：
@@ -149,8 +145,7 @@ async function renderIntroductionWithProjects(chatWindow) {
 - UI 設計
 - 前端開發實作
 - 後續數據測試、迭代優化
-> 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。
-`;
+> 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。`;
 
   // 渲染第一段
   const bubble1 = document.createElement('div');
@@ -161,31 +156,43 @@ async function renderIntroductionWithProjects(chatWindow) {
   bubble1.appendChild(message1);
   chatWindow.appendChild(bubble1);
   
-  // 等待2秒後添加第一個專案按鈕
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  const button1 = createProjectButton('project_02', '查看六角學院專案作品');
-  const buttonContainer1 = document.createElement('div');
-  buttonContainer1.className = 'project-button-container';
-  buttonContainer1.style.textAlign = 'center';
-  buttonContainer1.appendChild(button1);
-  chatWindow.appendChild(buttonContainer1);
+  // 待添加第一個專案按鈕，當六角學院專案更新後再補上按鈕（先不補上）
+  // await new Promise(resolve => setTimeout(resolve, 2000));
+  // const button1 = createProjectButton('project_02', '查看六角學院 UI專題');
+  // const buttonContainer1 = document.createElement('div');
+  // buttonContainer1.className = 'project-button-container';
+  // buttonContainer1.style.cssText = `
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   width: 100%;
+  // `;
+  // buttonContainer1.appendChild(button1);
+  // chatWindow.appendChild(buttonContainer1);
   
-  // 渲染第二段（立即顯示，無打字機效果）
+  // 等待3秒後渲染第二段（立即顯示，無打字機效果）
+  await new Promise(resolve => setTimeout(resolve, 1800));
   const bubble2 = document.createElement('div');
   bubble2.className = 'chatBubble chatBubble--bot';
   const message2 = document.createElement('div');
   message2.className = 'chatBubbleMessage';
+  message2.style.minHeight = '100px';
   message2.innerHTML = formatReplyText(introPart2);
   bubble2.appendChild(message2);
   chatWindow.appendChild(bubble2);
   
-  // 立即添加第二個專案按鈕
-  const button2 = createProjectButton('project_03', '查看 Hahow 課程平台設計');
-  const buttonContainer2 = document.createElement('div');
-  buttonContainer2.className = 'project-button-container';
-  buttonContainer2.style.textAlign = 'center';
-  buttonContainer2.appendChild(button2);
-  chatWindow.appendChild(buttonContainer2);
+  // 待添加第二個專案按鈕，當hahow專案更新後再補上按鈕（先不補上）
+  // const button2 = createProjectButton('project_03', '查看 Hahow UX專案');
+  // const buttonContainer2 = document.createElement('div');
+  // buttonContainer2.className = 'project-button-container';
+  // buttonContainer2.style.cssText = `
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   width: 100%;
+  // `;
+  // buttonContainer2.appendChild(button2);
+  // chatWindow.appendChild(buttonContainer2);
   
   // 渲染第三段（立即顯示，無打字機效果）
   const bubble3 = document.createElement('div');
@@ -197,10 +204,16 @@ async function renderIntroductionWithProjects(chatWindow) {
   chatWindow.appendChild(bubble3);
   
   // 立即添加第三個專案按鈕
-  const button3 = createProjectButton('project_01', '查看模擬面試網站專案');
+  const button3 = createProjectButton('project_01', '查看 模擬面試網站專案');
   const buttonContainer3 = document.createElement('div');
   buttonContainer3.className = 'project-button-container';
-  buttonContainer3.style.textAlign = 'center';
+  buttonContainer3.style.cssText = `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 72px;
+  `;
   buttonContainer3.appendChild(button3);
   chatWindow.appendChild(buttonContainer3);
 }
@@ -280,6 +293,7 @@ async function renderIntroductionWithProjects(chatWindow) {
         await renderIntroductionWithProjects(chatWindow);
         
         // 將完整的自我介紹內容儲存到快取中（用於歷史記錄）
+        //當這兩個更新完畢後再補上文字： > 六角學院 專題UI｜RWD設計 / Hahow 線上課程平台｜情感化體驗設計
         const fullIntroductionText = `
 嗨！歡迎你進來這個聊天室，接下來我們會模擬一個面試場合的互動。  
 那在開始之前，先讓我簡單介紹一下自己吧！
@@ -287,23 +301,16 @@ async function renderIntroductionWithProjects(chatWindow) {
 ### 👋 關於我 ###
 我是 Levi，目前有 **一年的 UI/UX 設計經驗**。
 > 曾在六角學院擔任協作UI設計師，負責根據學生的專案需求設計網站視覺與 UX 流程，並交付設計稿給工程師同學實作。
-
 ### 🎯 設計強項 ###
 - 擅長 **使用者研究** 與 **需求分析** ，能挖掘問題並提出對應設計方案
 - 習慣 **從多方角度思考**，在使用者體驗與實作成本間找到平衡
 - 熟練使用 Figma 製作 wireframe、UI 與 prototype，並能彈性配合專案時程
 - 熟悉頁面結構與操作流程規劃，讓資訊更清晰易懂、利於團隊溝通
-
-💡 **若想進一步瞭解，可前往專案列表 > 六角學院專案小卡**
-
 ### 🛠 自學開發的動機與進展 ###
 目前也在**自學前端開發（以切版為主）**，希望能進一步理解開發與設計的接軌，探索更多優化 UX 體驗的方式。
 目前已能處理：
 - HTML/CSS 切版
 - JavaScript 基本元件化操作
-
-💡 **若想進一步瞭解，可前往專案列表 > Hahow 課程平台專案小卡**
-
 ### 🚀 進行中的個人專案 ###
 我正在開發一個互動式的 **模擬面試聊天網站** （目前已進入上線階段），
 希望透過這個專案，讓我整合：
@@ -312,8 +319,7 @@ async function renderIntroductionWithProjects(chatWindow) {
 - 前端開發實作
 - 後續數據測試、迭代優化
 > 專案目標是完整體驗一次從 0 到 1 的產品開發流程，包含使用者測試與數據分析，並作為我作品集中的代表作。
-
-💡 **若想進一步瞭解，可前往專案列表 > 模擬面試網站專案小卡**
+^^💡 若想進一步瞭解，可前往專案列表 > Interro 模擬面試機器人｜互動式網站^^
 `;
         // 將完整的自我介紹儲存為 bot 訊息到快取
         await saveMessage(fullIntroductionText, 'bot');

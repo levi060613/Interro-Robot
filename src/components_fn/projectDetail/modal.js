@@ -166,23 +166,7 @@ export function createProjectModal() {
           }, 10);
         }
 
-        // 预加载所有图片
-        const imagePreloader = new ImagePreloader();
-        console.log('[Modal] 开始预加载图片...');
-        
-        // 进度更新函数
-        const updateProgress = (completed, total, currentSrc) => {
-          const progressElement = document.getElementById('loading-progress');
-          if (progressElement) {
-            const percentage = Math.round((completed / total) * 100);
-            progressElement.textContent = `載入中... ${completed}/${total} (${percentage}%)`;
-          }
-        };
-        
-        const preloadResult = await imagePreloader.preloadProjectImages(projectData, updateProgress);
-        console.log('[Modal] 图片预加载结果:', preloadResult);
-
-        // 图片预加载完成后，清空loading内容并显示实际内容
+        // 清空loading内容并直接显示实际内容
         modalContent.innerHTML = '';
         if (closeButton) {
           modalContent.appendChild(closeButton);
@@ -212,6 +196,22 @@ export function createProjectModal() {
           console.error('[Modal] 模板渲染返回空内容');
           throw new Error('模板渲染失败');
         }
+        
+        // 在后台异步预加载图片（不等待完成）
+        const imagePreloader = new ImagePreloader();
+        console.log('[Modal] 开始在后台预加载图片...');
+        
+        // 进度更新函数（可选，用于调试）
+        const updateProgress = (completed, total, currentSrc) => {
+          console.log(`[Modal] 图片预加载进度: ${completed}/${total} (${Math.round((completed / total) * 100)}%)`);
+        };
+        
+        // 异步预加载，不阻塞UI显示
+        imagePreloader.preloadProjectImages(projectData, updateProgress).then((preloadResult) => {
+          console.log('[Modal] 后台图片预加载完成:', preloadResult);
+        }).catch((error) => {
+          console.warn('[Modal] 后台图片预加载失败:', error);
+        });
         
         // 設置目錄條
         setupTableOfContents(tableOfContents, projectData, modalContent);

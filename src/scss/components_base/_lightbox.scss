@@ -47,11 +47,13 @@
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
+  touch-action: none; // 禁用瀏覽器默認的觸控行為，讓自定義觸控事件生效
   
   // 當圖片處於 100vw 模式時，移除 padding 並使用 baseline 對齊
   &.full-width {
     padding: 0;
     align-items: baseline; // 參考 Behance 的解決方案
+    overflow: hidden; // 在縮放模式下禁用滾動
   }
 }
 
@@ -68,6 +70,19 @@
   transform-origin: center center;
   position: relative;
   margin: auto;
+  touch-action: none; // 禁用瀏覽器默認的觸控行為
+  
+
+  // 手機測試: 縮放狀態
+  // 縮放狀態下的樣式
+  &.zoomed {
+    cursor: grab;
+    user-select: none;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
   
   // 自定義游標樣式
   &::after {
@@ -87,9 +102,20 @@
     opacity: 1;
   }
   
-  // 觸控裝置上的游標樣式
+
+  // 手機測試: 縮放狀態
+  // 觸控裝置上的樣式
   @media (hover: none) and (pointer: coarse) {
     cursor: zoom-in;
+    touch-action: none;
+    
+    &.zoomed {
+      cursor: grab;
+      
+      &:active {
+        cursor: grabbing;
+      }
+    }
     
     &[style*="zoom-out"] {
       cursor: zoom-out;
@@ -140,7 +166,52 @@
   &:active {
     transform: scale(0.95);
   }
+}
 
+// 導航按鈕
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: fn.border-radius(circle);
+  background-color: fn.color(neutral, 100);
+  color: fn.color(text, grey);
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  z-index: 800;
+
+  &:hover {
+    background-color: fn.color(primary, 100);
+    color: fn.color(primary, 400);
+  }
+  
+  &:active {
+    background-color: fn.color(neutral, 300);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+// 上一張按鈕
+.lightbox-prev {
+  left: fn.spacing(4);
+}
+
+// 下一張按鈕
+.lightbox-next {
+  right: fn.spacing(4);
 }
 
 // 為所有可點擊的圖片添加游標樣式
@@ -172,6 +243,21 @@
     padding: fn.spacing(1) fn.spacing(2);
     font-size: fn.font-size(xs);
   }
+
+  // 移動端導航按鈕樣式
+  .lightbox-nav {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .lightbox-prev {
+    left: fn.spacing(2);
+  }
+
+  .lightbox-next {
+    right: fn.spacing(2);
+  }
 }
 
 // 動畫效果
@@ -192,7 +278,7 @@
 
 // 觸控縮放提示
 .lightbox-content::after {
-  content: "雙指縮放切換";
+  content: "雙指縮放 • 單指拖拽";
   position: absolute;
   top: fn.spacing(2);
   left: 50%;
@@ -205,12 +291,22 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  z-index: 1000;
   
   @media (hover: none) and (pointer: coarse) {
     opacity: 1;
+    animation: fadeInOut 3s ease-in-out;
     
     .lightbox.active & {
       opacity: 0;
     }
   }
+}
+
+// 提示動畫
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
 } 
