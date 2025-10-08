@@ -2897,6 +2897,18 @@ header {
 .sidebar--contactInfo .box-b {
   order: 1;
 }
+.sidebar--contactInfo .box-b .avatar-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.sidebar--contactInfo .box-b .avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .sidebar-overlay {
   display: none;

@@ -382,6 +382,34 @@ export default async function initChatOptionPanel(initialOptions) {
         });
     }
 
+    // Dots 點擊切換
+    if (dotsContainer) {
+        dotsContainer.addEventListener('click', (e) => {
+            const dot = e.target.closest('.carouselBlock__dots--dot');
+            if (!dot) return;
+            
+            const targetStep = parseInt(dot.dataset.step);
+            if (!isNaN(targetStep) && targetStep !== currentStep) {
+                console.log(`[DEBUG] Dot 被點擊，跳轉到步驟 ${targetStep}`);
+                scrollToStep(targetStep);
+                
+                // 如果跳轉到最新步驟，清除新 step 標誌
+                const groups = carouselContainer.querySelectorAll('.suggestionGroup');
+                const validSteps = Array.from(groups)
+                    .map(group => parseInt(group.dataset.step))
+                    .filter(step => !isNaN(step));
+                const maxStep = Math.max(...validSteps);
+                
+                if (targetStep === maxStep && hasNewStep) {
+                    hasNewStep = false;
+                    stopNextButtonAnimation();
+                }
+                
+                saveChatOptionPanelState();
+            }
+        });
+    }
+
     // 建議選項點擊處理
     carouselContainer.addEventListener('click', async (e) => {
         const item = e.target.closest('.suggestionGroup__item');
@@ -617,7 +645,7 @@ export default async function initChatOptionPanel(initialOptions) {
         lastActiveStep = currentStep;
         
         switchButton.classList.remove('active');
-        switchButton.innerHTML = '<p class="md text-neutral-black text-center">點擊查看選項</p>';
+        switchButton.innerHTML = '<p class="md text-neutral-black text-center">想直接看重點嗎？那點開看看吧。</p>';
         menuButton.classList.remove('hidden');
         
         // 顯示 modalLookBtn
@@ -1499,7 +1527,7 @@ export default async function initChatOptionPanel(initialOptions) {
             if (switchButton) {
                 switchButton.style.display = 'block';
                 switchButton.classList.remove('active');
-                switchButton.innerHTML = '<p class="md text-neutral-black text-center">點擊查看選項</p>';
+                switchButton.innerHTML = '<p class="md text-neutral-black text-center">想直接看重點嗎？那點開看看吧。</p>';
             }
             if (menuButton) {
                 menuButton.classList.remove('hidden');

@@ -446,8 +446,8 @@ function setupScrollListener(modalContent, questionList, projectData) {
         
         console.log(`[DEBUG] step ${section.getAttribute('data-step')} 滾動百分比: ${scrollPercentage.toFixed(1)}% (section高度: ${sectionHeight}px, 已滾動: ${sectionScrollTop}px)`);
         
-        // 如果滾動百分比在 10%~80% 之間，記錄這個 section
-        if (scrollPercentage >= 10 && scrollPercentage <= 80) {
+        // 如果滾動百分比在 5%~90% 之間，記錄這個 section
+        if (scrollPercentage >= 5 && scrollPercentage <= 90) {
           const stepNumber = parseInt(section.getAttribute('data-step'));
           
           // 檢查該 section 是否有 questions 數據
