@@ -156,22 +156,21 @@ async function renderIntroductionWithProjects(chatWindow) {
   bubble1.appendChild(message1);
   chatWindow.appendChild(bubble1);
   
-  // 待添加第一個專案按鈕，當六角學院專案更新後再補上按鈕（先不補上）
-  // await new Promise(resolve => setTimeout(resolve, 2000));
-  // const button1 = createProjectButton('project_02', '查看六角學院 UI專題');
-  // const buttonContainer1 = document.createElement('div');
-  // buttonContainer1.className = 'project-button-container';
-  // buttonContainer1.style.cssText = `
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-  //   width: 100%;
-  // `;
-  // buttonContainer1.appendChild(button1);
-  // chatWindow.appendChild(buttonContainer1);
-  
-  // 等待3秒後渲染第二段（立即顯示，無打字機效果）
+  // 待添加第一個專案按鈕，當六角學院專案更新後再補上按鈕（已補上）
   await new Promise(resolve => setTimeout(resolve, 1800));
+  const button1 = createProjectButton('project_02', '查看六角學院 UI專題');
+  const buttonContainer1 = document.createElement('div');
+  buttonContainer1.className = 'project-button-container';
+  buttonContainer1.style.cssText = `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  `;
+  buttonContainer1.appendChild(button1);
+  chatWindow.appendChild(buttonContainer1);
+  
+  // 立即渲染第二段（立即顯示，無打字機效果）
   const bubble2 = document.createElement('div');
   bubble2.className = 'chatBubble chatBubble--bot';
   const message2 = document.createElement('div');

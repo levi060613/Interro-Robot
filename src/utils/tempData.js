@@ -18,8 +18,7 @@ export const projects = [
     subtitle: "接案性質",
     description: "・了解學生需求的風格，轉化為視覺UI<br>・交稿主視覺設計 ＋ RWD畫面 + Guideline<br>・與對方溝通、並按需求調整設計稿<br>・與對方確定好主視覺後，延續風格設計其他頁面<br>",
     tags: ["RWD設計", "工程交付", "設計系統"],
-    // img: "src/assets/images/project-02_projectCard.webp",
-    img: "src/assets/images/待更新project-02_projectCard.jpg",
+    img: "src/assets/images/project-02_projectCard.jpg",
     template: "coming-soon",
     document_id: "project_02"
   },
