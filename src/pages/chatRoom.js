@@ -60,28 +60,35 @@ function createProjectButton(projectId, buttonText) {
         return;
       }
       
-      const modal = createProjectModal();
+      // 發送 GA 事件：追踪聊天室中的项目按钮点击
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          'event': 'chatroom_project_button_click',
+          'project_id': projectId,
+          'project_title': project.title,
+          'button_text': buttonText
+        });
+        console.log('[GA] 已發送聊天室項目按鈕點擊事件:', {
+          project_id: projectId,
+          project_title: project.title
+        });
+      }
       
-      // 顯示載入狀態
-      modal.show({
-        template: 'loading',
-        basicInfo: {
-          title: project.title,
-          subtitle: '載入中...',
-          tags: project.tags || []
-        },
-        content: { 
-          sections: [{ 
-            type: 'loading', 
-            content: `
-              <div class="loading-container">
-                <div class="loading-spinner"></div>
-                <p class="loading-text">正在載入專案詳細內容...</p>
-              </div>
-            ` 
-          }] 
-        }
-      });
+      // 在創建新 modal 之前，先清除已存在的 project-modal
+      const existingModal = document.querySelector('.project-modal');
+      if (existingModal) {
+        console.log('[DEBUG] 發現已存在的 project-modal，正在清除');
+        existingModal.remove();
+      }
+      
+      // 同時清除可能存在的 modal-lookBtn
+      const existingModalLookBtn = document.querySelector('.modal-lookBtn');
+      if (existingModalLookBtn) {
+        console.log('[DEBUG] 清除已存在的 modal-lookBtn');
+        existingModalLookBtn.remove();
+      }
+      
+      const modal = createProjectModal();
       
       // 從 Firebase 獲取詳細內容
       let projectDetail = null;

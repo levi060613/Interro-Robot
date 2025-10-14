@@ -214,6 +214,23 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const href = link.getAttribute("href");
       
+      // 📊 GA 追踪：檢測是否為首頁的開始面試按鈕
+      if (link.classList.contains('startButton')) {
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            'event': 'start_interview_click',
+            'button_location': 'homepage',
+            'button_text': link.textContent.trim(),
+            'target_path': href
+          });
+          console.log('[GA] 已發送開始面試按鈕點擊事件:', {
+            button_location: 'homepage',
+            button_text: link.textContent.trim(),
+            target_path: href
+          });
+        }
+      }
+      
       // 🚀 用户点击导航时，确保对应功能已预加载
       ensureFeaturePreloaded(href);
       

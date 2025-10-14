@@ -33,6 +33,47 @@ export function createProjectModal() {
   const modal = document.createElement('div');
   modal.className = 'project-modal';
   
+  // 用於記錄 Modal 打開時間和項目信息
+  let modalOpenTime = null;
+  let currentProjectInfo = null;
+  
+  // 發送停留時長 GA 事件的函數
+  const sendModalDurationEvent = () => {
+    if (modalOpenTime && currentProjectInfo) {
+      const durationSeconds = Math.round((Date.now() - modalOpenTime) / 1000);
+      
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          'event': 'project_modal_duration',
+          'project_title': currentProjectInfo.title,
+          'project_template': currentProjectInfo.template,
+          'duration_seconds': durationSeconds,
+          'duration_category': getDurationCategory(durationSeconds)
+        });
+        console.log('[GA] 已發送 Modal 停留時長事件:', {
+          project_title: currentProjectInfo.title,
+          duration_seconds: durationSeconds,
+          duration_category: getDurationCategory(durationSeconds)
+        });
+      }
+      
+      // 重置數據
+      modalOpenTime = null;
+      currentProjectInfo = null;
+    }
+  };
+  
+  // 將停留時間分類的輔助函數
+  const getDurationCategory = (seconds) => {
+    if (seconds < 5) return '0-5秒';
+    if (seconds < 15) return '5-15秒';
+    if (seconds < 30) return '15-30秒';
+    if (seconds < 60) return '30-60秒';
+    if (seconds < 120) return '1-2分鐘';
+    if (seconds < 300) return '2-5分鐘';
+    return '5分鐘以上';
+  };
+  
   // 建立模態框內容區塊
   const modalContent = document.createElement('div');
   modalContent.className = 'modal-content';
@@ -44,6 +85,10 @@ export function createProjectModal() {
   // 綁定點擊事件，點擊後關閉模態框
   closeButton.addEventListener('click', () => {
     console.log('[DEBUG] modal-close 按鈕被點擊');
+    
+    // 發送停留時長事件
+    sendModalDurationEvent();
+    
     modal.classList.remove('active');
     console.log('[DEBUG] 已移除 modal 的 active 類');
     // 立即禁用 modalLookBtn
@@ -87,6 +132,10 @@ export function createProjectModal() {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       console.log('[DEBUG] 點擊模態框外部區域');
+      
+      // 發送停留時長事件
+      sendModalDurationEvent();
+      
       modal.classList.remove('active');
       console.log('[DEBUG] 已移除 modal 的 active 類');
       // 立即禁用 modalLookBtn
@@ -130,48 +179,6 @@ export function createProjectModal() {
           modalContent.appendChild(closeButton);
         }
 
-        // 先显示loading状态
-        const loadingTemplate = templates['loading'];
-        if (loadingTemplate) {
-          const loadingContent = loadingTemplate.render({
-            template: 'loading',
-            basicInfo: projectData.basicInfo || {},
-            content: {
-              sections: [{
-                type: 'loading',
-                content: `
-                  <div class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p class="loading-text">正在載入專案詳細內容...</p>
-                    <p class="loading-progress" id="loading-progress">準備中...</p>
-                  </div>
-                `
-              }]
-            }
-          });
-          modalContent.appendChild(loadingContent);
-        }
-
-        // 将模态框加入DOM并显示
-        const mainContent = document.getElementById('mainContent');
-        if (mainContent) {
-          mainContent.appendChild(modal);
-          setTimeout(() => {
-            modal.classList.add('active');
-          }, 10);
-        } else {
-          document.body.appendChild(modal);
-          setTimeout(() => {
-            modal.classList.add('active');
-          }, 10);
-        }
-
-        // 清空loading内容并直接显示实际内容
-        modalContent.innerHTML = '';
-        if (closeButton) {
-          modalContent.appendChild(closeButton);
-        }
-        
         console.log('[Modal] 开始渲染项目内容，projectData:', projectData);
         console.log('[Modal] 项目模板:', projectData.template);
         
@@ -192,6 +199,43 @@ export function createProjectModal() {
         if (content) {
           modalContent.appendChild(content);
           console.log('[Modal] 内容已添加到 modalContent');
+          
+          // 將模态框加入DOM并显示
+          const mainContent = document.getElementById('mainContent');
+          if (mainContent) {
+            mainContent.appendChild(modal);
+            setTimeout(() => {
+              modal.classList.add('active');
+            }, 10);
+          } else {
+            document.body.appendChild(modal);
+            setTimeout(() => {
+              modal.classList.add('active');
+            }, 10);
+          }
+          
+          // 記錄 Modal 打開時間和項目信息（用於計算停留時長）
+          modalOpenTime = Date.now();
+          currentProjectInfo = {
+            title: projectData.basicInfo?.title || 'unknown',
+            template: projectData.template
+          };
+          console.log('[Modal] 已記錄打開時間:', new Date(modalOpenTime).toISOString());
+          
+          // 發送 GA 事件：只在真實項目內容載入時追踪（排除 error 模板）
+          if (window.dataLayer && projectData.basicInfo && 
+              projectData.template !== 'error') {
+            window.dataLayer.push({
+              'event': 'project_modal_open',
+              'project_title': projectData.basicInfo.title,
+              'project_template': projectData.template,
+              'project_tags': (projectData.basicInfo.tags || []).join(', ')
+            });
+            console.log('[GA] 已發送 Modal 打開事件:', {
+              project_title: projectData.basicInfo.title,
+              project_template: projectData.template
+            });
+          }
         } else {
           console.error('[Modal] 模板渲染返回空内容');
           throw new Error('模板渲染失败');
@@ -301,6 +345,23 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
   // 為按鈕添加點擊事件
   button.addEventListener('click', (e) => {
     e.stopPropagation(); // 防止事件冒泡
+    
+    // 📊 GA 追踪：追踪項目詳情中的問題按鈕點擊
+    const nextState = isExpanded ? 'close' : 'open';
+    
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        'event': 'question_switch_button_click',
+        'button_action': nextState,
+        'button_location': 'project_modal',
+        'project_title': projectData?.basicInfo?.title || 'unknown'
+      });
+      console.log('[GA] 已發送項目問題按鈕點擊事件:', {
+        button_action: nextState,
+        project_title: projectData?.basicInfo?.title
+      });
+    }
+    
     toggleQuestionList();
   });
   

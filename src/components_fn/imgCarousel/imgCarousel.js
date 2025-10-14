@@ -6,6 +6,12 @@ export default function bindImgCarousel() {
   const carousel = document.querySelector(".imgCarousel");
   if (!carousel) return;
 
+  // 檢查是否已經綁定過（使用元素本身的標記）
+  if (carousel.dataset.bound === 'true') {
+    console.log('[Carousel] 已綁定過，跳過重複綁定');
+    return;
+  }
+
   const cardContainers = Array.from(carousel.querySelectorAll(".card-container"));
   const btnLeft = carousel.querySelector(".nav.left");
   const btnRight = carousel.querySelector(".nav.right");
@@ -30,9 +36,25 @@ export default function bindImgCarousel() {
   }
 
   // 卡片點擊導頁
-  cardContainers.forEach(container => {
+  cardContainers.forEach((container, index) => {
     container.style.cursor = "pointer";
     container.addEventListener("click", () => {
+      // 獲取項目標題（從卡片中的 h4 標籤）
+      const projectTitle = container.querySelector('h4')?.textContent || `Project ${index + 1}`;
+      
+      // 發送 GA 事件：追踪首页轮播卡片点击
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          'event': 'homepage_carousel_click',
+          'carousel_index': index,
+          'project_title': projectTitle
+        });
+        console.log('[GA] 已發送首頁輪播點擊事件:', {
+          carousel_index: index,
+          project_title: projectTitle
+        });
+      }
+      
       const path = "/projectList";
       history.pushState({}, "", path);
       router(path);
@@ -129,4 +151,8 @@ export default function bindImgCarousel() {
 
   // 初始化
   update();
+  
+  // 標記為已綁定（在元素上設置標記）
+  carousel.dataset.bound = 'true';
+  console.log('[Carousel] 輪播事件綁定完成');
 }

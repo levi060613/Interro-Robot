@@ -44,6 +44,11 @@ function renderNotFoundPage(pathname) {
     if (pathname === "/" || pathname === "/index.html") {
       // 還原首頁內容
       view.innerHTML = homePageHTML;
+      // 移除綁定標記（因為 innerHTML 會重新創建元素，事件監聽器已丟失）
+      const carousel = document.querySelector(".imgCarousel");
+      if (carousel) {
+        delete carousel.dataset.bound;
+      }
       bindImgCarousel();
       return;
     }

@@ -60,28 +60,21 @@ export default async function renderProjectListPage() {
       // 點擊小卡時，顯示詳細內容
       timelineContent.addEventListener('click', async () => {
         try {
-          const modal = createProjectModal();
+          // 發送 GA 事件：追踪用户点击了哪个项目
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              'event': 'project_card_click',
+              'project_id': project.document_id,
+              'project_title': project.title,
+              'project_year': project.year
+            });
+            console.log('[GA] 已發送項目卡片點擊事件:', {
+              project_id: project.document_id,
+              project_title: project.title
+            });
+          }
 
-          // 立即顯示載入狀態的 modal
-          modal.show({
-            template: 'loading',
-            basicInfo: {
-              title: project.title,
-              subtitle: '載入中...',
-              tags: project.tags || []
-            },
-            content: { 
-              sections: [{ 
-                type: 'loading', 
-                content: `
-                  <div class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p class="loading-text">正在載入專案詳細內容...</p>
-                  </div>
-                ` 
-              }] 
-            }
-          });
+          const modal = createProjectModal();
 
           // 從 Firebase 的 projectDetail collection 取得詳細內容
           let remoteDetail = null;

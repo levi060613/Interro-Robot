@@ -237,6 +237,24 @@ export default async function initChatOptionPanel(initialOptions) {
     // 點擊 switchButton 切換狀態
     switchButton.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        // 📊 GA 追踪：追踪 switchButton 的狀態切換
+        const isCurrentlyActive = switchButton.classList.contains('active');
+        const nextState = isCurrentlyActive ? 'close' : 'open';
+        
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                'event': 'switch_button_click',
+                'button_action': nextState,
+                'button_location': 'chatroom_option_panel',
+                'button_text': switchButton.textContent.trim()
+            });
+            console.log('[GA] 已發送 SwitchButton 點擊事件:', {
+                button_action: nextState,
+                button_text: switchButton.textContent.trim()
+            });
+        }
+        
         togglePanel();
         
         // 保存狀態到 sessionStorage
