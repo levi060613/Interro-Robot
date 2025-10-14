@@ -11,6 +11,8 @@ import {
  import { fetchOptions, fetchQuestions, fetchQuestionsByIds } from '../utils/fetchData.js';
  // 匯入對話選項面板的初始化邏輯
  import initChatOptionPanel from '../components_fn/chatOptionPanel/chatOptionPanel.js';
+ // 引入用戶職位資訊
+ import { sendInteractionEvent } from '../utils/positionAnalytics.js';
  
  
 // 匯入文字格式化及打字機效果函式
@@ -61,18 +63,15 @@ function createProjectButton(projectId, buttonText) {
       }
       
       // 發送 GA 事件：追踪聊天室中的项目按钮点击
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          'event': 'chatroom_project_button_click',
-          'project_id': projectId,
-          'project_title': project.title,
-          'button_text': buttonText
-        });
-        console.log('[GA] 已發送聊天室項目按鈕點擊事件:', {
-          project_id: projectId,
-          project_title: project.title
-        });
-      }
+      sendInteractionEvent('chatroom_project_button_click', {
+        project_id: projectId,
+        project_title: project.title,
+        button_text: buttonText
+      });
+      console.log('[GA] 已發送聊天室項目按鈕點擊事件:', {
+        project_id: projectId,
+        project_title: project.title
+      });
       
       // 在創建新 modal 之前，先清除已存在的 project-modal
       const existingModal = document.querySelector('.project-modal');

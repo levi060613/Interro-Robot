@@ -1,5 +1,31 @@
 # Google Analytics 項目追踪設置指南
 
+## 統一的數據結構
+
+本專案使用 **Firebase Analytics SDK** 直接發送事件到 GA4，所有追踪事件都通過 `sendInteractionEvent()` 函數統一處理。
+
+### 事件發送方式
+
+```javascript
+import { sendInteractionEvent } from './utils/positionAnalytics.js';
+
+// 發送事件
+sendInteractionEvent('event_name', {
+  param1: "value1",
+  param2: "value2"
+  // 自定義參數
+});
+```
+
+### 自動添加的通用參數
+
+`sendInteractionEvent()` 函數會自動為所有事件添加以下參數：
+
+- **timestamp**: ISO 8601 格式的時間戳，記錄事件發生的精確時間
+- **user_position**: 用戶選擇的職位（從 localStorage 獲取），未選擇時為 "未選擇"
+
+**注意**：使用 Firebase Analytics SDK 後，事件會直接發送到 GA4，**不需要通過 GTM 配置**。
+
 ## 已實現的追踪事件
 
 本專案已經實現了以下 GA 事件追踪功能：
@@ -7,11 +33,25 @@
 ### 1. 首頁開始面試按鈕點擊追踪
 **事件名稱**: `start_interview_click`
 
-**追踪數據**:
-- `event`: "start_interview_click"
-- `button_location`: 按鈕位置 ("homepage")
-- `button_text`: 按鈕文字 ("開始面試")
-- `target_path`: 目標路徑 ("/chatRoom")
+**代碼實現**:
+```javascript
+sendInteractionEvent('start_interview_click', {
+  button_location: 'homepage',
+  button_text: '開始面試',
+  target_path: '/chatRoom'
+});
+```
+
+**發送到 GA4 的完整數據**:
+```javascript
+{
+  button_location: "homepage",
+  button_text: "開始面試",
+  target_path: "/chatRoom",
+  timestamp: "2025-10-14T14:11:29.082Z",  // 自動添加
+  user_position: "未選擇"  // 自動添加
+}
+```
 
 **觸發時機**: 當用戶在首頁點擊 "開始面試" 按鈕時
 
@@ -20,10 +60,13 @@
 ### 2. 首頁輪播卡片點擊追踪
 **事件名稱**: `homepage_carousel_click`
 
-**追踪數據**:
-- `event`: "homepage_carousel_click"
-- `carousel_index`: 卡片索引位置 (0-4)
-- `project_title`: 項目標題
+**代碼實現**:
+```javascript
+sendInteractionEvent('homepage_carousel_click', {
+  carousel_index: 0,
+  project_title: '項目標題'
+});
+```
 
 **觸發時機**: 當用戶在首頁點擊任何一個輪播卡片時
 
@@ -32,11 +75,14 @@
 ### 3. 項目列表卡片點擊追踪
 **事件名稱**: `project_card_click`
 
-**追踪數據**:
-- `event`: "project_card_click"
-- `project_id`: 項目文檔 ID (例如: "project_01")
-- `project_title`: 項目標題
-- `project_year`: 項目年份
+**代碼實現**:
+```javascript
+sendInteractionEvent('project_card_click', {
+  project_id: 'project_01',
+  project_title: '項目標題',
+  project_year: '2024'
+});
+```
 
 **觸發時機**: 當用戶在項目列表頁面點擊任何一個項目卡片時
 
@@ -45,11 +91,14 @@
 ### 4. 聊天室項目按鈕點擊追踪
 **事件名稱**: `chatroom_project_button_click`
 
-**追踪數據**:
-- `event`: "chatroom_project_button_click"
-- `project_id`: 項目文檔 ID (例如: "project_02")
-- `project_title`: 項目標題
-- `button_text`: 按鈕文字 (例如: "查看六角學院 UI專題")
+**代碼實現**:
+```javascript
+sendInteractionEvent('chatroom_project_button_click', {
+  project_id: 'project_02',
+  project_title: '項目標題',
+  button_text: '查看六角學院 UI專題'
+});
+```
 
 **觸發時機**: 當用戶在聊天室的自介訊息中點擊項目按鈕時
 
@@ -58,11 +107,14 @@
 ### 5. 聊天室選項面板切換按鈕點擊追踪
 **事件名稱**: `switch_button_click`
 
-**追踪數據**:
-- `event`: "switch_button_click"
-- `button_action`: 按鈕動作 ("open" 或 "close")
-- `button_location`: 按鈕位置 ("chatroom_option_panel")
-- `button_text`: 按鈕文字
+**代碼實現**:
+```javascript
+sendInteractionEvent('switch_button_click', {
+  button_action: 'open',
+  button_location: 'chatroom_option_panel',
+  button_text: '按鈕文字'
+});
+```
 
 **觸發時機**: 當用戶在聊天室點擊選項面板的切換按鈕時
 
@@ -71,11 +123,14 @@
 ### 6. 項目詳情問題按鈕點擊追踪
 **事件名稱**: `question_switch_button_click`
 
-**追踪數據**:
-- `event`: "question_switch_button_click"
-- `button_action`: 按鈕動作 ("open" 或 "close")
-- `button_location`: 按鈕位置 ("project_modal")
-- `project_title`: 所屬項目標題
+**代碼實現**:
+```javascript
+sendInteractionEvent('question_switch_button_click', {
+  button_action: 'open',
+  button_location: 'project_modal',
+  project_title: '項目標題'
+});
+```
 
 **觸發時機**: 當用戶在項目詳情 Modal 中點擊 "看到這裡，也許你會想問⋯⋯" 按鈕時
 
@@ -84,11 +139,14 @@
 ### 7. 項目 Modal 打開追踪
 **事件名稱**: `project_modal_open`
 
-**追踪數據**:
-- `event`: "project_modal_open"
-- `project_title`: 項目標題
-- `project_template`: 使用的模板類型 (例如: "behance-project", "coming-soon")
-- `project_tags`: 項目標籤 (逗號分隔)
+**代碼實現**:
+```javascript
+sendInteractionEvent('project_modal_open', {
+  project_title: '項目標題',
+  project_template: 'behance-project',
+  project_tags: 'UI設計, UX研究'
+});
+```
 
 **觸發時機**: 當項目詳情 Modal 成功打開並顯示內容時
 
@@ -99,12 +157,17 @@
 ### 8. 項目 Modal 停留時長追踪
 **事件名稱**: `project_modal_duration`
 
-**追踪數據**:
-- `event`: "project_modal_duration"
-- `project_title`: 項目標題
-- `project_template`: 使用的模板類型
-- `duration_seconds`: 停留秒數 (整數)
-- `duration_category`: 停留時長分類
+**代碼實現**:
+```javascript
+sendInteractionEvent('project_modal_duration', {
+  project_title: '項目標題',
+  project_template: 'behance-project',
+  duration_seconds: 45,
+  duration_category: '30-60秒'
+});
+```
+
+**停留時長分類**:
   - "0-5秒"
   - "5-15秒"
   - "15-30秒"
@@ -119,144 +182,10 @@
 
 ---
 
-## Google Tag Manager 配置步驟
-
-### 步驟 1: 創建數據層變量 (Data Layer Variables)
-
-在 GTM 中創建以下變量：
-
-1. **carousel_index**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `carousel_index`
-
-2. **project_id**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `project_id`
-
-3. **project_title**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `project_title`
-
-4. **project_year**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `project_year`
-
-5. **project_template**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `project_template`
-
-6. **project_tags**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `project_tags`
-
-7. **button_text**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `button_text`
-
-8. **duration_seconds**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `duration_seconds`
-
-9. **duration_category**
-   - 變數類型: 資料層變數
-   - 資料層變數名稱: `duration_category`
-
-### 步驟 2: 創建觸發條件 (Triggers)
-
-#### 觸發條件 1: 首頁輪播點擊
-- 觸發條件類型: 自訂事件
-- 事件名稱: `homepage_carousel_click`
-
-#### 觸發條件 2: 項目卡片點擊
-- 觸發條件類型: 自訂事件
-- 事件名稱: `project_card_click`
-
-#### 觸發條件 3: 聊天室項目按鈕點擊
-- 觸發條件類型: 自訂事件
-- 事件名稱: `chatroom_project_button_click`
-
-#### 觸發條件 4: Modal 打開
-- 觸發條件類型: 自訂事件
-- 事件名稱: `project_modal_open`
-
-#### 觸發條件 5: Modal 停留時長
-- 觸發條件類型: 自訂事件
-- 事件名稱: `project_modal_duration`
-
-### 步驟 3: 創建 GA4 事件代碼 (Tags)
-
-#### 代碼 1: 追踪首頁輪播點擊
-- 代碼類型: GA4 事件
-- 配置代碼: [您的 GA4 配置代碼]
-- 事件名稱: `homepage_carousel_click`
-- 事件參數:
-  - `carousel_index`: {{carousel_index}}
-  - `project_title`: {{project_title}}
-- 觸發條件: 首頁輪播點擊
-
-#### 代碼 2: 追踪項目卡片點擊
-- 代碼類型: GA4 事件
-- 配置代碼: [您的 GA4 配置代碼]
-- 事件名稱: `project_card_click`
-- 事件參數:
-  - `project_id`: {{project_id}}
-  - `project_title`: {{project_title}}
-  - `project_year`: {{project_year}}
-- 觸發條件: 項目卡片點擊
-
-#### 代碼 3: 追踪聊天室項目按鈕點擊
-- 代碼類型: GA4 事件
-- 配置代碼: [您的 GA4 配置代碼]
-- 事件名稱: `chatroom_project_button_click`
-- 事件參數:
-  - `project_id`: {{project_id}}
-  - `project_title`: {{project_title}}
-  - `button_text`: {{button_text}}
-- 觸發條件: 聊天室項目按鈕點擊
-
-#### 代碼 4: 追踪 Modal 打開
-- 代碼類型: GA4 事件
-- 配置代碼: [您的 GA4 配置代碼]
-- 事件名稱: `project_modal_open`
-- 事件參數:
-  - `project_title`: {{project_title}}
-  - `project_template`: {{project_template}}
-  - `project_tags`: {{project_tags}}
-- 觸發條件: Modal 打開
-
-#### 代碼 5: 追踪 Modal 停留時長
-- 代碼類型: GA4 事件
-- 配置代碼: [您的 GA4 配置代碼]
-- 事件名稱: `project_modal_duration`
-- 事件參數:
-  - `project_title`: {{project_title}}
-  - `project_template`: {{project_template}}
-  - `duration_seconds`: {{duration_seconds}}
-  - `duration_category`: {{duration_category}}
-- 觸發條件: Modal 停留時長
-
----
-
 ## 測試追踪
 
-### 1. 使用 GTM 預覽模式
-1. 在 GTM 中點擊「預覽」按鈕
-2. 輸入您的網站 URL
-3. 在預覽視窗中執行以下操作：
-   - 點擊首頁輪播卡片
-   - 點擊項目列表中的項目卡片
-   - 在聊天室中點擊項目按鈕
-   - 等待 Modal 打開
-4. 在 GTM 預覽面板中檢查事件是否被正確觸發
-
-### 2. 使用瀏覽器控制台
-打開瀏覽器開發者工具（F12），在控制台中輸入：
-```javascript
-dataLayer
-```
-查看所有推送到 dataLayer 的事件
-
-### 3. 檢查控制台日誌
+### 1. 使用瀏覽器控制台檢查 Firebase Analytics 事件
+打開瀏覽器開發者工具（F12），查看控制台日誌：
 代碼中已經添加了 console.log，您可以在控制台中看到類似以下的訊息：
 - `[GA] 已發送開始面試按鈕點擊事件:`
 - `[GA] 已發送首頁輪播點擊事件:`
@@ -339,28 +268,36 @@ dataLayer
 ### 問題 1: 事件沒有被追踪
 **解決方案**:
 1. 檢查瀏覽器控制台是否有錯誤訊息
-2. 確認 `window.dataLayer` 存在（在控制台輸入 `window.dataLayer`）
-3. 確認 GTM 代碼已正確安裝
-4. 使用 GTM 預覽模式檢查觸發條件
+2. 確認 Firebase SDK 已正確初始化
+3. 檢查 Firebase 配置（firebaseConfig）是否正確
+4. 查看控制台日誌，確認是否有 `[Position Analytics] 交互事件已发送:` 的訊息
 
-### 問題 2: 數據在 GTM 預覽中顯示但在 GA4 中看不到
+### 問題 2: 事件在控制台顯示但在 GA4 即時報表中看不到
 **解決方案**:
-1. 確認 GA4 代碼配置正確
-2. 等待 24-48 小時數據處理延遲
-3. 檢查 GA4 即時報表（數據應該立即顯示）
-4. 確認 GA4 測量 ID 正確
+1. 確認 Firebase 項目已正確連結到 GA4
+2. 等待 1-2 分鐘（即時報表有短暫延遲）
+3. 檢查 GA4 測量 ID 是否與 Firebase 配置一致
+4. 確認沒有使用廣告攔截器（可能會阻擋 Analytics 請求）
 
-### 問題 3: 部分事件參數缺失
+### 問題 3: 部分事件參數缺失或顯示 undefined
 **解決方案**:
-1. 檢查代碼中 `projectData` 或 `project` 物件的結構
-2. 確認 GTM 變量名稱與 dataLayer 中的鍵名完全一致
+1. 檢查代碼中傳遞給 `sendInteractionEvent()` 的參數是否正確
+2. 確認數據來源（如 `projectData` 或 `project` 物件）的結構完整
 3. 使用可選鏈運算符 `?.` 處理可能為空的數據
+4. 在 GA4 中檢查自定義維度是否已正確註冊
 
 ---
 
 ## 更新日誌
 
-**2024-10-14**
+**2025-10-14 (v2.0) - 重大更新**
+- ✅ **改用 Firebase Analytics SDK 直接發送事件**，不再使用 GTM dataLayer
+- ✅ 統一使用 `sendInteractionEvent()` 函數處理所有事件
+- ✅ 自動添加 `timestamp` 和 `user_position` 參數
+- ✅ 簡化事件追踪邏輯，減少配置複雜度
+- ✅ 更新文檔，移除 GTM 相關配置說明
+
+**2024-10-14 (v1.0) - 初始版本**
 - ✅ 新增首頁開始面試按鈕點擊追踪
 - ✅ 新增首頁輪播卡片點擊追踪
 - ✅ 新增項目列表卡片點擊追踪
@@ -380,6 +317,6 @@ dataLayer
 
 如有任何問題，請參考：
 - [Google Analytics 4 說明文件](https://support.google.com/analytics/)
-- [Google Tag Manager 說明文件](https://support.google.com/tagmanager/)
+- [Firebase Analytics 說明文件](https://firebase.google.com/docs/analytics)
 
 

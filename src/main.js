@@ -4,7 +4,7 @@ import "./components_fn/sidebar/sidebar.js"                   // 侧边栏导航
 import bindImgCarousel from "./components_fn/imgCarousel/imgCarousel.js"  // 首页轮播图
 import router from "./router/index.js";                       // 路由功能
 import { routes } from "./router/index.js";                   // 路由配置
-import { initPositionAnalytics } from "./utils/positionAnalytics.js";  // 职位分析
+import { initPositionAnalytics, getUserPosition, sendInteractionEvent } from "./utils/positionAnalytics.js";  // 职位分析
 
 // 🔄 非核心功能 - 延迟加载（通过预加载优化）
 let lightboxLoaded = false;
@@ -216,19 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // 📊 GA 追踪：檢測是否為首頁的開始面試按鈕
       if (link.classList.contains('startButton')) {
-        if (window.dataLayer) {
-          window.dataLayer.push({
-            'event': 'start_interview_click',
-            'button_location': 'homepage',
-            'button_text': link.textContent.trim(),
-            'target_path': href
-          });
-          console.log('[GA] 已發送開始面試按鈕點擊事件:', {
-            button_location: 'homepage',
-            button_text: link.textContent.trim(),
-            target_path: href
-          });
-        }
+        sendInteractionEvent('start_interview_click', {
+          button_location: 'homepage',
+          button_text: link.textContent.trim(),
+          target_path: href
+        });
+        console.log('[GA] 已發送開始面試按鈕點擊事件:', {
+          button_location: 'homepage',
+          button_text: link.textContent.trim(),
+          target_path: href
+        });
       }
       
       // 🚀 用户点击导航时，确保对应功能已预加载

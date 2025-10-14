@@ -5,6 +5,8 @@ import { projectCards as localProjectCards } from '../utils/tempData.js';
 import { projectDetail } from '../utils/tempData.js';
 // 引入 Firebase 取得詳細內容的函式
 import { fetchProjectDetailFromFirebase } from '../utils/fetchData.js';
+// 引入用戶職位資訊
+import { sendInteractionEvent } from '../utils/positionAnalytics.js';
 
 // 專案列表頁面渲染主函式
 export default async function renderProjectListPage() {
@@ -61,18 +63,15 @@ export default async function renderProjectListPage() {
       timelineContent.addEventListener('click', async () => {
         try {
           // 發送 GA 事件：追踪用户点击了哪个项目
-          if (window.dataLayer) {
-            window.dataLayer.push({
-              'event': 'project_card_click',
-              'project_id': project.document_id,
-              'project_title': project.title,
-              'project_year': project.year
-            });
-            console.log('[GA] 已發送項目卡片點擊事件:', {
-              project_id: project.document_id,
-              project_title: project.title
-            });
-          }
+          sendInteractionEvent('project_card_click', {
+            project_id: project.document_id,
+            project_title: project.title,
+            project_year: project.year
+          });
+          console.log('[GA] 已發送項目卡片點擊事件:', {
+            project_id: project.document_id,
+            project_title: project.title
+          });
 
           const modal = createProjectModal();
 

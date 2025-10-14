@@ -2,6 +2,7 @@ import { templates } from './templates.js';
 import { components } from './components.js';
 import { projects } from '../../utils/tempData.js';
 import { ImagePreloader } from '../../utils/imagePreloader.js';
+import { sendInteractionEvent } from '../../utils/positionAnalytics.js';
 
 // 統一的錯誤處理函數，當專案資料載入或顯示失敗時，回傳一個標準化的錯誤資料物件
 function handleProjectError(error, title = '載入失敗') {
@@ -42,20 +43,17 @@ export function createProjectModal() {
     if (modalOpenTime && currentProjectInfo) {
       const durationSeconds = Math.round((Date.now() - modalOpenTime) / 1000);
       
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          'event': 'project_modal_duration',
-          'project_title': currentProjectInfo.title,
-          'project_template': currentProjectInfo.template,
-          'duration_seconds': durationSeconds,
-          'duration_category': getDurationCategory(durationSeconds)
-        });
-        console.log('[GA] 已發送 Modal 停留時長事件:', {
-          project_title: currentProjectInfo.title,
-          duration_seconds: durationSeconds,
-          duration_category: getDurationCategory(durationSeconds)
-        });
-      }
+      sendInteractionEvent('project_modal_duration', {
+        project_title: currentProjectInfo.title,
+        project_template: currentProjectInfo.template,
+        duration_seconds: durationSeconds,
+        duration_category: getDurationCategory(durationSeconds)
+      });
+      console.log('[GA] 已發送 Modal 停留時長事件:', {
+        project_title: currentProjectInfo.title,
+        duration_seconds: durationSeconds,
+        duration_category: getDurationCategory(durationSeconds)
+      });
       
       // 重置數據
       modalOpenTime = null;
@@ -223,13 +221,11 @@ export function createProjectModal() {
           console.log('[Modal] 已記錄打開時間:', new Date(modalOpenTime).toISOString());
           
           // 發送 GA 事件：只在真實項目內容載入時追踪（排除 error 模板）
-          if (window.dataLayer && projectData.basicInfo && 
-              projectData.template !== 'error') {
-            window.dataLayer.push({
-              'event': 'project_modal_open',
-              'project_title': projectData.basicInfo.title,
-              'project_template': projectData.template,
-              'project_tags': (projectData.basicInfo.tags || []).join(', ')
+          if (projectData.basicInfo && projectData.template !== 'error') {
+            sendInteractionEvent('project_modal_open', {
+              project_title: projectData.basicInfo.title,
+              project_template: projectData.template,
+              project_tags: (projectData.basicInfo.tags || []).join(', ')
             });
             console.log('[GA] 已發送 Modal 打開事件:', {
               project_title: projectData.basicInfo.title,
@@ -349,18 +345,15 @@ function setupQuestionPanel(button, questionList, projectData, buttonPanel) {
     // 📊 GA 追踪：追踪項目詳情中的問題按鈕點擊
     const nextState = isExpanded ? 'close' : 'open';
     
-    if (window.dataLayer) {
-      window.dataLayer.push({
-        'event': 'question_switch_button_click',
-        'button_action': nextState,
-        'button_location': 'project_modal',
-        'project_title': projectData?.basicInfo?.title || 'unknown'
-      });
-      console.log('[GA] 已發送項目問題按鈕點擊事件:', {
-        button_action: nextState,
-        project_title: projectData?.basicInfo?.title
-      });
-    }
+    sendInteractionEvent('question_switch_button_click', {
+      button_action: nextState,
+      button_location: 'project_modal',
+      project_title: projectData?.basicInfo?.title || 'unknown'
+    });
+    console.log('[GA] 已發送項目問題按鈕點擊事件:', {
+      button_action: nextState,
+      project_title: projectData?.basicInfo?.title
+    });
     
     toggleQuestionList();
   });

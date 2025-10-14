@@ -1,6 +1,7 @@
 // imgCarousel.js
 import router from "../../router/index.js";
 import { setActiveLink } from "../../main.js";
+import { sendInteractionEvent } from "../../utils/positionAnalytics.js";
 
 export default function bindImgCarousel() {
   const carousel = document.querySelector(".imgCarousel");
@@ -43,17 +44,14 @@ export default function bindImgCarousel() {
       const projectTitle = container.querySelector('h4')?.textContent || `Project ${index + 1}`;
       
       // 發送 GA 事件：追踪首页轮播卡片点击
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          'event': 'homepage_carousel_click',
-          'carousel_index': index,
-          'project_title': projectTitle
-        });
-        console.log('[GA] 已發送首頁輪播點擊事件:', {
-          carousel_index: index,
-          project_title: projectTitle
-        });
-      }
+      sendInteractionEvent('homepage_carousel_click', {
+        carousel_index: index,
+        project_title: projectTitle
+      });
+      console.log('[GA] 已發送首頁輪播點擊事件:', {
+        carousel_index: index,
+        project_title: projectTitle
+      });
       
       const path = "/projectList";
       history.pushState({}, "", path);
